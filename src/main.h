@@ -30,7 +30,7 @@ ______________________________________________*/
 int rotate = 90;        //поворот матрицы
 int dx = 0;             //координаты
 int dy = 0;             //координаты
-int hour=22, minute=40, second=42, month=4, day=6, dayOfWeek=6, year=2018;  // переменные времени
+//int hour=22, minute=40, second=42, month=4, day=6, dayOfWeek=6, year=2018;  // переменные времени
 
 struct time_struct {
   byte hour = 22;
@@ -39,10 +39,10 @@ struct time_struct {
   byte month = 4;
   byte day = 6;
   byte dayOfWeek = 6;
-  int yaer = 2018;
+  int year = 2018;
 
-}
-time_struct dateTime;
+};
+time_struct timeDate;
 
 
 

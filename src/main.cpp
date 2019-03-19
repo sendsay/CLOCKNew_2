@@ -119,8 +119,8 @@ void loop()
     weatherUpdateTimer.update();                     // Обновление погоды с сервера
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
-    if(second != lastSecond) {                      // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
-        lastSecond = second;
+    if(timeDate.second != lastSecond) {                      // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
+        lastSecond = timeDate.second;
         secFr = 0;                                      // флаг для процессов                                   
     } else {
         secFr++;
@@ -130,7 +130,7 @@ void loop()
     updateTime();                                  // Получить время с часов DS3231         
 
 //=== Сигнал каждый час ==========================================
-    if ((minute == 0 and second == 0 and secFr == 0) and (hour >= timeSigOn and hour >= timeSigOff)) {
+    if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour >= timeSigOff)) {
         PRN("BIP!!!");
         bip();
         bip();
@@ -142,7 +142,7 @@ void loop()
     }
 
 //=== Синронизация таймеров ==========================================
-     if (firstRun and (minute % 5) == 0 and (second == 0))  {      // Синхронизация таймеров 
+     if (firstRun and (timeDate.minute % 5) == 0 and (timeDate.second == 0))  {      // Синхронизация таймеров 
         printTime();
         PRN("Synchro time!!!");
 
@@ -312,7 +312,7 @@ void wifiConnect()
 //===Вывод времени в ПОРТ ==================================================================================================================================
 void printTime()
 {
-    PRN((hour < 10 ? "0" : "") + String(hour) + ":" + (minute < 10 ? "0" : "") + String(minute) + ":" + (second < 10 ? "0" : "") + String(second) + "  ");
+    PRN((timeDate.hour < 10 ? "0" : "") + String(timeDate.hour) + ":" + (timeDate.minute < 10 ? "0" : "") + String(timeDate.minute) + ":" + (timeDate.second < 10 ? "0" : "") + String(timeDate.second) + "  ");
 }
 
 //=== Печать бегущей строки *s - текст, shiftDelay - скорость ==========================================
@@ -506,9 +506,9 @@ void showAnimWifi(byte probaWifi)
 void updateTime()
 {
     dt = RTClock.getDateTime();
-    hour = dt.hour;
-    minute = dt.minute;
-    second = dt.second; 
+    timeDate.hour = dt.hour;
+    timeDate.minute = dt.minute;
+    timeDate.second = dt.second; 
 
     //  long curEpoch = localEpoc + ((millis() - localMillisAtUpdate) / 1000);
     //  long epoch = (long)round(curEpoch + 86400L) % 86400L;
@@ -525,7 +525,7 @@ void updateTime()
 void showAnimClock() {
   byte digPos[6] = {1, 8, 18, 25, 15, 16};
   
-  if(hour < 10) {
+  if(timeDate.hour < 10) {
     digPos[1] = 5;
     digPos[2] = 15;
     digPos[3] = 22;
@@ -538,10 +538,10 @@ void showAnimClock() {
   if(del == 0) {
     del = digHt;
     for(i = 0; i < num; i++) digold[i] = dig[i];
-    dig[0] = hour / 10 ? hour / 10 : 10;
-    dig[1] = hour % 10;
-    dig[2] = minute / 10;
-    dig[3] = minute % 10;
+    dig[0] = timeDate.hour / 10 ? timeDate.hour / 10 : 10;
+    dig[1] = timeDate.hour % 10;
+    dig[2] = timeDate.minute / 10;
+    dig[3] = timeDate.minute % 10;
     for(i = 0; i < num; i++)  digtrans[i] = (dig[i] == digold[i]) ? 0 : digHt;
   } else del--;
   clr();
@@ -641,19 +641,19 @@ void timeUpdateNTP() {
 
     RTClock.setDateTime(g_year, g_month, g_day, g_hour, g_minute, g_second);  // Устанвока времени
 
-    hour=g_hour;
-    minute=g_minute;
-    second=g_second;
-    day=g_day;
-    dayOfWeek=g_dayOfWeek;
-    month=g_month;
-    year=g_year; 
+    timeDate.hour=g_hour;
+    timeDate.minute=g_minute;
+    timeDate.second=g_second;
+    timeDate.day=g_day;
+    timeDate.dayOfWeek=g_dayOfWeek;
+    timeDate.month=g_month;
+    timeDate.year=g_year; 
     localMillisAtUpdate = millis();
-    localEpoc = (hour * 60 * 60 + minute * 60 + second);
+    localEpoc = (timeDate.hour * 60 * 60 + timeDate.minute * 60 + timeDate.second);
     convertDw();
     convertMonth();
     printTime();
-    Serial.println((day < 10 ? "0" : "") + String(day) + "." + (month < 10 ? "0" : "") + String(month) + "." + String(year) + " DW = " + String(dayOfWeek));
+    Serial.println((timeDate.day < 10 ? "0" : "") + String(timeDate.day) + "." + (timeDate.month < 10 ? "0" : "") + String(timeDate.month) + "." + String(timeDate.year) + " DW = " + String(timeDate.dayOfWeek));
     Serial.println("          Time update OK.");  
 }
 
@@ -691,9 +691,9 @@ void getNTPtime() {
     const unsigned long seventyYears = 2208988800UL;        // Unix час станом на 1 січня 1970. в секундах, то 2208988800:
     unsigned long epoch = secsSince1900 - seventyYears;
     boolean summerTime;
-    if(month < 3 || month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
-    if(month > 3 && month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
-    if(month == 3 && (hour + 24 * day) >= (3 + 24 * (31 - (5 * year / 4 + 4) % 7)) || month == 10 && (hour + 24 * day) < (3 + 24 * (31 - (5 * year / 4 + 1) % 7))) summerTime = true; 
+    if(timeDate.month < 3 || timeDate.month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
+    if(timeDate.month > 3 && timeDate.month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
+    if(timeDate.month == 3 && (timeDate.hour + 24 * timeDate.day) >= (3 + 24 * (31 - (5 * timeDate.year / 4 + 4) % 7)) || timeDate.month == 10 && (timeDate.hour + 24 * timeDate.day) < (3 + 24 * (31 - (5 * timeDate.year / 4 + 1) % 7))) summerTime = true; 
     epoch += (int)(timeZone*3600 + (3600*(isDayLightSaving && summerTime)));      
     g_year = 0;
     int days = 0;
@@ -730,7 +730,7 @@ void getNTPtime() {
 
 // ===========================КОНВЕРТАЦІЯ НАЗВ ДНІВ ТИЖНЯ НА УКРАЇНСЬКУ МОВУ============================================
 void convertDw(){
-  switch(dayOfWeek){
+  switch(timeDate.dayOfWeek){
     case 1 : dw = tSunday;     break;
     case 2 : dw = tMonday;    break;
     case 3 : dw = tTuesday;   break;
@@ -742,7 +742,7 @@ void convertDw(){
 }
 // ===========================КОНВЕРТАЦІЯ НАЗВ МІСЯЦІВ НА УКРАЇНСЬКУ МОВУ============================================
 void convertMonth(){
-  switch(month){
+  switch(timeDate.month){
     case 1 : _month = tJanuary;      break;
     case 2 : _month = tFebruary;     break;
     case 3 : _month = tMarch;        break;
