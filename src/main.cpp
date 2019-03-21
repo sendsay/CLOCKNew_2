@@ -133,7 +133,7 @@ void loop()
     updateTime();                                  // Получить время с часов DS3231         
 
 //=== Сигнал каждый час ==========================================
-    if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour > timeSigOff)) {
+    if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour <= timeSigOff)) {
         PRN("BIP!!!");
         bip();
         bip();
