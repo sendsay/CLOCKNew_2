@@ -36,6 +36,7 @@ ______________________________________________*/
 #include <ArduinoJson.h>
 
 
+
 //=====================================================================================================================================
 DS3231 RTClock;                 // Часы
 RTCDateTime dt;                 // Дата/время для часов
@@ -57,7 +58,7 @@ void setup()
 {
     Serial.begin(115200);
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
-    pinMode(buttoPin, INPUT);               // Вход кнопки
+    pinMode(buttonPin, INPUT);               // Вход кнопки
 
 
     PRN("");
@@ -97,7 +98,7 @@ void setup()
 
     ArduinoOTA.setHostname("WifiClock");    // Имя хоста для прошивки
     ArduinoOTA.begin();                     // Инициализация прошивки
-    
+
     ntpUDP.begin(localPort);                // Запуск UPD для получения времени
 
     timeUpdateNTP();                        // Обновление времени
@@ -108,6 +109,8 @@ void setup()
     modeChangeTimer.start();                // Таймер переключения режимов
     sensorsUpdateTimer.start();             // Таймер обновления датчиков
     weatherUpdateTimer.start();             // Обновление погоды с сервера
+
+
 
 }
 
@@ -130,14 +133,14 @@ void loop()
     updateTime();                                  // Получить время с часов DS3231         
 
 //=== Сигнал каждый час ==========================================
-    if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour >= timeSigOff)) {
+    if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour > timeSigOff)) {
         PRN("BIP!!!");
         bip();
         bip();
     }
 
 //=== Работа с кнопкой ==========================================
-    if (digitalRead(buttoPin) == HIGH) {
+    if (digitalRead(buttonPin) == HIGH) {
         mode = 1;
     }
 

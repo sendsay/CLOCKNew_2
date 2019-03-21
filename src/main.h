@@ -23,8 +23,7 @@ ______________________________________________*/
 #define DEBUG                       // Отладка
 
 #define buzzerPin D6                // Пин сигнала
-#define buttoPin  D0                // Пин кнопки                
-
+#define buttonPin  D0                // Пин кнопки  
 
 //=====================================================================================================================================
 int rotate = 90;        //поворот матрицы
@@ -111,7 +110,7 @@ int secFr, lastSecond, lastMinute;                    // Работа с вре�
 
 String apiKey= "df9c74ff1a47dcb48aab814fa5500429";    // Ключ для погоды
 int cityId = 598098;                                  // локация погоды
-char server[] = "api.openweathermap.org";             // Сервер погоды
+char weatherServer[] = "api.openweathermap.org";      // Сервер погоды
 String langWeather = "ua";                            // Язык погоды
 String weatherDescription = "";                       // Описание погоды
 String tClearSky, tSkyIsClear, tFewClouds, tScatteredClouds, tBrokenClouds, tOvercastClouds, tLightRain, tModerateRain, tLightIntensityShowerRain, tShowerRain, tHeavyIntensityRain, tVeryHeavyRain, tThunderstorm, tHaze, tFog, tMist, tShowerSleet, tLightSnow, tLightShowerSnow, tSnow, tWeatrNot, tWeatrTN;   // Описание погоды
