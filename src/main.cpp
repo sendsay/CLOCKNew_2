@@ -119,7 +119,7 @@ void loop()
     ArduinoOTA.handle();                            // Обновление 
     modeChangeTimer.update();                       // Смена режимов отображения
     sensorsUpdateTimer.update();                    // Обновление датчиков  
-    weatherUpdateTimer.update();                     // Обновление погоды с сервера
+    weatherUpdateTimer.update();                    // Обновление погоды с сервера
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
     if(timeDate.second != lastSecond) {                      // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
@@ -157,8 +157,6 @@ void loop()
      }
 
 //===Основной цикл отображения ==========================================
-
-
     switch (mode)  {
         case 0 : {
             showAnimClock();                        // Вывод времени на часы 
@@ -191,6 +189,9 @@ void loop()
         default:
             break;
     }
+
+//=== Управление яркостью экрана=========================================
+    sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 1024, 500, 0, 15));
 
 
 
