@@ -204,7 +204,7 @@ void loop()
 //=== Вывод только цифр ==================================================================================
 void showDigit(char ch, int col, const uint8_t *data)
 {
-    if (dy<-8 | dy> 8)
+    if ((dy<-8) | (dy> 8))
         return;
     int len = pgm_read_byte(data);
     int w = pgm_read_byte(data + 1 + ch * len);
@@ -224,7 +224,7 @@ void showDigit(char ch, int col, const uint8_t *data)
 //=== Показ символа в колонке ===================================================================================
 void setCol(int col, byte v)
 {
-    if (dy<-8 | dy> 8)
+    if ((dy<-8) | (dy> 8))
         return;
     col += dx;
     if (col >= 0 && col < 8 * NUM_MAX)
@@ -464,6 +464,7 @@ unsigned char convert_UA_RU_PL_DE(unsigned char _c)
         dualChar = 0;
         return c;
     }
+
 }
 
 //=== Показ подключения ==============================================
@@ -697,7 +698,7 @@ void getNTPtime() {
     boolean summerTime;
     if(timeDate.month < 3 || timeDate.month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
     if(timeDate.month > 3 && timeDate.month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
-    if((timeDate.month == 3) && (timeDate.hour + 24 * timeDate.day) >= (3 + 24 * (31 - (5 * timeDate.year / 4 + 4) % 7)) || timeDate.month == 10 && (timeDate.hour + 24 * timeDate.day) < (3 + 24 * (31 - (5 * timeDate.year / 4 + 1) % 7))) summerTime = true; 
+    if(((timeDate.month == 3) && (timeDate.hour + 24 * timeDate.day)) >= (3 + 24 * (31 - (5 * timeDate.year / 4 + 4) % 7)) || ((timeDate.month == 10) && (timeDate.hour + 24 * timeDate.day)) < (3 + 24 * (31 - (5 * timeDate.year / 4 + 1) % 7))) summerTime = true; 
     epoch += (int)(timeZone*3600 + (3600*(isDayLightSaving && summerTime)));      
     g_year = 0;
     int days = 0;
