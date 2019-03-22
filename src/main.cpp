@@ -697,7 +697,7 @@ void getNTPtime() {
     boolean summerTime;
     if(timeDate.month < 3 || timeDate.month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
     if(timeDate.month > 3 && timeDate.month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
-    if(timeDate.month == 3 && (timeDate.hour + 24 * timeDate.day) >= (3 + 24 * (31 - (5 * timeDate.year / 4 + 4) % 7)) || timeDate.month == 10 && (timeDate.hour + 24 * timeDate.day) < (3 + 24 * (31 - (5 * timeDate.year / 4 + 1) % 7))) summerTime = true; 
+    if((timeDate.month == 3) && (timeDate.hour + 24 * timeDate.day) >= (3 + 24 * (31 - (5 * timeDate.year / 4 + 4) % 7)) || timeDate.month == 10 && (timeDate.hour + 24 * timeDate.day) < (3 + 24 * (31 - (5 * timeDate.year / 4 + 1) % 7))) summerTime = true; 
     epoch += (int)(timeZone*3600 + (3600*(isDayLightSaving && summerTime)));      
     g_year = 0;
     int days = 0;
