@@ -26,7 +26,6 @@ ______________________________________________*/
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
 #include <ESP8266WebServer.h>
-#include <ArduinoOTA.h>
 #include <WiFiUdp.h>
 #include <ESP8266mDNS.h>
 #include <Ticker.h>
@@ -42,8 +41,6 @@ DS3231 RTClock;                 // Часы
 RTCDateTime dt;                 // Дата/время для часов
 IPAddress apIP(192, 168, 4, 1); // Адресс для точки доступа
 WiFiUDP ntpUDP;                 // Клиент для получения NTP
-//NTPClient timeClient(ntpUDP);   // Клиент для получкения времен
-//Ticker timeUpdNTP(timeUpdateNTP, 10 * 1000);   //Таймер обновления времни из интернета если было не удачно.
 IPAddress timeServerIP;         // ??
 Adafruit_BMP280 bmp;            // Датчик bmp
 Adafruit_Si7021 sensor = Adafruit_Si7021(); 
@@ -60,7 +57,6 @@ void setup()
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
     pinMode(buttonPin, INPUT);               // Вход кнопки
 
-
     PRN("");
     PRN("");
     PRN("START!");
@@ -69,8 +65,6 @@ void setup()
     RTClock.begin();                        // Инициализация часов
     PRN("Itialize clock!");
     updateTime();                           // Обновление времени
-
-    ArduinoOTA.handle();                    // Всегда готовы к прошивке
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели
@@ -96,9 +90,6 @@ void setup()
 
     wifiConnect();                          // подключение к Вайфай
 
-    ArduinoOTA.setHostname("WifiClock");    // Имя хоста для прошивки
-    ArduinoOTA.begin();                     // Инициализация прошивки
-
     ntpUDP.begin(localPort);                // Запуск UPD для получения времени
 
     timeUpdateNTP();                        // Обновление времени
@@ -110,13 +101,12 @@ void setup()
     sensorsUpdateTimer.start();             // Таймер обновления датчиков
     weatherUpdateTimer.start();             // Обновление погоды с сервера
 
-
-
+  //  RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
 }
 
 void loop()
 {
-    ArduinoOTA.handle();                            // Обновление 
+//=== Обновление таймеров ================== ===================================
     modeChangeTimer.update();                       // Смена режимов отображения
     sensorsUpdateTimer.update();                    // Обновление датчиков  
     weatherUpdateTimer.update();                    // Обновление погоды с сервера
@@ -129,8 +119,26 @@ void loop()
         secFr++;
     }
 
+//=== Работа с будильником============================ ===================================
+    if (RTClock.isAlarm1()) {
+        alarm = true;
+    }    
+
+    if (alarm) {
+        if(millis() % 30 == 0) showAnimClock();
+        if(secFr==0 && timeDate.second>1 && timeDate.second<=59){
+            clr();
+        //    sendCmdAll(CMD_INTENSITY, 15);
+            refreshAll();
+            bip();
+            bip();
+        } else {
+        refreshAll();     
+        }
+    }
+
 //=== Обновление переменных времени, ход часов ==========================================
-    updateTime();                                  // Получить время с часов DS3231         
+       updateTime();                                  // Получить время с часов DS3231         
 
 //=== Сигнал каждый час ==========================================
     if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour <= timeSigOff)) {
@@ -139,61 +147,87 @@ void loop()
         bip();
     }
 
-//=== Работа с кнопкой ==========================================
+// //=== Работа с кнопкой ==========================================
     if (digitalRead(buttonPin) == HIGH) {
-        mode = 1;
+        delay(100);
+        if (not alarm) {
+            mode = 1;
+        } else {
+            alarm = false;
+        }
     }
 
-//=== Синронизация таймеров ==========================================
-     if (firstRun and (timeDate.minute % 5) == 0 and (timeDate.second == 0))  {      // Синхронизация таймеров 
+// //=== Синронизация таймеров ==========================================
+    if (firstRun and (timeDate.minute % 5) == 0 and (timeDate.second == 0))  {      // Синхронизация таймеров 
         printTime();
         PRN("Synchro time!!!");
 
         modeChangeTimer.start();                    // Смена режимов отображения
         sensorsUpdateTimer.start();                 // Обновление датчиков
         weatherUpdateTimer.start();                 // Обновление погоды с сервера
-        firstRun = false;  
-
-     }
+        firstRun = false; 
+    }
 
 //===Основной цикл отображения ==========================================
-    switch (mode)  {
-        case 0 : {
-            showAnimClock();                        // Вывод времени на часы 
-            modeChangeTimer.interval(showTimeInterval * 1000);       
-        }
+    if(not alarm && millis() % 30 == 0){   
+        switch (mode)  {
+            case 0 : {
+                showAnimClock();                        // Вывод времени на часы 
+                modeChangeTimer.interval(showTimeInterval * 1000);       
+            }
+                break;
+            case 1 : {
+                if (si7021) showSimpleTemp();           // Вывести темп в доме на экран         
+                modeChangeTimer.interval(showAllInterval * 1000);            
+            }
             break;
-        case 1 : {
-            if (si7021) showSimpleTemp();           // Вывести темп в доме на экран         
-            modeChangeTimer.interval(showAllInterval * 1000);            
-        }
-        break;
-        case 2 : {
-            if (bmp280) showSimpleTempU();          // Вывести темп на улице на экран           
-        }
-        break;
-        case 3 : {
-            if (si7021) showSimpleHum();            // Вывести влажность в доме                     
-
-        }
-        break;
-        case 4 : {
-            if (bmp280) showSimplePre();            // Вывести давление на экран
-        break;
-        } 
-        case 5 : {
-          //  getWeather();                           // Получение данныз прогноза погоды
-
-            printStringWithShift(weatherString.c_str(), 20);    
-        }   
-        default:
+            case 2 : {
+                if (bmp280) showSimpleTempU();          // Вывести темп на улице на экран           
+            }
             break;
+            case 3 : {
+                if (si7021) showSimpleHum();            // Вывести влажность в доме                     
+
+            }
+            break;
+            case 4 : {
+                if (bmp280) showSimplePre();            // Вывести давление на экран
+            break;
+            } 
+            case 5 : {
+                printStringWithShift(weatherString.c_str(), 20);    
+            }   
+            default:
+                break;
+        }
     }
 
 //=== Управление яркостью экрана=========================================
-    sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 1024, 500, 0, 15));
+    // int lightSensor = analogRead(PIN_A0);
+    // int screenDarkness = 0;
 
+    // if ((lightSensor > 0) and (lightSensor < 240)) 
+    // {
+    //     screenDarkness = 0;
+    // } else if (lightSensor > 270 and lightSensor < 470)
+    // {
+    //     screenDarkness = 3;
+    // } else if (lightSensor > 500 and lightSensor < 670)
+    // {
+    //     screenDarkness = 6;
+    // } else if (lightSensor > 700 and lightSensor < 770)
+    // {
+    //     screenDarkness = 9;
+    // } else if (lightSensor > 800 and lightSensor < 870)
+    // {
+    //     screenDarkness = 12;
+    // } else if (lightSensor > 900 and lightSensor < 1024)
+    // {
+    //     screenDarkness = 15;
+    // }   
 
+    // sendCmdAll(CMD_INTENSITY, screenDarkness);
+    //   sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 15, 0, 15));
 
 
 ///****************
@@ -560,13 +594,6 @@ void showAnimClock() {
         dy =- digtrans[i];
         showDigit(dig[i], digPos[i], dig6x8);
         digtrans[i]--;
-        
-       // unsigned long pauseShow = millis();
-       // while (millis() - pauseShow < 100) {PRN(">>>");}
-
-
-
-
         }
     }
     dy = 0;
@@ -883,7 +910,7 @@ void showSimplePre() {
 //=== Звуковой сигнал ========================================
 void bip(){
     digitalWrite(buzzerPin, HIGH);
-    delay(120);
+    delay(80);
     digitalWrite(buzzerPin, LOW);
     delay(120);  
 }
