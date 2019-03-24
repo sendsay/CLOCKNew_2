@@ -120,12 +120,12 @@ void loop()
     }
 
 //=== Работа с будильником============================ ===================================
-    if (RTClock.isAlarm1()) {
+    if (RTClock.isAlarm1() or RTClock.isAlarm2()) {
         alarm = true;
     }    
 
     if (alarm) {
-        if(millis() % 30 == 0) showAnimClock();
+        if(millis() % 15 == 0) showAnimClock();
         if(secFr==0 && timeDate.second>1 && timeDate.second<=59){
             clr();
         //    sendCmdAll(CMD_INTENSITY, 15);
@@ -138,38 +138,10 @@ void loop()
     }
 
 //=== Обновление переменных времени, ход часов ==========================================
-       updateTime();                                  // Получить время с часов DS3231         
-
-//=== Сигнал каждый час ==========================================
-    if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour <= timeSigOff)) {
-        PRN("BIP!!!");
-        bip();
-        bip();
-    }
-
-// //=== Работа с кнопкой ==========================================
-    if (digitalRead(buttonPin) == HIGH) {
-        delay(100);
-        if (not alarm) {
-            mode = 1;
-        } else {
-            alarm = false;
-        }
-    }
-
-// //=== Синронизация таймеров ==========================================
-    if (firstRun and (timeDate.minute % 5) == 0 and (timeDate.second == 0))  {      // Синхронизация таймеров 
-        printTime();
-        PRN("Synchro time!!!");
-
-        modeChangeTimer.start();                    // Смена режимов отображения
-        sensorsUpdateTimer.start();                 // Обновление датчиков
-        weatherUpdateTimer.start();                 // Обновление погоды с сервера
-        firstRun = false; 
-    }
+    updateTime();                                  // Получить время с часов DS3231         
 
 //===Основной цикл отображения ==========================================
-    if(not alarm && millis() % 30 == 0){   
+    if(not alarm && millis() % 15 == 0){   
         switch (mode)  {
             case 0 : {
                 showAnimClock();                        // Вывод времени на часы 
@@ -200,6 +172,35 @@ void loop()
             default:
                 break;
         }
+    }
+
+//=== Сигнал каждый час ==========================================
+    if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour <= timeSigOff)) {
+        PRN("BIP!!!");
+        bip();
+        bip();
+    }
+
+// //=== Работа с кнопкой ==========================================
+    if (digitalRead(buttonPin) == HIGH) {
+        
+        if (not alarm) {
+            mode = 1;
+        } else {
+            alarm = false;
+        }
+        while(!(millis() % 500) == 0) {};            // Пауза 
+    }
+
+// //=== Синронизация таймеров ==========================================
+    if (firstRun and (timeDate.minute % 5) == 0 and (timeDate.second == 0))  {      // Синхронизация таймеров 
+        printTime();
+        PRN("Synchro time!!!");
+
+        modeChangeTimer.start();                    // Смена режимов отображения
+        sensorsUpdateTimer.start();                 // Обновление датчиков
+        weatherUpdateTimer.start();                 // Обновление погоды с сервера
+        firstRun = false; 
     }
 
 //=== Управление яркостью экрана=========================================
@@ -318,7 +319,8 @@ void wifiConnect()
                 if (j % 10 == 0)
                     showAnimWifi(i);
                 j++;
-                delay(1);
+                delay(2);
+              
             }
         }
        // delay(800);
@@ -377,6 +379,7 @@ void printCharWithShift(unsigned char c, int shiftDelay)
     int w = showChar(c, fontUA_RU_PL_DE);
     for (int i = 0; i < w + 1; i++)
     {
+        
         delay(shiftDelay);
         scrollLeft();
         refreshAll();
@@ -706,7 +709,9 @@ void getNTPtime() {
     ntpUDP.beginPacket(timeServerIP, 123);                     //NTP порт 123
     ntpUDP.write(packetBuffer, NTP_PACKET_SIZE);
     ntpUDP.endPacket();
-    delay(800);                                             // чекаємо пів секуни
+    delay(800); 
+    
+                                                // чекаємо пів секуни
     cb = ntpUDP.parsePacket();
     if(!cb) Serial.println("          no packet yet..." + String (i + 1)); 
     if(!cb && i == 2) {                                              // якщо час не отримано
