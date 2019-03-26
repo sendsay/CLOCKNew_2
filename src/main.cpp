@@ -51,7 +51,7 @@ IPAddress timeServerIP;         // ??
 Adafruit_BMP280 bmp;            // Датчик bmp
 Adafruit_Si7021 sensor = Adafruit_Si7021(); 
 Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
-Ticker sensorsUpdateTimer(updateSensors, 60*1000);  // Теаймер обновления датчиков             
+// Ticker sensorsUpdateTimer(updateSensors, 60*1000);  // Теаймер обновления датчиков             
 HTTPClient client;              // Клиент для погоды
 Ticker weatherUpdateTimer(getWeather, 1800*1000);   // Таймер обновления погоды
 
@@ -111,17 +111,17 @@ void setup()
     modeChangeTimer.interval(7*1000);       // Настройка таймера переключения режимов
 
     modeChangeTimer.start();                // Таймер переключения режимов
-    sensorsUpdateTimer.start();             // Таймер обновления датчиков
+    // sensorsUpdateTimer.start();             // Таймер обновления датчиков
     weatherUpdateTimer.start();             // Обновление погоды с сервера
 
-  //  RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
+    // RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
 }
 
 void loop()
 {
 // //=== Обновление таймеров ================== ===================================
     modeChangeTimer.update();                       // Смена режимов отображения
-    sensorsUpdateTimer.update();                    // Обновление датчиков  
+    // sensorsUpdateTimer.update();                    // Обновление датчиков  
     weatherUpdateTimer.update();                    // Обновление погоды с сервера
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
@@ -132,7 +132,15 @@ void loop()
         secFr++;
     }
 
-//=== Работа с будильником============================ ===================================
+//=== Обновление датчиков каждую минуту==============================================================
+    if ((timeDate.second == 0) and (!secFr)) {
+        updateSensors();     
+    }
+    
+
+  
+
+//=== Работа с будильником==============================================================
     // if (RTClock.isAlarm1() or RTClock.isAlarm2()) {
     //     alarm = true;
     // }    
@@ -215,7 +223,7 @@ void loop()
         PRN("Synchro time!!!");
 
         modeChangeTimer.start();                    // Смена режимов отображения
-        sensorsUpdateTimer.start();                 // Обновление датчиков
+        // sensorsUpdateTimer.start();                 // Обновление датчиков
         weatherUpdateTimer.start();                 // Обновление погоды с сервера
         firstRun = false; 
     }
