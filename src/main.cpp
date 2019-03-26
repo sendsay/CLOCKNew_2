@@ -53,7 +53,7 @@ Adafruit_Si7021 sensor = Adafruit_Si7021();
 Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
 // Ticker sensorsUpdateTimer(updateSensors, 60*1000);  // Теаймер обновления датчиков             
 HTTPClient client;              // Клиент для погоды
-Ticker weatherUpdateTimer(getWeather, 1800*1000);   // Таймер обновления погоды
+// Ticker weatherUpdateTimer(getWeather, 1800*1000);   // Таймер обновления погоды
 
 
 //======================================================================================
@@ -106,13 +106,14 @@ void setup()
     ntpUDP.begin(localPort);                // Запуск UPD для получения времени
 
     timeUpdateNTP();                        // Обновление времени
+    
     getWeather();                           // Получение данныз прогноза погоды
 
     modeChangeTimer.interval(7*1000);       // Настройка таймера переключения режимов
 
     modeChangeTimer.start();                // Таймер переключения режимов
     // sensorsUpdateTimer.start();             // Таймер обновления датчиков
-    weatherUpdateTimer.start();             // Обновление погоды с сервера
+    // weatherUpdateTimer.start();             // Обновление погоды с сервера
 
     // RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
 }
@@ -122,7 +123,7 @@ void loop()
 // //=== Обновление таймеров ================== ===================================
     modeChangeTimer.update();                       // Смена режимов отображения
     // sensorsUpdateTimer.update();                    // Обновление датчиков  
-    weatherUpdateTimer.update();                    // Обновление погоды с сервера
+    // weatherUpdateTimer.update();                    // Обновление погоды с сервера
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
     if(timeDate.second != lastSecond) {                      // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
@@ -132,11 +133,15 @@ void loop()
         secFr++;
     }
 
-//=== Обновление датчиков каждую минуту==============================================================
-    if ((timeDate.second == 0) and (!secFr)) {
+//=== Обновление датчиков каждую минуту =============================================================
+    if ((timeDate.second == 0) and (not secFr)) {
         updateSensors();     
     }
-    
+
+//=== Обновление погоды с сайта каждые 15 минут ==============================================================
+    if (((timeDate.minute % 15 ) == 0) and (timeDate.second == 0) and (not secFr)) {
+        getWeather();
+    }  
 
   
 
