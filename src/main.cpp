@@ -51,10 +51,7 @@ IPAddress timeServerIP;         // ??
 Adafruit_BMP280 bmp;            // Датчик bmp
 Adafruit_Si7021 sensor = Adafruit_Si7021(); 
 Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
-// Ticker sensorsUpdateTimer(updateSensors, 60*1000);  // Теаймер обновления датчиков             
 HTTPClient client;              // Клиент для погоды
-// Ticker weatherUpdateTimer(getWeather, 1800*1000);   // Таймер обновления погоды
-
 
 //======================================================================================
 void setup()
@@ -76,10 +73,8 @@ void setup()
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели
     sendCmdAll(CMD_INTENSITY, 1);
 
-
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
         PRN("YES!!! find BMP280 sensor!");
-
         bmp280 = true;
         sensorsBmp();
     } else {
@@ -105,15 +100,13 @@ void setup()
 
     ntpUDP.begin(localPort);                // Запуск UPD для получения времени
 
-    timeUpdateNTP();                        // Обновление времени
-    
-    getWeather();                           // Получение данныз прогноза погоды
+    if(WiFi.status() == WL_CONNECTED) {
+        timeUpdateNTP();                        // Обновление времени
+        getWeather();                           // Получение данныз прогноза погоды
+    }
 
     modeChangeTimer.interval(7*1000);       // Настройка таймера переключения режимов
-
     modeChangeTimer.start();                // Таймер переключения режимов
-    // sensorsUpdateTimer.start();             // Таймер обновления датчиков
-    // weatherUpdateTimer.start();             // Обновление погоды с сервера
 
     // RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
 }
@@ -122,8 +115,6 @@ void loop()
 {
 // //=== Обновление таймеров ================== ===================================
     modeChangeTimer.update();                       // Смена режимов отображения
-    // sensorsUpdateTimer.update();                    // Обновление датчиков  
-    // weatherUpdateTimer.update();                    // Обновление погоды с сервера
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
     if(timeDate.second != lastSecond) {                      // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
@@ -164,7 +155,9 @@ void loop()
     // }
 
 //=== Обновление переменных времени, ход часов ==========================================
-    updateTime();                                  // Получить время с часов DS3231         
+    if(WiFi.status() == WL_CONNECTED) {         // Получить время с часов DS3231         
+        updateTime();
+    }                                           
 
 //===Основной цикл отображения ==========================================
     if(not alarm){   
@@ -228,9 +221,19 @@ void loop()
         PRN("Synchro time!!!");
 
         modeChangeTimer.start();                    // Смена режимов отображения
-        // sensorsUpdateTimer.start();                 // Обновление датчиков
-        weatherUpdateTimer.start();                 // Обновление погоды с сервера
         firstRun = false; 
+    }
+
+//=== Синронизация таймеров ==========================================
+    if ((timeDate.second > 30 && timeDate.second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
+        WIFI_connected = false;
+        Serial.println("Check WIFI connect!!!");
+        
+        WiFi.disconnect();
+        if(timeDate.minute % 5 == 1) {
+            wifiConnect();
+            if(WiFi.status() == WL_CONNECTED) WIFI_connected = true;
+        }
     }
 
 //=== Управление яркостью экрана=========================================
