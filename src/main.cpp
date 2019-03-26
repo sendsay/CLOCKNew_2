@@ -201,7 +201,7 @@ void loop()
     }
 
 //=== Сигнал каждый час и обновление времени ==========================================
-    if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour <= timeSigOff)) {
+    if ((timeDate.minute == 0) and (timeDate.second == 0) and (secFr == 0) and (timeDate.hour >= timeSigOn) and (timeDate.hour <= timeSigOff)) {
         PRN("============> BIP!!!");
         bip();
         bip();
@@ -224,10 +224,10 @@ void loop()
     //   PRN("UNBUTTON");
     }
 
-//=== Синронизация таймеров ==========================================
+//=== Синронизация таймеров каждые десят минут и 5 секунд ==========================================
     if (((timeDate.minute % 10) == 0) and (timeDate.second == 0) and (not secFr))  {      // Синхронизация таймеров 
         printTime();
-        PRN("============> Synchro time!!!");
+        PRN("============> Synchro timers");
 
         modeChangeTimer.start();                    // Смена режимов отображения
         firstRun = false; 
