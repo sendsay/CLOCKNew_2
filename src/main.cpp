@@ -34,6 +34,12 @@ ______________________________________________*/
 #include <Adafruit_BMP280.h>
 #include <ArduinoJson.h>
 
+#include <T_ukr.h>
+#include <T_cz.h>
+#include <T_de.h>
+#include <T_en.h>
+#include <T_pol.h>
+#include <T_rus.h>
 
 
 //=====================================================================================================================================
@@ -86,7 +92,14 @@ void setup()
         sensorsSi7021();
     } else {
         PRN("Did not find Si7021 sensor!");
-    }                   
+    }  
+
+    if (lang == 0) ukrText();
+    else if (lang == 1) rusText();
+    else if (lang == 2) polText();
+    else if (lang == 3) czText();
+    else if (lang == 4) deText();
+    else if (lang == 5) enText();                 
 
     wifiConnect();                          // подключение к Вайфай
 

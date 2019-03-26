@@ -9,39 +9,6 @@ void ukrText(){
   tSale = "Куп/Прод.";
   tYour = "Ваш";
   tPoint = "Підключіться до точки доступу WiFi-Clock і введіть в браузері адресу: 192.168.4.1       ";
-  tWarsaw = "Варшава";
-  tKrivoy = "Кривий Ріг";
-  tKyiv = "Київ";
-  tOdessa = "Одеса";
-  tDnepr = "Дніпро";
-  tCherkassy = "Черкаси";
-  tLviv = "Львів";
-  tKherson = "Херсон";
-  tNikolaev = "Миколаїв";
-  tZaporozhye = "Запоріжжя";
-  tKharkiv = "Харків";
-  tDonetsk = "Донецьк";
-  tLugansk = "Луганськ";
-  tPoltava = "Полтава";
-  tSumy = "Суми";
-  tChernigov = "Чернігів";
-  tZhytomyr = "Житомир";
-  tRivne = "Рівне";
-  tKropivnitsky = "Кропивницький";
-  tUman = "Умань";
-  tVinnitsa = "Вінниця";
-  tKhmelnitsky = "Хмельницький";
-  tTernopil = "Тернопіль";
-  tLutsk = "Луцьк";
-  tKovel = "Ковель";
-  tChernivtsi = "Чернівці";
-  tIvano = "Івано-Франківськ";
-  tStry = "Стрий";
-  tMukachevo = "Мукачево";
-  tUzhgorod = "Ужгород";
-  tCzenstochowa = "Ченстохова";
-  tKrakow = "Краков";
-  tLublinec = "Люблінець";
   tJanuary = "січня";
   tFebruary = "лютого";
   tMarch = "березня";
@@ -83,8 +50,8 @@ void ukrText(){
   tSnow = "сніг";
   tWeatrNot = "   Немає оновлень погоди більше 6 годин!!!   ";
   tWeatrTN = "немає оновлень погоди - ";
-    if(printCom) {
-    printTime();
-    Serial.println("Text UKR.");
-  }
+  
+  printTime();
+  Serial.println("Text UKR.");
+
 }

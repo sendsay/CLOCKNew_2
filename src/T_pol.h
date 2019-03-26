@@ -9,39 +9,6 @@ void polText(){
   tSale = "Wymiana";
   tYour = "Twój";
   tPoint = "Polacz sie z punktem dostępu WiFi-Clock i wprowadz w przeglądarce adres: 192.168.4.1         ";
-  tWarsaw = "Warszawa";
-  tKrivoy = "Krivoy Rog";
-  tKyiv = "Kijów";
-  tOdessa = "Odesa";
-  tDnepr = "Dniepr";
-  tCherkassy = "Czerkasy";
-  tLviv = "Lwów";
-  tKherson = "Kherson";
-  tNikolaev = "Mikołajów";
-  tZaporozhye = "Zaporoże";
-  tKharkiv = "Harkov";
-  tDonetsk = "Donieck";
-  tLugansk = "Ługańsk";
-  tPoltava = "Połtawa";
-  tSumy = "Sumy";
-  tChernigov = "Czernigow";
-  tZhytomyr = "Żytomierz";
-  tRivne = "Riwne";
-  tKropivnitsky = "Kropiwnicki";
-  tUman = "Uman";
-  tVinnitsa = "Winnica";
-  tKhmelnitsky = "Chmielnicki";
-  tTernopil = "Tarnopol";
-  tLutsk = "Łuck";
-  tKovel = "Kowel";
-  tChernivtsi = "Czerniowce";
-  tIvano = "Iwano-Frankowsk";
-  tStry = "Stryj";
-  tMukachevo = "Mukacheve";
-  tUzhgorod = "Uzhhorod";
-  tCzenstochowa = "Częstochowa";
-  tKrakow = "Kraków";
-  tLublinec = "Lubliniec";
   tJanuary = "stycznia";
   tFebruary = "lutego";
   tMarch = "marzca";
@@ -83,8 +50,7 @@ void polText(){
   tSnow = "śnieg";
   tWeatrNot = "   Brak aktualizacji pogody przez ponad 6 godzin!!!   ";
   tWeatrTN = "brak aktualizacji pogody - ";
-    if(printCom) {
-    printTime();
-    Serial.println("Text POL.");
-  }
+  
+  printTime();
+  Serial.println("Text POL.");
 }

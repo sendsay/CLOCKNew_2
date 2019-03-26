@@ -10,40 +10,6 @@ void deText(){
   tYour = "Ihr";
   tPoint = "Stellen Sie die Verbindung mit WiFi-Clock her, und geben Sie im Browser die Adresse: 192.168.4.1         ";
 
-  tWarsaw = "Warsaw";
-  tKrivoy = "Krivoy Rog";
-  tKyiv = "Kyiv";
-  tOdessa = "Odessa";
-  tDnepr = "Dnepr";
-  tCherkassy = "Cherkassy";
-  tLviv = "Lviv";
-  tKherson = "Kherson";
-  tNikolaev = "Nikolaev";
-  tZaporozhye = "Zaporozhye";
-  tKharkiv = "Kharkiv";
-  tDonetsk = "Donetsk";
-  tLugansk = "Lugansk";
-  tPoltava = "Poltav";
-  tSumy = "Sumy";
-  tChernigov = "Chernigov";
-  tZhytomyr = "Zhytomyr";
-  tRivne = "Rivne";
-  tKropivnitsky = "Kropivnitsky";
-  tUman = "Uman";
-  tVinnitsa = "Vinnitsa";
-  tKhmelnitsky = "Khmelnitsky";
-  tTernopil = "Ternopil";
-  tLutsk = "Lutsk";
-  tKovel = "Kovel";
-  tChernivtsi = "Chernivtsi";
-  tIvano = "Ivano-Frankovsk";
-  tStry = "Stryj";
-  tMukachevo = "Mukachevo";
-  tUzhgorod = "Uzhgorod";
-  tCzenstochowa = "Czenstochowa";
-  tKrakow = "Krakow";
-  tLublinec = "Lublinec";
-
   tJanuary = "Januar";
   tFebruary = "Februar";
   tMarch = "März";
@@ -87,10 +53,10 @@ void deText(){
   tSnow = "schneefall";
   tWeatrNot = "   Keine Wetteraktualisierungen seit 6 Stunden!!!   ";
   tWeatrTN = "Keine Wetteraktualisierungen - ";
-  if(printCom) {
-    printTime();
-    Serial.println("Text DE.");
-  }
+
+  printTime();
+  Serial.println("Text DE.");
+
 }
 
 

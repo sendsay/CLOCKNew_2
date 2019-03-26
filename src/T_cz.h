@@ -9,39 +9,6 @@ void czText(){
   tSale = "Nákup/Prodej";
   tYour = "Vaše";
   tPoint = "Připojte se k přístupovému bodu WiFi a zadejte adresu v prohlížeči: 192.168.4.1         ";
-  tWarsaw = "Varšava";
-  tKrivoy = "Krivyj Rog";
-  tKyiv = "Kyjev";
-  tOdessa = "Odesa";
-  tDnepr = "Dněpr";
-  tCherkassy = "Čerkasy";
-  tLviv = "Lviv";
-  tKherson = "Cherson";
-  tNikolaev = "Mykolajiv";
-  tZaporozhye = "Záporižja";
-  tKharkiv = "Hcarkiv";
-  tDonetsk = "Doneck";
-  tLugansk = "Lugansk";
-  tPoltava = "Poltava";
-  tSumy = "Sumy";
-  tChernigov = "Černigov";
-  tZhytomyr = "Žitomir";
-  tRivne = "Rivne";
-  tKropivnitsky = "Kropiwnickyj";
-  tUman = "Umaň";
-  tVinnitsa = "Vinnitsa";
-  tKhmelnitsky = "Khmelnytskyj";
-  tTernopil = "Ternopil";
-  tLutsk = "Lutsk";
-  tKovel = "Kovel";
-  tChernivtsi = "Chernivci";
-  tIvano = "Ivano-Frankivsk";
-  tStry = "Stryj";
-  tMukachevo = "Mukačeve";
-  tUzhgorod = "Uzhorod";
-  tCzenstochowa = "Częstochowa";
-  tKrakow = "Krakov";
-  tLublinec = "Lubliniec";
   tJanuary = "Leden";
   tFebruary = "Únor";
   tMarch = "Březen";
@@ -83,8 +50,7 @@ void czText(){
   tSnow = "sníh";
   tWeatrNot = "   Bez aktualizací počasí po dobu delší než 6 hodin!!!   ";
   tWeatrTN = "bez aktualizací počasí - ";
-    if(printCom) {
-    printTime();
-    Serial.println("Text CZ.");
-  }
+
+  printTime();
+  Serial.println("Text CZ.");
 }
