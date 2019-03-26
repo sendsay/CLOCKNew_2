@@ -62,34 +62,34 @@ void setup()
 
     PRN("");
     PRN("");
-    PRN("START!");
+    PRN(" ============>START!");
     bip();                                  // Сигнал при старте
 
     RTClock.begin();                        // Инициализация часов
-    PRN("Itialize clock!");
+    PRN("============> Itialize clock!");
     updateTime();                           // Обновление времени
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели
-    sendCmdAll(CMD_INTENSITY, 1);
+    sendCmdAll(CMD_INTENSITY, 1);           // Установка яркости
 
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
-        PRN("YES!!! find BMP280 sensor!");
+        PRN("============> YES!!! find BMP280 sensor!");
         bmp280 = true;
         sensorsBmp();
     } else {
-        PRN("Did not find BMP280 sensor!");
+        PRN("============> Did not find BMP280 sensor!");
     }
 
     if (sensor.begin()) {                   // Инициализация датчика Si7021
-        PRN("YES!!! find Si7021 sensor!");
+        PRN("============> YES!!! find Si7021 sensor!");
         si7021 = true;
         sensorsSi7021();
     } else {
-        PRN("Did not find Si7021 sensor!");
+        PRN("============> Did not find Si7021 sensor!");
     }  
 
-    if (lang == 0) ukrText();
+    if (lang == 0) ukrText();               // Выбор языка для сообщений 
     else if (lang == 1) rusText();
     else if (lang == 2) polText();
     else if (lang == 3) czText();
@@ -98,11 +98,10 @@ void setup()
 
     wifiConnect();                          // подключение к Вайфай
 
-    ntpUDP.begin(localPort);                // Запуск UPD для получения времени
-
     if(WiFi.status() == WL_CONNECTED) {
-        timeUpdateNTP();                        // Обновление времени
-        getWeather();                           // Получение данныз прогноза погоды
+        ntpUDP.begin(localPort);            // Запуск UDP для получения времени
+        timeUpdateNTP();                    // Обновление времени
+        getWeather();                       // Получение данныз прогноза погоды
     }
 
     modeChangeTimer.interval(7*1000);       // Настройка таймера переключения режимов
@@ -113,13 +112,13 @@ void setup()
 
 void loop()
 {
-// //=== Обновление таймеров ================== ===================================
-    modeChangeTimer.update();                       // Смена режимов отображения
+// //=== Обновление таймеров =====================================================
+    modeChangeTimer.update();               // Смена режимов отображения
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
-    if(timeDate.second != lastSecond) {                      // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
+    if(timeDate.second != lastSecond) {     // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
         lastSecond = timeDate.second;
-        secFr = 0;                                      // флаг для процессов                                   
+        secFr = 0;                          // флаг для процессов                                   
     } else {
         secFr++;
     }
@@ -131,47 +130,52 @@ void loop()
 
 //=== Обновление погоды с сайта каждые 15 минут ==============================================================
     if (((timeDate.minute % 15 ) == 0) and (timeDate.second == 0) and (not secFr)) {
-        getWeather();
-    }  
+        if (WIFI_connected) {
+            getWeather();
+        } else {
+            PRN("============> Can't get Weather, check WiFi!!!");
+        }
+    }   
 
-  
+       
 
 //=== Работа с будильником==============================================================
     // if (RTClock.isAlarm1() or RTClock.isAlarm2()) {
     //     alarm = true;
     // }    
 
-    // if (alarm) {
-    //     if(millis() % 25 == 0) showAnimClock();
-    //     if(secFr==0 && timeDate.second>1 && timeDate.second<=59){
-    //         clr();
-    //     //    sendCmdAll(CMD_INTENSITY, 15);
-    //         refreshAll();
-    //         bip();
-    //         bip();
-    //     } else {
-    //     refreshAll();     
-    //     }
-    // }
+    if (alarm) {
+        if(millis() % 25 == 0) showAnimClock();
+        if(secFr==0 && timeDate.second>1 && timeDate.second<=59){
+            clr();
+        //    sendCmdAll(CMD_INTENSITY, 15);
+            refreshAll();
+            bip();
+            bip();
+        } else {
+        refreshAll();     
+        }
+    }
 
 //=== Обновление переменных времени, ход часов ==========================================
-    if(WiFi.status() == WL_CONNECTED) {         // Получить время с часов DS3231         
-        updateTime();
-    }                                           
+    updateTime();
 
 //===Основной цикл отображения ==========================================
     if(not alarm){   
         switch (mode)  {
             case 0 : {
                 if (millis() % 25 == 0) {
-                    showAnimClock();                        // Вывод времени на часы 
+                    showAnimClock();                     // Вывод времени на часы 
                 }
                 modeChangeTimer.interval(showTimeInterval * 1000);       
             }
                 break;
             case 1 : {
-                if (si7021) showSimpleTemp();           // Вывести темп в доме на экран         
                 modeChangeTimer.interval(showAllInterval * 1000);            
+
+                if (si7021) {                            // Вывести темп в доме на экран
+                    showSimpleTemp();
+                } else { mode++; }
             }
             break;
             case 2 : {
@@ -179,8 +183,9 @@ void loop()
             }
             break;
             case 3 : {
-                if (si7021) showSimpleHum();            // Вывести влажность в доме                     
-
+                if (si7021) {                            // Вывести влажность в доме                     
+                    showSimpleHum();
+                } else { mode++; }
             }
             break;
             case 4 : {
@@ -195,11 +200,15 @@ void loop()
         }
     }
 
-//=== Сигнал каждый час ==========================================
+//=== Сигнал каждый час и обновление времени ==========================================
     if ((timeDate.minute == 0 and timeDate.second == 0 and secFr == 0) and (timeDate.hour >= timeSigOn and timeDate.hour <= timeSigOff)) {
-        PRN("BIP!!!");
+        PRN("============> BIP!!!");
         bip();
         bip();
+
+        if (WIFI_connected) {
+           getNTPtime();               // ***** Получение времени из интернета
+        }
     }
 
 //=== Работа с кнопкой ==========================================
@@ -218,16 +227,16 @@ void loop()
 //=== Синронизация таймеров ==========================================
     if (firstRun and (timeDate.minute % 5) == 0 and (timeDate.second == 0))  {      // Синхронизация таймеров 
         printTime();
-        PRN("Synchro time!!!");
+        PRN("============> Synchro time!!!");
 
         modeChangeTimer.start();                    // Смена режимов отображения
         firstRun = false; 
     }
 
-//=== Синронизация таймеров ==========================================
+//=== Проверка подключения к вайфай ==========================================
     if ((timeDate.second > 30 && timeDate.second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
         WIFI_connected = false;
-        Serial.println("Check WIFI connect!!!");
+        Serial.println("============> Check WIFI connect!!!");
         
         WiFi.disconnect();
         if(timeDate.minute % 5 == 1) {
