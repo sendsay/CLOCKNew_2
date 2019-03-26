@@ -104,7 +104,7 @@ byte h3 = 0;
 
 bool firstRun = true;                                 // Флаг первого запуска
 int showTimeInterval = 300;                            // Интервал показа часов
-int showAllInterval = 2;                              // Интервал показа всего остального  
+int showAllInterval = 1;                              // Интервал показа всего остального  
 
 int secFr, lastSecond, lastMinute;                    // Работа с временем
 
@@ -124,6 +124,8 @@ int windDeg;                                          // Направление 
 float windSpeed;                                      // Сила ветра для прогноза
 String weatherString;                                 // Строка для сборки прогноза для показа
 String httpData;
+
+unsigned long timing;
 
 struct weather_structure {
   unsigned int id;

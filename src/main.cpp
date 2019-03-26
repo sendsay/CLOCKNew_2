@@ -106,7 +106,7 @@ void setup()
 
 void loop()
 {
-//=== Обновление таймеров ================== ===================================
+// //=== Обновление таймеров ================== ===================================
     modeChangeTimer.update();                       // Смена режимов отображения
     sensorsUpdateTimer.update();                    // Обновление датчиков  
     weatherUpdateTimer.update();                    // Обновление погоды с сервера
@@ -120,31 +120,33 @@ void loop()
     }
 
 //=== Работа с будильником============================ ===================================
-    if (RTClock.isAlarm1() or RTClock.isAlarm2()) {
-        alarm = true;
-    }    
+    // if (RTClock.isAlarm1() or RTClock.isAlarm2()) {
+    //     alarm = true;
+    // }    
 
-    if (alarm) {
-        if(millis() % 15 == 0) showAnimClock();
-        if(secFr==0 && timeDate.second>1 && timeDate.second<=59){
-            clr();
-        //    sendCmdAll(CMD_INTENSITY, 15);
-            refreshAll();
-            bip();
-            bip();
-        } else {
-        refreshAll();     
-        }
-    }
+    // if (alarm) {
+    //     if(millis() % 25 == 0) showAnimClock();
+    //     if(secFr==0 && timeDate.second>1 && timeDate.second<=59){
+    //         clr();
+    //     //    sendCmdAll(CMD_INTENSITY, 15);
+    //         refreshAll();
+    //         bip();
+    //         bip();
+    //     } else {
+    //     refreshAll();     
+    //     }
+    // }
 
 //=== Обновление переменных времени, ход часов ==========================================
     updateTime();                                  // Получить время с часов DS3231         
 
 //===Основной цикл отображения ==========================================
-    if(not alarm && millis() % 15 == 0){   
+    if(not alarm){   
         switch (mode)  {
             case 0 : {
-                showAnimClock();                        // Вывод времени на часы 
+                if (millis() % 25 == 0) {
+                    showAnimClock();                        // Вывод времени на часы 
+                }
                 modeChangeTimer.interval(showTimeInterval * 1000);       
             }
                 break;
@@ -154,7 +156,7 @@ void loop()
             }
             break;
             case 2 : {
-                if (bmp280) showSimpleTempU();          // Вывести темп на улице на экран           
+      //         if (bmp280) showSimpleTempU();          // Вывести темп на улице на экран           
             }
             break;
             case 3 : {
@@ -163,7 +165,7 @@ void loop()
             }
             break;
             case 4 : {
-                if (bmp280) showSimplePre();            // Вывести давление на экран
+         //      if (bmp280) showSimplePre();            // Вывести давление на экран
             break;
             } 
             case 5 : {
@@ -181,7 +183,7 @@ void loop()
         bip();
     }
 
-// //=== Работа с кнопкой ==========================================
+//=== Работа с кнопкой ==========================================
     if (digitalRead(buttonPin) == HIGH) {
         
         if (not alarm) {
@@ -189,10 +191,12 @@ void loop()
         } else {
             alarm = false;
         }
-        while(!(millis() % 500) == 0) {};            // Пауза 
+//delay(500);
+    //   while((millis() - timing > 500) == 0) {PRN("BUTTON")};            // Пауза 
+    //   PRN("UNBUTTON");
     }
 
-// //=== Синронизация таймеров ==========================================
+//=== Синронизация таймеров ==========================================
     if (firstRun and (timeDate.minute % 5) == 0 and (timeDate.second == 0))  {      // Синхронизация таймеров 
         printTime();
         PRN("Synchro time!!!");
@@ -1001,11 +1005,20 @@ void getWeather() {
     if(windDeg >= 207 && windDeg <= 252) windDegString = "\232";    //"Південно-західний";
     if(windDeg >= 253 && windDeg <= 298) windDegString = "\231";    //"Західний";
     if(windDeg >= 299 && windDeg <= 344) windDegString = "\233";    //"Північно-західний";
-    weatherString = "         " + tNow + ":    \212 " + String(temp, 0) + ("\202") + "C";
+
+    // weatherString = "         " + tNow + ":    \212 " + String(temp, 0) + ("\202") + "C";
+    weatherString = "         " + tNow + ":    \212 " + String(tempBmp, 0) + ("\202") + "C";
+
     weatherString += "     \213 " + String(humidity) + "%";
-    weatherString += "     \215 " + String(pressure, 0) + tPress;
+
+    // weatherString += "     \215 " + String(pressure, 0) + tPress;    
+    weatherString += "     \215 " + String(pressBmp) + tPress;
+    
     weatherString += "     \214 " + windDegString + String(windSpeed, 1) + tSpeed;
     weatherString += "     \216 " + String(clouds) + "%     " + weatherDescription + "                ";
+
+
+    
 
     PRN("          Getting weather forecast - is OK.");
 } 
