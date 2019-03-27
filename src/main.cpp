@@ -171,28 +171,36 @@ void loop()
             }
                 break;
             case 1 : {
-                modeChangeTimer.interval(showAllInterval * 1000);            
+                modeChangeTimer.interval(showAllInterval * 1000);  
+                convertDw();        
+                convertMonth();
+                String date = "     " + dw + ", " + String(timeDate.day) + " " + _month + " " + String(timeDate.year) + "          ";
+                printStringWithShift(date.c_str(), 15); 
+
+            }
+            break;
+            case 2 : {
 
                 if (si7021) {                            // Вывести темп в доме на экран
                     showSimpleTemp();
                 } else { mode++; }
             }
             break;
-            case 2 : {
+            case 3 : {
       //         if (bmp280) showSimpleTempU();          // Вывести темп на улице на экран           
             }
             break;
-            case 3 : {
+            case 4 : {
                 if (si7021) {                            // Вывести влажность в доме                     
                     showSimpleHum();
                 } else { mode++; }
             }
             break;
-            case 4 : {
+            case 5 : {
          //      if (bmp280) showSimplePre();            // Вывести давление на экран
             break;
             } 
-            case 5 : {
+            case 6 : {
                 printStringWithShift(weatherString.c_str(), 20);    
             }   
             default:
@@ -840,7 +848,7 @@ void convertMonth(){
 //=== Переключение режимов =======================================
 void changeMode() {                                      // Переключение режимов
     mode++;  
-    if (mode == 6) {
+    if (mode == 7) {
         mode = 0;
     }           
 
