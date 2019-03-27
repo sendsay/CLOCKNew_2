@@ -993,26 +993,29 @@ void getWeather() {
     client.end();
 
 
-    DynamicJsonBuffer jsonBuffer;
-    JsonObject& root = jsonBuffer.parseObject(payload);
+    // DynamicJsonBuffer jsonBuffer;
+    StaticJsonDocument<1024> doc;
+    // JsonObject& root = jsonBuffer.parseObject(payload);
+    DeserializationError error = deserializeJson(doc, payload);
 
-    if (!root.success()) {
-        Serial.println("Json parsing failed!");
-        return;
+    if (error) {
+        Serial.print(F("deserializeJson() failed: "));
+        Serial.println(error.c_str());
+    return;
     }
 
-    weather.id       = root["weather"][0]["id"];
-    weather.main     = root["weather"][0]["main"];
-    weather.descript = root["weather"][0]["description"];
-    weather.icon     = root["weather"][0]["icon"];
-    weather.temp     = root["main"]["temp"];
-    weather.humidity = root["main"]["humidity"];
-    weather.pressure = root["main"]["pressure"];
-    weather.speed    = root["wind"]["speed"];
-    weather.deg      = root["wind"]["deg"];
-    weather.cityName = root["name"];
-    weather.cityId = root["id"];
-    weather.clouds = root["clouds"]["all"];
+    weather.id       = doc["weather"][0]["id"];
+    weather.main     = doc["weather"][0]["main"];
+    weather.descript = doc["weather"][0]["description"];
+    weather.icon     = doc["weather"][0]["icon"];
+    weather.temp     = doc["main"]["temp"];
+    weather.humidity = doc["main"]["humidity"];
+    weather.pressure = doc["main"]["pressure"];
+    weather.speed    = doc["wind"]["speed"];
+    weather.deg      = doc["wind"]["deg"];
+    weather.cityName = doc["name"];
+    weather.cityId = doc["id"];
+    weather.clouds = doc["clouds"]["all"];
 
     httpData = "";
     
@@ -1029,7 +1032,7 @@ void getWeather() {
     pressure = (pressure/1.3332239) - 0;
     windDeg = weather.deg;
     windSpeed = weather.speed;
-    clouds = root["clouds"]["all"];
+    clouds = doc["clouds"]["all"];
     String windDegString;
     if(windDeg >= 345 || windDeg <= 22)  windDegString = "\211";    //"Північний";
     if(windDeg >= 23  && windDeg <= 68)  windDegString = "\234";    //"Північно-східний";
