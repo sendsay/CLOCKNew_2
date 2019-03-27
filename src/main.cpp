@@ -992,10 +992,7 @@ void getWeather() {
 
     client.end();
 
-
-    // DynamicJsonBuffer jsonBuffer;
     StaticJsonDocument<1024> doc;
-    // JsonObject& root = jsonBuffer.parseObject(payload);
     DeserializationError error = deserializeJson(doc, payload);
 
     if (error) {
@@ -1053,9 +1050,6 @@ void getWeather() {
     
     weatherString += "     \214 " + windDegString + String(windSpeed, 1) + tSpeed;
     weatherString += "     \216 " + String(clouds) + "%     " + weatherDescription + "                ";
-
-
-    
 
     PRN("          Getting weather forecast - is OK.");
 } 
