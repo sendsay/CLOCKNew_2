@@ -33,6 +33,7 @@ ______________________________________________*/
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
 #include <ArduinoJson.h>
+#include <MQTT.h>
 
 #include <T_ukr.h>
 #include <T_cz.h>
@@ -551,7 +552,6 @@ unsigned char convert_UA_RU_PL_DE(unsigned char _c)
         dualChar = 0;
         return c;
     }
-
 }
 
 //=== Показ подключения ==============================================
@@ -601,19 +601,9 @@ void updateTime()
     timeDate.hour = dt.hour;
     timeDate.minute = dt.minute;
     timeDate.second = dt.second; 
-
-    //  long curEpoch = localEpoc + ((millis() - localMillisAtUpdate) / 1000);
-    //  long epoch = (long)round(curEpoch + 86400L) % 86400L;
-    //  hour = ((epoch % 86400L) / 3600) % 24;
-    //  minute = (epoch % 3600) / 60;
-    //  second = epoch % 60;
-    
-
 }
 
-
 //=== Показ анимир часов ==============================================
-
 void showAnimClock() {
   byte digPos[6] = {1, 8, 18, 25, 15, 16};
   
@@ -756,21 +746,19 @@ void getNTPtime() {
     packetBuffer[13] = 0x4E;
     packetBuffer[14] = 49;
     packetBuffer[15] = 52;
-    ntpUDP.beginPacket(timeServerIP, 123);                     //NTP порт 123
+    ntpUDP.beginPacket(timeServerIP, 123);                       //NTP порт 123
     ntpUDP.write(packetBuffer, NTP_PACKET_SIZE);
     ntpUDP.endPacket();
-    delay(800); 
-    
-                                                // чекаємо пів секуни
+    delay(800);                                                  // чекаємо пів секуни
     cb = ntpUDP.parsePacket();
     if(!cb) Serial.println("          no packet yet..." + String (i + 1)); 
-    if(!cb && i == 2) {                                              // якщо час не отримано
+    if(!cb && i == 2) {                                          // якщо час не отримано
       statusUpdateNtpTime = 0;
-      return;                                             // вихіз з getNTPtime()
+      return;                                                    // вихіз з getNTPtime()
     }
     if(cb) i = 3;
   }
-  if(cb) {                                                   // якщо отримали пакет з серверу
+  if(cb) {                                                      // якщо отримали пакет з серверу
     ntpUDP.read(packetBuffer, NTP_PACKET_SIZE);
     unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
     unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);

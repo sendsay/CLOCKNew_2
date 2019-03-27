@@ -111,7 +111,7 @@ String langWeather = "ua";                            // Язык погоды
 String weatherDescription = "";                       // Описание погоды
 String tClearSky, tSkyIsClear, tFewClouds, tScatteredClouds, tBrokenClouds, tOvercastClouds, tLightRain, tModerateRain, tLightIntensityShowerRain, tShowerRain, tHeavyIntensityRain, tVeryHeavyRain, tThunderstorm, tHaze, tFog, tMist, tShowerSleet, tLightSnow, tLightShowerSnow, tSnow, tWeatrNot, tWeatrTN;   // Описание погоды
 byte lang = 0;                                        // Язык текста часов
-String cityName;
+String cityName;                                      // Имя горола для погоды
 byte humidity;                                        // влажность для прогноза
 float pressure;                                       // давление для прогноза
 float temp;                                           // Темпераьтура для прогноза
@@ -121,7 +121,7 @@ float windSpeed;                                      // Сила ветра д�
 String weatherString;                                 // Строка для сборки прогноза для показа
 String httpData;
 
-unsigned long timing;
+// unsigned long timing;
 
 struct weather_structure {
   unsigned int id;
@@ -144,6 +144,8 @@ byte timeSigOn = 5;                           // Время начала сиг�
 byte timeSigOff = 22;                         // Время конца сигнала
 
 bool alarm = false;                           // Флаг сработки будильника
+
+
 
 
 //=====================================================================================================================================
