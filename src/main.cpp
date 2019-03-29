@@ -54,6 +54,7 @@ Adafruit_Si7021 sensor = Adafruit_Si7021();
 Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
 HTTPClient client;              // Клиент для погоды
 
+
 //======================================================================================
 void setup()
 {
@@ -72,7 +73,7 @@ void setup()
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели
-    sendCmdAll(CMD_INTENSITY, 1);           // Установка яркости
+    sendCmdAll(CMD_INTENSITY, 15);           // Установка яркости
 
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
         PRN("============> YES!!! find BMP280 sensor!");
@@ -600,7 +601,13 @@ void updateTime()
     dt = RTClock.getDateTime();
     timeDate.hour = dt.hour;
     timeDate.minute = dt.minute;
-    timeDate.second = dt.second; 
+    timeDate.second = dt.second;
+    timeDate.day = dt.day;
+    timeDate.dayOfWeek = dt.dayOfWeek + 1;
+    timeDate.month = dt.month;
+    timeDate.year = dt.year; 
+
+  
 }
 
 //=== Показ анимир часов ==============================================
@@ -690,7 +697,7 @@ void timeUpdateNTP() {
     for(int timeTest = 0; timeTest < 3; timeTest++) {
         getNTPtime();
         PRN("          ");
-        PRN("Proba #"+String(timeTest+1)+"   "+String(g_hour)+":"+((g_minute<10)?"0":"")+String(g_minute)+":"+((g_second<10)?"0":"")+String(g_second));
+        PRN("Proba #"+String(timeTest+1)+"   "+String(g_hour)+":"+((g_minute<10)?"0":"")+String(g_minute)+":"+((g_second<10)?"0":"")+String(g_second)+":"+String(g_dayOfWeek)+":"+String(g_day)+":"+String(g_month)+":"+String(g_year));
         
         
         hourTest[timeTest] = g_hour;
@@ -723,8 +730,8 @@ void timeUpdateNTP() {
     timeDate.dayOfWeek=g_dayOfWeek;
     timeDate.month=g_month;
     timeDate.year=g_year; 
-    localMillisAtUpdate = millis();
-    localEpoc = (timeDate.hour * 60 * 60 + timeDate.minute * 60 + timeDate.second);
+    // localMillisAtUpdate = millis();
+    // localEpoc = (timeDate.hour * 60 * 60 + timeDate.minute * 60 + timeDate.second);
     convertDw();
     convertMonth();
     printTime();
@@ -778,7 +785,7 @@ void getNTPtime() {
     g_minute = (epoch % 3600) / 60;
     g_second = epoch % 60;
     g_dayOfWeek = (((time) + 4) % 7) + 1;
-    while((unsigned)(days += (LEAP_YEAR(g_year) ? 366 : 365)) <= time) {
+    while((unsigned)(days += (LEAP_YEAR(g_year) ? 366 : 365)) <= time) {    // Счет года
       g_year++;
     }
     days -= LEAP_YEAR(g_year) ? 366 : 365;
@@ -786,7 +793,7 @@ void getNTPtime() {
     days = 0;
     g_month = 0;
     uint8_t monthLength = 0;
-    for(g_month = 0; g_month < 12; g_month++){
+    for(g_month = 0; g_month < 12; g_month++){                      // Счет месяца
       if(g_month == 1){
         if(LEAP_YEAR(g_year)) monthLength = 29;
         else monthLength = 28;
@@ -796,7 +803,7 @@ void getNTPtime() {
       else break;
     }
     g_month++;
-    g_day = time + 1;
+    g_day = time + 1;               
     g_year += 1970;
     return;
   }
