@@ -54,6 +54,7 @@ Adafruit_Si7021 sensor = Adafruit_Si7021();
 Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
 HTTPClient client;              // Клиент для погоды
 
+
 //======================================================================================
 void setup()
 {
@@ -72,7 +73,7 @@ void setup()
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели
-    sendCmdAll(CMD_INTENSITY, 1);           // Установка яркости
+    sendCmdAll(CMD_INTENSITY, 15);           // Установка яркости
 
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
         PRN("============> YES!!! find BMP280 sensor!");
@@ -723,8 +724,8 @@ void timeUpdateNTP() {
     timeDate.dayOfWeek=g_dayOfWeek;
     timeDate.month=g_month;
     timeDate.year=g_year; 
-    localMillisAtUpdate = millis();
-    localEpoc = (timeDate.hour * 60 * 60 + timeDate.minute * 60 + timeDate.second);
+    // localMillisAtUpdate = millis();
+    // localEpoc = (timeDate.hour * 60 * 60 + timeDate.minute * 60 + timeDate.second);
     convertDw();
     convertMonth();
     printTime();

@@ -63,8 +63,8 @@ long timeUpdate = 60000;                // Период обновления в�
 // const char* timeServer = "0.ua.pool.ntp.org";  // Сервер обновления времени
 uint8_t hourTest[3], minuteTest[3];     // ??
 int g_hour, g_minute, g_second, g_month=1, g_day, g_dayOfWeek, g_year;  // ??
-long localEpoc = 0;                     // ??
-long localMillisAtUpdate = 0;           // ??
+// long localEpoc = 0;                     // ??
+// long localMillisAtUpdate = 0;           // ??
 
 String ntpServerName = "ntp3.time.in.ua";   // ??
 const int NTP_PACKET_SIZE = 48;         // ??
