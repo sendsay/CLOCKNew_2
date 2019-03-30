@@ -145,6 +145,29 @@ byte timeSigOff = 22;                         // Время конца сигн�
 
 bool alarm = false;                           // Флаг сработки будильника
 
+struct MQTTstruct {
+char mqtt_server[21] = "m24.cloudmqtt.com";                                             // Имя сервера MQTT
+int  mqtt_port = 37049;                                                                 // Порт для подключения к серверу MQTT
+char mqtt_user[25] = "zqyslqbd";                                                        // Логи от сервер
+char mqtt_pass[25] = "ghCaEZLP2i0V";                                                    // Пароль от сервера MQTT
+char mqtt_name[25] = "Informer";
+char mqtt_sub_inform[25] = "Inform/mess";
+char mqtt_sub[25] = "Ulica/temp";
+char mqtt_pub_temp[25] = "Informer/temp";
+char mqtt_pub_tempUl[25] = "Informer/tempUl";
+char mqtt_pub_hum[25] = "Informer/hum";
+char mqtt_pub_press[25] = "Informer/press";
+char mqtt_pub_alt[25] = "Informer/alt";
+char mqtt_pub_forecast[25] = "Informer/forecast";
+String mqtt_forecast = "No data!";
+char mqtt_butt[25] = "Informer/button";
+bool mqttOn = true;
+int tMqtt3 = 85;
+int tMqtt4 = 0;
+int tMqtt5 = 0;
+};
+MQTTstruct MQTTClintas;
+
 //=====================================================================================================================================
 void showDigit(char ch, int col, const uint8_t *data);// показ цифры на позиции
 void setCol(int col, byte v);                         // показ символа в колонке
@@ -182,6 +205,7 @@ void getWeather();                                    // Получение по
 void convertWeatherDes();                             // Конвертация описания погоды
 bool httpRequest();
 bool parseData();
+void callback(char* topic, byte* payload, unsigned int length);
 
 //=================================================
 // END.

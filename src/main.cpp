@@ -39,7 +39,7 @@ ______________________________________________*/
 #include <T_cz.h>
 #include <T_de.h>
 #include <T_en.h>
-    #include <T_pol.h>
+#include <T_pol.h>
 #include <T_rus.h>
 
 
@@ -110,6 +110,7 @@ void setup()
     modeChangeTimer.start();                // Таймер переключения режимов
 
     // RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
+    // ncldncdlsbndlkvbsdlk
 }
 
 void loop()
