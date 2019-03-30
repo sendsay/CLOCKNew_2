@@ -110,6 +110,9 @@ void setup()
     modeChangeTimer.start();                // Таймер переключения режимов
 
     // RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
+
+    //vmsdlkvnlksdnvlksdnv45u34897897698347698347603946346
+    //46739487639847639847698347693846934
 }
 
 void loop()
