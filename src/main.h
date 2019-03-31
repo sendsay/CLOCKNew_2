@@ -203,7 +203,6 @@ void getWeather();                                    // Получение по
 void convertWeatherDes();                             // Конвертация описания погоды
 bool httpRequest();
 bool parseData();
-void callback(char* topic, byte* payload, unsigned int length);
 
 //=================================================
 // END.
