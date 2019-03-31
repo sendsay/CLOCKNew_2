@@ -238,13 +238,13 @@ void loop()
     }
 
 //=== Синронизация таймеров каждые десят минут и 5 секунд ==========================================
-    if (((timeDate.minute % 10) == 0) and (timeDate.second == 0) and (not secFr))  {      // Синхронизация таймеров 
-        printTime();
-        PRN("============> Synchro timers");
+    // if (((timeDate.minute % 10) == 0) and (timeDate.second == 0) and (not secFr))  {      // Синхронизация таймеров 
+    //     printTime();
+    //     PRN("============> Synchro timers");
 
-        modeChangeTimer.start();                    // Смена режимов отображения
-        firstRun = false; 
-    }
+    //     modeChangeTimer.start();                    // Смена режимов отображения
+    //     firstRun = false; 
+    // }
 
 //=== Проверка подключения к вайфай ==========================================
     if ((timeDate.second > 30 && timeDate.second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
