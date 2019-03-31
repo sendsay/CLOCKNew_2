@@ -39,7 +39,7 @@ ______________________________________________*/
 #include <T_cz.h>
 #include <T_de.h>
 #include <T_en.h>
-#include <T_pol.h>
+    #include <T_pol.h>
 #include <T_rus.h>
 
 
@@ -54,13 +54,13 @@ Adafruit_Si7021 sensor = Adafruit_Si7021();
 Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
 HTTPClient client;              // Клиент для погоды
 
-
 //======================================================================================
 void setup()
 {
     Serial.begin(115200);
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
-    pinMode(buttonPin, INPUT);               // Вход кнопки
+    pinMode(buttonPin, INPUT);              // Вход кнопки
+    pinMode(lightPin, OUTPUT);              // Выход мигалки
 
     PRN("");
     PRN("");
@@ -110,6 +110,7 @@ void setup()
     modeChangeTimer.start();                // Таймер переключения режимов
 
     // RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
+
 }
 
 void loop()
@@ -124,6 +125,7 @@ void loop()
     } else {
         secFr++;
     }
+
 
 //=== Обновление датчиков каждую минуту =============================================================
     if ((timeDate.second == 0) and (not secFr)) {
@@ -673,7 +675,9 @@ void showAnimClock() {
      // }
      
     setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
-    setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);      
+    setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);
+
+    digitalWrite(lightPin, (flash < 500 ? HIGH : LOW));      
 
 
      
