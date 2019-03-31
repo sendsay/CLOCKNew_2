@@ -61,15 +61,12 @@ bool alarm_hold = false;                // Отложить будильник??
 bool statusUpdateNtpTime = 0;           // Если не 0, то обновление было удачным
 int timeZone = 2.0;                     // Временная зона для часов
 long timeUpdate = 60000;                // Период обновления времени
-// const char* timeServer = "0.ua.pool.ntp.org";  // Сервер обновления времени
 uint8_t hourTest[3], minuteTest[3];     // ??
 int g_hour, g_minute, g_second, g_month=1, g_day, g_dayOfWeek, g_year;  // ??
-// long localEpoc = 0;                     // ??
-// long localMillisAtUpdate = 0;           // ??
 
-String ntpServerName = "ntp3.time.in.ua";   // ??
-const int NTP_PACKET_SIZE = 48;         // ??
-byte packetBuffer[NTP_PACKET_SIZE];     // ??
+String ntpServerName = "ntp3.time.in.ua";   // Сервер обновления времени
+const int NTP_PACKET_SIZE = 48;         // Размер пакета от сервера времени
+byte packetBuffer[NTP_PACKET_SIZE];     // Буфер пакета времени
 static const uint8_t monthDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};        // Кількість днів у місяцях 
 #define LEAP_YEAR(Y) (((1970+Y)>0) && !((1970+Y)%4) && (((1970+Y)%100)||!((1970+Y)%400)))   // Високосні літа
 bool isDayLightSaving = true;
@@ -77,7 +74,7 @@ unsigned int localPort = 2390;
 String tJanuary, tFebruary, tMarch, tApril, tMay, tJune, tJuly, tAugust, tSeptember, tOctober, tNovember, tDecember;
 String tMonday, tTuesday, tWednesday, tThursday, tFriday, tSaturday, tSunday;
 String dw, _month;
-//bool RTCnotReady = false;   // Часы не готовы
+
 
 bool bmp280 = false;                    // Наличие датчика темп. и влажности
 float tempBmp = 0;                      // Переменная , хранит темпер. Bmp 
@@ -89,7 +86,7 @@ int t3 = 85;                            // ??
 int t2 = 0;                             // ??
 int t1 = 85;                            // ??
 
-byte mode = 0;                          // Текущий режим отбражения инфs
+byte mode = 0;                          // Текущий режим отбражения инфы
 
 float hum = 0;  
 float humSi7021 = 0;
@@ -100,7 +97,7 @@ byte h2 = 0;
 byte h3 = 0;
 
 bool firstRun = true;                                 // Флаг первого запуска
-int showTimeInterval = 300;                            // Интервал показа часов
+int showTimeInterval = 300;                           // Интервал показа часов
 int showAllInterval = 1;                              // Интервал показа всего остального  
 
 int secFr, lastSecond, lastMinute;                    // Работа с временем
