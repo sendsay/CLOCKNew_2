@@ -33,15 +33,13 @@ ______________________________________________*/
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
 #include <ArduinoJson.h>
-#include <MQTT.h>
 
 #include <T_ukr.h>
 #include <T_cz.h>
 #include <T_de.h>
 #include <T_en.h>
-    #include <T_pol.h>
+#include <T_pol.h>
 #include <T_rus.h>
-
 
 //=====================================================================================================================================
 DS3231 RTClock;                 // Часы
