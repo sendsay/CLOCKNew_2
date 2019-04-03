@@ -145,7 +145,7 @@ bool alarm = false;                           // Флаг сработки бу�
 
 struct MQTTstruct {
 char mqtt_server[21] = "m24.cloudmqtt.com";                                             // Имя сервера MQTT
-int  mqtt_port = 37049;                                                                 // Порт для подключения к серверу MQTT
+int  mqtt_port = 17049;                                                                 // Порт для подключения к серверу MQTT
 char mqtt_user[25] = "zqyslqbd";                                                        // Логи от сервер
 char mqtt_pass[25] = "ghCaEZLP2i0V";                                                    // Пароль от сервера MQTT
 char mqtt_name[25] = "Informer";
@@ -164,7 +164,7 @@ int tMqtt3 = 85;
 int tMqtt4 = 0;
 int tMqtt5 = 0;
 };
-MQTTstruct MQTTClintas;
+MQTTstruct MQTTClientas;
 
 //=====================================================================================================================================
 void showDigit(char ch, int col, const uint8_t *data);// показ цифры на позиции
@@ -194,15 +194,20 @@ void changeMode();                                    // Переключени�
 
 void updateSensors();                                 // Обновление данных с датчиков
 void sensorsSi7021();                                 // Опросить датчик si7021
-void sensorsBmp();   //1                              // Опросить датчик bmp280 (дом)
+void sensorsBmp();                                    // Опросить датчик bmp280 (дом)
 
 void bip();                                           // Звуковой сигнал
 
 void getWeather();                                    // Получение погоды из интернета
                                   
 void convertWeatherDes();                             // Конвертация описания погоды
-bool httpRequest();
-bool parseData();
+
+// bool httpRequest();
+// bool parseData();
+void callback(char* topic, byte* payload, unsigned int length); // Коллбек функция для MQTT
+void reconnect();                                     // Переподключение для MQTT
+
+
 
 //=================================================
 // END.
