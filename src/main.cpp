@@ -33,6 +33,7 @@ ______________________________________________*/
 #include <Adafruit_Sensor.h>
 #include <Adafruit_BMP280.h>
 #include <ArduinoJson.h>
+#include <PubSubClient.h>
 
 #include <T_ukr.h>
 #include <T_cz.h>
@@ -51,6 +52,8 @@ Adafruit_BMP280 bmp;            // Датчик bmp
 Adafruit_Si7021 sensor = Adafruit_Si7021(); 
 Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
 HTTPClient client;              // Клиент для погоды
+WiFiClient ESPclient;           // Клиент подключения к ВАЙФАЙ
+PubSubClient MQTTclient(ESPclient); // Клиент MQTT
 
 //======================================================================================
 void setup()
@@ -109,11 +112,18 @@ void setup()
 
     // RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
 
+
+    MQTTclient.setServer(MQTTClientas.mqtt_server, MQTTClientas.mqtt_port);
+    MQTTclient.setCallback(callback);
+    MQTTclient.connect(MQTTClientas.mqtt_name);
+    MQTTclient.subscribe(MQTTClientas.mqtt_sub_inform);
+    MQTTclient.subscribe(MQTTClientas.mqtt_sub);
+
 }
 
 void loop()
 {
-//=== Обновление таймеров =====================================================
+//=== Обновление таймеров =====================================================ca
     digitalWrite(lightPin, (secFr ? HIGH : LOW)); 
 
 //=== Обновление таймеров =====================================================
@@ -141,7 +151,6 @@ void loop()
             PRN("============> Can't get Weather, check WiFi!!!");
         }
     }   
-
        
 
 //=== Работа с будильником==============================================================
@@ -238,13 +247,13 @@ void loop()
     }
 
 //=== Синронизация таймеров каждые десят минут и 5 секунд ==========================================
-    // if (((timeDate.minute % 10) == 0) and (timeDate.second == 0) and (not secFr))  {      // Синхронизация таймеров 
-    //     printTime();
-    //     PRN("============> Synchro timers");
+    if (((timeDate.minute % 10) == 0) and (timeDate.second == 0) and (not secFr))  {      // Синхронизация таймеров 
+        printTime();
+        PRN("============> Synchro timers");
 
-    //     modeChangeTimer.start();                    // Смена режимов отображения
-    //     firstRun = false; 
-    // }
+        modeChangeTimer.start();                    // Смена режимов отображения
+        firstRun = false; 
+    }
 
 //=== Проверка подключения к вайфай ==========================================
     if ((timeDate.second > 30 && timeDate.second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
@@ -257,6 +266,54 @@ void loop()
             if(WiFi.status() == WL_CONNECTED) WIFI_connected = true;
         }
     }
+
+    // ---------- 50 сек. перевірка доступності MQTT та публікація температури ---------
+    if(timeDate.second == 50 && MQTTClientas.mqttOn && !alarm_stat && WIFI_connected) {
+      if(WiFi.status() != WL_CONNECTED) {
+        WIFI_connected = false;
+      }
+      if(!MQTTclient.connected() && WIFI_connected) {
+        reconnect();
+      }
+    //   if(MQTTclient.connected() && WIFI_connected) {
+    //     if(sensorDom && t1 != 85) MQTTclient.publish(MQTTClientas.mqtt_pub_temp, (String(t1) + "." + String(t2)).c_str());
+    //     if(sensorUl !=0 && sensorUl != 6 && t3 != 85) MQTTclient.publish(MQTTClientas.mqtt_pub_tempUl, (String(t3) + "." + String(t4)).c_str());
+    //     if(sensorHumi == 2 && humSi7021 != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humSi7021)).c_str());
+    //     if(sensorHumi == 4 && humBme != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humBme)).c_str());
+    //     if(sensorHumi == 5 && humiDht22 != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humiDht22)).c_str());
+        
+        MQTTclient.publish(MQTTClientas.mqtt_pub_forecast, String(MQTTClientas.mqtt_forecast).c_str());
+        
+        // if(sensorPrAl == 3 && pressBmp != 0) {
+        //   MQTTclient.publish(MQTTClientas.mqtt_pub_press, String(pressBmp).c_str());
+        //   MQTTclient.publish(MQTTClientas.mqtt_pub_alt, String(altBmp).c_str());
+        // }
+        // if(sensorPrAl == 4 && pressBme != 0) {
+        //   MQTTclient.publish(MQTTClientas.mqtt_pub_press, String(pressBme).c_str());
+        //   MQTTclient.publish(MQTTClientas.mqtt_pub_alt, String(altBme).c_str());
+        // }
+        // if(printCom) {
+        //   printTime();
+        //   Serial.print("Publish in topic ");
+        //   if(sensorDom && t1 != 85) Serial.print("Temperature: " + String(t1) + "." + String(t2) + "*C,   ");
+        //   if(sensorUl !=0 && sensorUl != 6 && t3 != 85) Serial.print("Na ulice: " + String(t3) + "." + String(t4) + "*C,   ");
+        //   if(sensorHumi == 2 && humSi7021 != 0) Serial.print("Humidity: " + String(humSi7021) + " %,  ");
+        //   if(sensorHumi == 4 && humBme != 0) Serial.print("Humidity: " + String(humBme) + " %,  ");
+        //   if(sensorHumi == 5 && humiDht22 != 0) Serial.print("Humidity: " + String(humiDht22) + " %,  ");
+        //   if(sensorPrAl == 3 && pressBmp != 0) Serial.print("  Pressure: " + String(pressBmp) + " mmHg,  Altitude: " + String(altBmp) + " m.");
+        //   if(sensorPrAl == 4 && pressBme != 0) Serial.print("  Pressure: " + String(pressBme) + " mmHg,  Altitude: " + String(altBme) + " m.");
+        //   Serial.println("");
+        // }
+      }
+    // }
+  
+    // ---------- якщо мережа WiFi доступна то виконуємо наступні функції ----------------------------
+    if(WIFI_connected){
+        if(MQTTClientas.mqttOn) MQTTclient.loop();           // перевіряємо чи намає вхідних повідомлень, як є, то кoлбек функція
+    }
+
+
+
 
 //=== Управление яркостью экрана=========================================
     // int lightSensor = analogRead(PIN_A0);
@@ -284,11 +341,7 @@ void loop()
 
     // sendCmdAll(CMD_INTENSITY, screenDarkness);
     //   sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 15, 0, 15));
-
-
-///****************
-  //  delay(40);
-///****************    
+   
 }
 
 //=== Вывод только цифр ==================================================================================
@@ -417,10 +470,9 @@ void printStringWithShift(const char *s, int shiftDelay)
     { // коли працює ця функція, основний цикл зупиняється
         printCharWithShift(*s, shiftDelay);
         s++;
-        // server.handleClient();                                      // зберігаемо можливість відповіді на HTML запити під час бігучої стоки
-        // if(mqttOn) MQTTclient.loop();                                          // зберігаемо можливість слухати MQTT топік під час бігучої стоки
-     //   ArduinoOTA.handle();                    // Обновление 
-     //   timeUpdNTP.update();                    // Оновление таймера обновления времени
+        // server.handleClient();                     // зберігаемо можливість відповіді на HTML запити під час бігучої стоки
+        if(MQTTClientas.mqttOn) MQTTclient.loop();   // зберігаемо можливість слухати MQTT топік під час бігучої стоки
+
     }
 }
 
@@ -1085,6 +1137,86 @@ void convertWeatherDes(){
   else if(weatherDescription == "light shower snow") weatherDescription = tLightShowerSnow; 
   else if(weatherDescription == "snow") weatherDescription = tSnow; 
 }
+
+//=== Коллбек функция MQTT ========================================
+void callback(char* topic, byte* payload, unsigned int length) {
+
+  if(!MQTTClientas.mqttOn) return;
+
+  if(String(topic) == MQTTClientas.mqtt_sub_inform) {
+    String Text = "        ";
+    for(int i = 0; i < length; i++) {
+      Text += ((char)payload[i]);
+    }
+    Text += "        ";
+    for(int i = 0; i < 4; i++) {
+      bip();
+    }
+    printStringWithShift(Text.c_str(), 20);
+  }
+
+  if(String(topic) == MQTTClientas.mqtt_butt) {
+  String Text = "";
+      for(int i = 0; i < length; i++) {
+        Text += ((char)payload[i]);
+      }
+    
+  }
+  
+  if(String(topic) == MQTTClientas.mqtt_sub) {
+    MQTTClientas.tMqtt3 = 0;
+    MQTTClientas.tMqtt4 = 0;
+    if((payload[0] >= 48 && payload[0] < 58) || payload[0] == 45) { // в payload[0] - хранится первый полученный символ. 48, 58 и 45 - это коды знаков можете их посмотреть в fontUA_RU_PL_DE[]
+      if(payload[0] == 45) {                                        // если первый символ = "-" (равен минусу) то tMqtt5 = -1 
+        MQTTClientas.tMqtt5 = -1;
+        if(payload[1] >= 48 && payload[1] < 58) {                   //  здесь проверяем уже второй символ что он является числом...
+          MQTTClientas.tMqtt3 = payload[1] - 48;                                 // если от кода числа отнять 48 то получим число.... К примеру код "0" = 48 если от 48-48 то получим 0
+          if(payload[2] >= 48 && payload[2] < 58) {
+            MQTTClientas.tMqtt3 = MQTTClientas.tMqtt3 * 10 + (payload[2] - 48);               // если третий знак тоже число, то второй знак был десятками, умножаем его на 10 (получаем ествественно десятки
+          }
+        }
+        if(payload[3] == 46) {                                      // если третий знак не число, то проверяем его на то что но является точкой...
+          if(payload[4] >= 48 && payload[4] < 58) MQTTClientas.tMqtt4 = payload[4] - 48; // если третий знак точка и четвертый знак является числом, то это десятые значения
+        }
+        if(payload[2] == 46) {                                      // тоже самое со втрорым знаком...
+          if(payload[3] >= 48 && payload[3] < 58) MQTTClientas.tMqtt4 = payload[3] - 48;
+        }
+      } else {                                                      // здесь таже самая процедура но уже с положительными числами))))) tMqtt5 = 1 - это признак того что число положителньное или отрицательное....
+        MQTTClientas.tMqtt5 = 1;
+        MQTTClientas.tMqtt3 = payload[0] - 48;
+        if(payload[1] >= 48 && payload[1] < 58) {
+          MQTTClientas.tMqtt3 = MQTTClientas.tMqtt3 * 10 + (payload[1] - 48);
+          if(payload[2] == 46) {
+            if(payload[3] >= 48 && payload[3] < 58) MQTTClientas.tMqtt4 = payload[3] - 48;
+          }
+        }
+        if(payload[1] == 46) {
+          if(payload[2] >= 48 && payload[2] < 58) MQTTClientas.tMqtt4 = payload[2] - 48;
+        }
+      }
+    }
+  }
+}
+
+//=== Ренеконнект для MQTT =============================================================================
+void reconnect() {
+  if(!ESPclient.connected() && WiFi.status() == WL_CONNECTED) {
+    // if(printCom) {
+      printTime();
+      Serial.print("MQTT reconnection...");
+    // }
+    if(MQTTclient.connect(MQTTClientas.mqtt_name, MQTTClientas.mqtt_user, MQTTClientas.mqtt_pass)) {
+      Serial.println("connected");
+      MQTTclient.subscribe(MQTTClientas.mqtt_sub_inform);
+      MQTTclient.subscribe(MQTTClientas.mqtt_butt);
+      MQTTclient.subscribe(MQTTClientas.mqtt_sub);
+    } else {
+        Serial.print("failed, rc = ");
+        Serial.println(MQTTclient.state());
+    }
+  }
+}
+
 
 //=================================================
 // END.
