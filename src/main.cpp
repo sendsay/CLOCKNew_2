@@ -176,7 +176,7 @@ void loop()
 
 
 //===Основной цикл отображения ==========================================
-    if (((timeDate.minute % 2) == 0)) {
+    if (((timeDate.minute % 5) == 0)) {
         if ((timeDate.second >= 2) and (timeDate.second < 4)) {
             if (si7021) {                           // Вывести темп в доме на экран
                 showSimpleTemp();
@@ -194,8 +194,7 @@ void loop()
                 // showSimplePre();                    // Вывести давление на экран  
             }            
         } else if ((timeDate.second >= 10) and (timeDate.second < 12)) {
-            printStringWithShift(weatherString.c_str(), 17);    // Бегуща строка
-            mode = 0;
+            printStringWithShift(weatherString.c_str(), 17);    // Бегуща строка   
         } else {        
             showAnimClock();                        // Вывод времени на часы            
         }
@@ -1180,20 +1179,17 @@ void callback(char* topic, byte* payload, unsigned int length) {
     for(unsigned i = 0; i < length; i++) {
       Text += ((char)payload[i]);
     }
-    Text += "        ";
+    Text += "             ";
     for(int i = 0; i < 4; i++) {
       bip();
     }
     printStringWithShift(Text.c_str(), 20);
   }
 
-  if(String(topic) == MQTTClientas.mqtt_butt) {
-  String Text = "";
-      for(unsigned i = 0; i < length; i++) {
-        Text += ((char)payload[i]);
-      }
-    
-  }
+     if(String(topic) == MQTTClientas.mqtt_butt) {       //Кнопка
+        bip();
+        printStringWithShift(weatherString.c_str(), 17);    // Бегуща строка     
+    }
   
   if(String(topic) == MQTTClientas.mqtt_sub) {
     MQTTClientas.tMqtt3 = 0;

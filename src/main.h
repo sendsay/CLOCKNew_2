@@ -165,6 +165,8 @@ int tMqtt5 = 0;
 };
 MQTTstruct MQTTClientas;
 
+bool alarmButton = false;         // Кнопка MQTT
+
 //=====================================================================================================================================
 void showDigit(char ch, int col, const uint8_t *data);// показ цифры на позиции
 void setCol(int col, byte v);                         // показ символа в колонке
