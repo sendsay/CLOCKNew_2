@@ -1185,7 +1185,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   if(String(topic) == MQTTClientas.mqtt_sub_inform) {
     String Text = "        ";
-    for(int i = 0; i < length; i++) {
+    for(unsigned i = 0; i < length; i++) {
       Text += ((char)payload[i]);
     }
     Text += "        ";
@@ -1197,7 +1197,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
   if(String(topic) == MQTTClientas.mqtt_butt) {
   String Text = "";
-      for(int i = 0; i < length; i++) {
+      for(unsigned i = 0; i < length; i++) {
         Text += ((char)payload[i]);
       }
     
