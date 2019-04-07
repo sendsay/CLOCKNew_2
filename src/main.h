@@ -119,7 +119,6 @@ float windSpeed;                                      // Сила ветра д�
 String weatherString;                                 // Строка для сборки прогноза для показа
 String httpData;
 
-// unsigned long timing;
 
 struct weather_structure {
   unsigned int id;
