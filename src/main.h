@@ -119,7 +119,6 @@ float windSpeed;                                      // Сила ветра д�
 String weatherString;                                 // Строка для сборки прогноза для показа
 String httpData;
 
-// unsigned long timing;
 
 struct weather_structure {
   unsigned int id;
@@ -151,7 +150,7 @@ char mqtt_pass[25] = "ghCaEZLP2i0V";                                            
 char mqtt_name[25] = "Informer";
 char mqtt_sub_inform[25] = "Inform/mess";
 char mqtt_sub[25] = "Ulica/temp";
-char mqtt_pub_temp[25] = "Informer/temp";
+
 char mqtt_pub_tempUl[25] = "Informer/tempUl";
 char mqtt_pub_hum[25] = "Informer/hum";
 char mqtt_pub_press[25] = "Informer/press";
@@ -165,6 +164,8 @@ int tMqtt4 = 0;
 int tMqtt5 = 0;
 };
 MQTTstruct MQTTClientas;
+
+bool alarmButton = false;         // Кнопка MQTT
 
 //=====================================================================================================================================
 void showDigit(char ch, int col, const uint8_t *data);// показ цифры на позиции
