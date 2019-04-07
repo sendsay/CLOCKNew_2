@@ -708,20 +708,20 @@ void showAnimClock() {
     if ((millis() % 25) == 0) {
         byte digPos[6] = {1, 8, 18, 25, 15, 16};
         
-        if(timeDate.hour < 10) {
-            digPos[1] = 5;
-            digPos[2] = 15;
-            digPos[3] = 22;
-            digPos[4] = 12;
-            digPos[5] = 13;
-        }
+        // if(timeDate.hour < 10) {
+        //     digPos[1] = 5;
+        //     digPos[2] = 15;
+        //     digPos[3] = 22;
+        //     digPos[4] = 12;
+        //     digPos[5] = 13;
+        // }
         int digHt = 16;
         int num = 4;
         int i;
         if(del == 0) {
             del = digHt;
             for(i = 0; i < num; i++) digold[i] = dig[i];
-            dig[0] = timeDate.hour / 10 ? timeDate.hour / 10 : 10;
+            dig[0] = timeDate.hour / 10; // ? timeDate.hour / 10 : 10;
             dig[1] = timeDate.hour % 10;
             dig[2] = timeDate.minute / 10;
             dig[3] = timeDate.minute % 10;
