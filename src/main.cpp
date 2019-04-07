@@ -176,35 +176,31 @@ void loop()
 
 
 //===Основной цикл отображения ==========================================
-    if (((timeDate.minute % 5) == 0)) {
-        if ((timeDate.second >= 0) and (timeDate.second < 2)) {
+    if (((timeDate.minute % 2) == 0)) {
+        if ((timeDate.second >= 2) and (timeDate.second < 4)) {
             if (si7021) {                           // Вывести темп в доме на экран
                 showSimpleTemp();
             }
-        } else if ((timeDate.second >= 2) and (timeDate.second < 4)) {
-            if (bmp280) {
-                showSimpleTempU();                  // Вывести темп на улице на экран 
-            }          
         } else if ((timeDate.second >= 4) and (timeDate.second < 6)) {
+            if (bmp280) {
+                // showSimpleTempU();                  // Вывести темп на улице на экран 
+            }          
+        } else if ((timeDate.second >= 6) and (timeDate.second < 8)) {
             if (si7021) {                           // Вывести влажность в доме                     
                 showSimpleHum();
             }
-        } else if ((timeDate.second >= 6) and (timeDate.second < 8)) {
-            if (bmp280) {
-                showSimplePre();                    // Вывести давление на экран  
-            }            
         } else if ((timeDate.second >= 8) and (timeDate.second < 10)) {
-            printStringWithShift(weatherString.c_str(), 20);    // Бегуща строка
+            if (bmp280) {
+                // showSimplePre();                    // Вывести давление на экран  
+            }            
+        } else if ((timeDate.second >= 10) and (timeDate.second < 12)) {
+            printStringWithShift(weatherString.c_str(), 17);    // Бегуща строка
             mode = 0;
         } else {        
-            showAnimClock();                        // Вывод времени на часы
-            
+            showAnimClock();                        // Вывод времени на часы            
         }
-    } else {
- 
+    } else { 
             showAnimClock();                        // Вывод времени на часы 
-    
-
     }
 
 
@@ -271,11 +267,7 @@ void loop()
         
         if (not alarm) {
             // mode = 1;
-
-            printStringWithShift(weatherString.c_str(), 20);    
-
-
-
+            printStringWithShift(weatherString.c_str(), 17); 
         } else {
             alarm = false;
         }
