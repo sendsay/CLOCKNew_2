@@ -50,7 +50,7 @@ WiFiUDP ntpUDP;                 // Клиент для получения NTP
 IPAddress timeServerIP;         // ??
 Adafruit_BMP280 bmp;            // Датчик bmp
 Adafruit_Si7021 sensor = Adafruit_Si7021(); 
-Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
+// Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
 HTTPClient client;              // Клиент для погоды
 WiFiClient ESPclient;           // Клиент подключения к ВАЙФАЙ
 PubSubClient MQTTclient(ESPclient); // Клиент MQTT
@@ -107,8 +107,8 @@ void setup()
         getWeather();                       // Получение данныз прогноза погоды
     }
 
-    modeChangeTimer.interval(7*1000);       // Настройка таймера переключения режимов
-    modeChangeTimer.start();                // Таймер переключения режимов
+    // modeChangeTimer.interval(7*1000);       // Настройка таймера переключения режимов
+    // modeChangeTimer.start();                // Таймер переключения режимов
 
     // RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
 
@@ -127,7 +127,7 @@ void loop()
     digitalWrite(lightPin, (secFr ? HIGH : LOW)); 
 
 //=== Обновление таймеров =====================================================
-    modeChangeTimer.update();               // Смена режимов отображения
+    // modeChangeTimer.update();               // Смена режимов отображения
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
     if(timeDate.second != lastSecond) {     // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
@@ -159,7 +159,7 @@ void loop()
     // }    
 
     if (alarm) {
-        if(millis() % 25 == 0) showAnimClock();
+        showAnimClock();
         if(secFr==0 && timeDate.second>1 && timeDate.second<=59){
             clr();
         //    sendCmdAll(CMD_INTENSITY, 15);
@@ -174,53 +174,86 @@ void loop()
 //=== Обновление переменных времени, ход часов ==========================================
     updateTime();
 
+
 //===Основной цикл отображения ==========================================
-    if(not alarm){   
-        switch (mode)  {
-            case 0 : {
-                if (millis() % 25 == 0) {
-                    showAnimClock();                     // Вывод времени на часы 
-                }
-                modeChangeTimer.interval(showTimeInterval * 1000);       
+    if (((timeDate.minute % 5) == 0)) {
+        if ((timeDate.second >= 0) and (timeDate.second < 2)) {
+            if (si7021) {                           // Вывести темп в доме на экран
+                showSimpleTemp();
             }
-                break;
-            case 1 : {
-                modeChangeTimer.interval(showAllInterval * 1000);  
-                convertDw();        
-                convertMonth();
-                String date = "     " + dw + ", " + String(timeDate.day) + " " + _month + " " + String(timeDate.year) + "          ";
-                printStringWithShift(date.c_str(), 15); 
-
+        } else if ((timeDate.second >= 2) and (timeDate.second < 4)) {
+            if (bmp280) {
+                showSimpleTempU();                  // Вывести темп на улице на экран 
+            }          
+        } else if ((timeDate.second >= 4) and (timeDate.second < 6)) {
+            if (si7021) {                           // Вывести влажность в доме                     
+                showSimpleHum();
             }
-            break;
-            case 2 : {
-
-                if (si7021) {                            // Вывести темп в доме на экран
-                    showSimpleTemp();
-                } else { mode++; }
-            }
-            break;
-            case 3 : {
-      //         if (bmp280) showSimpleTempU();          // Вывести темп на улице на экран           
-            }
-            break;
-            case 4 : {
-                if (si7021) {                            // Вывести влажность в доме                     
-                    showSimpleHum();
-                } else { mode++; }
-            }
-            break;
-            case 5 : {
-         //      if (bmp280) showSimplePre();            // Вывести давление на экран
-            break;
-            } 
-            case 6 : {
-                printStringWithShift(weatherString.c_str(), 20);    
-            }   
-            default:
-                break;
+        } else if ((timeDate.second >= 6) and (timeDate.second < 8)) {
+            if (bmp280) {
+                showSimplePre();                    // Вывести давление на экран  
+            }            
+        } else if ((timeDate.second >= 8) and (timeDate.second < 10)) {
+            printStringWithShift(weatherString.c_str(), 20);    // Бегуща строка
+            mode = 0;
+        } else {        
+            showAnimClock();                        // Вывод времени на часы
+            
         }
+    } else {
+ 
+            showAnimClock();                        // Вывод времени на часы 
+    
+
     }
+
+
+//===Основной цикл отображения ==========================================
+//     if(not alarm){   
+//         switch (mode)  {
+//             case 0 : {
+//                     showAnimClock();                     // Вывод времени на часы 
+//                 
+//                 modeChangeTimer.interval(showTimeInterval * 1000);       
+//             }
+//                 break;
+//             case 1 : {
+//                 modeChangeTimer.interval(showAllInterval * 1000);  
+//                 convertDw();        
+//                 convertMonth();
+//                 String date = "     " + dw + ", " + String(timeDate.day) + " " + _month + " " + String(timeDate.year) + "          ";
+//                 printStringWithShift(date.c_str(), 15); 
+
+//             }
+//             break;
+//             case 2 : {
+
+//                 if (si7021) {                            // Вывести темп в доме на экран
+//                     showSimpleTemp();
+//                 } else { mode++; }
+//             }
+//             break;
+//             case 3 : {
+//       //         if (bmp280) showSimpleTempU();          // Вывести темп на улице на экран           
+//             }
+//             break;
+//             case 4 : {
+//                 if (si7021) {                            // Вывести влажность в доме                     
+//                     showSimpleHum();
+//                 } else { mode++; }
+//             }
+//             break;
+//             case 5 : {
+//          //      if (bmp280) showSimplePre();            // Вывести давление на экран
+//             break;
+//             } 
+//             case 6 : {
+//                 printStringWithShift(weatherString.c_str(), 20);    
+//             }   
+//             default:
+//                 break;
+//         }
+//     }
 
 //=== Сигнал каждый час и обновление времени ==========================================
     if ((timeDate.minute == 0) and (timeDate.second == 0) and (secFr == 0) and (timeDate.hour >= timeSigOn) and (timeDate.hour <= timeSigOff)) {
@@ -237,7 +270,12 @@ void loop()
     if (digitalRead(buttonPin) == HIGH) {
         
         if (not alarm) {
-            mode = 1;
+            // mode = 1;
+
+            printStringWithShift(weatherString.c_str(), 20);    
+
+
+
         } else {
             alarm = false;
         }
@@ -251,7 +289,7 @@ void loop()
         printTime();
         PRN("============> Synchro timers");
 
-        modeChangeTimer.start();                    // Смена режимов отображения
+        // modeChangeTimer.start();                    // Смена режимов отображения
         firstRun = false; 
     }
 
@@ -667,80 +705,82 @@ void updateTime()
 
 //=== Показ анимир часов ==============================================
 void showAnimClock() {
-  byte digPos[6] = {1, 8, 18, 25, 15, 16};
-  
-  if(timeDate.hour < 10) {
-    digPos[1] = 5;
-    digPos[2] = 15;
-    digPos[3] = 22;
-    digPos[4] = 12;
-    digPos[5] = 13;
-  }
-  int digHt = 16;
-  int num = 4;
-  int i;
-  if(del == 0) {
-    del = digHt;
-    for(i = 0; i < num; i++) digold[i] = dig[i];
-    dig[0] = timeDate.hour / 10 ? timeDate.hour / 10 : 10;
-    dig[1] = timeDate.hour % 10;
-    dig[2] = timeDate.minute / 10;
-    dig[3] = timeDate.minute % 10;
-    for(i = 0; i < num; i++)  digtrans[i] = (dig[i] == digold[i]) ? 0 : digHt;
-  } else del--;
-  clr();
-    for(i = 0; i < num; i++) {
-        if(digtrans[i] == 0) {
-        dy = 0;
-        showDigit(dig[i], digPos[i], dig6x8);
-        } else {
-        dy = digHt - digtrans[i];
-        showDigit(digold[i], digPos[i], dig6x8);
-        dy =- digtrans[i];
-        showDigit(dig[i], digPos[i], dig6x8);
-        digtrans[i]--;
+    if ((millis() % 25) == 0) {
+        byte digPos[6] = {1, 8, 18, 25, 15, 16};
+        
+        if(timeDate.hour < 10) {
+            digPos[1] = 5;
+            digPos[2] = 15;
+            digPos[3] = 22;
+            digPos[4] = 12;
+            digPos[5] = 13;
         }
+        int digHt = 16;
+        int num = 4;
+        int i;
+        if(del == 0) {
+            del = digHt;
+            for(i = 0; i < num; i++) digold[i] = dig[i];
+            dig[0] = timeDate.hour / 10 ? timeDate.hour / 10 : 10;
+            dig[1] = timeDate.hour % 10;
+            dig[2] = timeDate.minute / 10;
+            dig[3] = timeDate.minute % 10;
+            for(i = 0; i < num; i++)  digtrans[i] = (dig[i] == digold[i]) ? 0 : digHt;
+        } else del--;
+        clr();
+            for(i = 0; i < num; i++) {
+                if(digtrans[i] == 0) {
+                dy = 0;
+                showDigit(dig[i], digPos[i], dig6x8);
+                } else {
+                dy = digHt - digtrans[i];
+                showDigit(digold[i], digPos[i], dig6x8);
+                dy =- digtrans[i];
+                showDigit(dig[i], digPos[i], dig6x8);
+                digtrans[i]--;
+                }
+            }
+            dy = 0;
+        
+        int flash = millis() % 2000;
+        
+        if(!alarm_stat){
+            
+        //  setCol(digPos[4], 0x66);
+        //  setCol(digPos[5], 0x66);
+
+        //  setCol(digPos[4], flash < 500 ? 0x66 : 0x00);
+        //  setCol(digPos[5], flash < 500 ? 0x66 : 0x00);    
+            
+        //   if((flash >= 180 && flash < 360) || flash >= 540) {                       // мерегтіння двокрапок в годиннику підвязуємо до личильника циклів
+        //     setCol(digPos[4], WIFI_connected ? 0x66 : 0x60);
+        //     setCol(digPos[5], WIFI_connected ? 0x66 : 0x60);
+            //}
+            if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
+            //  if(flash >= 0 && flash < 180) {
+            //    setCol(digPos[4], WIFI_connected ? 0x24 : 0x20);
+            //    setCol(digPos[5], WIFI_connected ? 0x42 : 0x40);
+            //  }
+            //  if(flash >= 360 && flash < 540) {
+            //   setCol(digPos[4], WIFI_connected ? 0x42 : 0x40);
+            //   setCol(digPos[5], WIFI_connected ? 0x24 : 0x20);
+            // }
+            
+            setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
+            setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);   
+
+
+            
+            }
+
+        //  if(updateForecast && WIFI_connected) setCol(00, flash < 500 ? 0x80 : 0x00);
+        //   if(updateForecasttomorrow && WIFI_connected) setCol(31, flash < 500 ? 0x80 : 0x00);
+        } else {
+            setCol(digPos[4], 0x66);
+            setCol(digPos[5], 0x66);
+        }
+        refreshAll();
     }
-    dy = 0;
-  
-  int flash = millis() % 2000;
-  
-  if(!alarm_stat){
-    
-  //  setCol(digPos[4], 0x66);
-  //  setCol(digPos[5], 0x66);
-
-  //  setCol(digPos[4], flash < 500 ? 0x66 : 0x00);
-  //  setCol(digPos[5], flash < 500 ? 0x66 : 0x00);    
-    
- //   if((flash >= 180 && flash < 360) || flash >= 540) {                       // мерегтіння двокрапок в годиннику підвязуємо до личильника циклів
- //     setCol(digPos[4], WIFI_connected ? 0x66 : 0x60);
- //     setCol(digPos[5], WIFI_connected ? 0x66 : 0x60);
-    //}
-    if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
-    //  if(flash >= 0 && flash < 180) {
-    //    setCol(digPos[4], WIFI_connected ? 0x24 : 0x20);
-    //    setCol(digPos[5], WIFI_connected ? 0x42 : 0x40);
-    //  }
-    //  if(flash >= 360 && flash < 540) {
-     //   setCol(digPos[4], WIFI_connected ? 0x42 : 0x40);
-     //   setCol(digPos[5], WIFI_connected ? 0x24 : 0x20);
-     // }
-     
-    setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
-    setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);   
-
-
-     
-    }
-
-  //  if(updateForecast && WIFI_connected) setCol(00, flash < 500 ? 0x80 : 0x00);
- //   if(updateForecasttomorrow && WIFI_connected) setCol(31, flash < 500 ? 0x80 : 0x00);
-  } else {
-    setCol(digPos[4], 0x66);
-    setCol(digPos[5], 0x66);
-  }
-  refreshAll();
 }
 
 
