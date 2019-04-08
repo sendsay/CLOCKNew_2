@@ -276,13 +276,13 @@ void loop()
     }
 
 //=== Синронизация таймеров каждые десят минут и 5 секунд ==========================================
-    if (((timeDate.minute % 10) == 0) and (timeDate.second == 0) and (not secFr))  {      // Синхронизация таймеров 
-        printTime();
-        PRN("============> Synchro timers");
+    // if (((timeDate.minute % 10) == 0) and (timeDate.second == 0) and (not secFr))  {      // Синхронизация таймеров 
+    //     printTime();
+    //     PRN("============> Synchro timers");
 
-        // modeChangeTimer.start();                    // Смена режимов отображения
-        firstRun = false; 
-    }
+    //     // modeChangeTimer.start();                    // Смена режимов отображения
+    //     firstRun = false; 
+    // }
 
 //=== Проверка подключения к вайфай ==========================================
     if ((timeDate.second > 30 && timeDate.second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
@@ -297,20 +297,21 @@ void loop()
     }
 
     // ---------- 50 сек. перевірка доступності MQTT та публікація температури ---------
-    if(timeDate.second == 50 && MQTTClientas.mqttOn && !alarm_stat && WIFI_connected) {
-      if(WiFi.status() != WL_CONNECTED) {
-        WIFI_connected = false;
+    if (timeDate.second == 50 && MQTTClientas.mqttOn && !alarm_stat && WIFI_connected) {
+      if (WiFi.status() != WL_CONNECTED) {
+            WIFI_connected = false;
       }
-      if(!MQTTclient.connected() && WIFI_connected) {
-        reconnect();
+      if (!MQTTclient.connected() && WIFI_connected) {
+            reconnect();
       }
-    //   if(MQTTclient.connected() && WIFI_connected) {
-    //     if(sensorDom && t1 != 85) MQTTclient.publish(MQTTClientas.mqtt_pub_temp, (String(t1) + "." + String(t2)).c_str());
-    //     if(sensorUl !=0 && sensorUl != 6 && t3 != 85) MQTTclient.publish(MQTTClientas.mqtt_pub_tempUl, (String(t3) + "." + String(t4)).c_str());
-    //     if(sensorHumi == 2 && humSi7021 != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humSi7021)).c_str());
-    //     if(sensorHumi == 4 && humBme != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humBme)).c_str());
-    //     if(sensorHumi == 5 && humiDht22 != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humiDht22)).c_str());
-        
+      if (MQTTclient.connected() && WIFI_connected) {
+        if (bmp280) MQTTclient.publish(MQTTClientas.mqtt_pub_temp, (String(t1) + "." + String(t2)).c_str());
+        if (bmp280) MQTTclient.publish(MQTTClientas.mqtt_pub_press, (String(pressBmp).c_str()));
+        if(si7021) MQTTclient.publish(MQTTClientas.mqtt_pub_tempUl, (String(t3) + "." + String(t4)).c_str());
+        if(si7021) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humSi7021)).c_str());
+        // if(sensorHumi == 4 && humBme != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humBme)).c_str());
+        // if(sensorHumi == 5 && humiDht22 != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humiDht22)).c_str());
+      } 
         MQTTclient.publish(MQTTClientas.mqtt_pub_forecast, String(MQTTClientas.mqtt_forecast).c_str());
         
         // if(sensorPrAl == 3 && pressBmp != 0) {
@@ -1142,6 +1143,15 @@ void getWeather() {
     weatherString += "     \214 " + windDegString + String(windSpeed, 1) + tSpeed;
     weatherString += "     \216 " + String(clouds) + "%     " + weatherDescription + "                ";
 
+  
+  //заполняем строку для mqtt
+    MQTTClientas.mqtt_forecast = "T.:" + String(temp, 0) + " H:" + String(humidity) + "%" + 
+                  " W. deg:"+ windDeg + " W. spd:" + String(windSpeed, 1) + tSpeed + 
+                  " Desc:" + weatherDescription;
+
+  
+  
+  
     PRN("          Getting weather forecast - is OK.");
 } 
 
