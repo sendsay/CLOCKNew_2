@@ -123,8 +123,8 @@ void setup()
 
 void loop()
 {
-//=== Обновление таймеров =====================================================ca
-    digitalWrite(lightPin, (secFr ? HIGH : LOW)); 
+//=== Мигалка =====================================================
+    digitalWrite(lightPin, (((timeDate.second % 2) == 0) ? HIGH : LOW)); 
 
 //=== Обновление таймеров =====================================================
     // modeChangeTimer.update();               // Смена режимов отображения
@@ -323,16 +323,18 @@ void loop()
         //   MQTTclient.publish(MQTTClientas.mqtt_pub_alt, String(altBme).c_str());
         // }
         // if(printCom) {
-        //   printTime();
-        //   Serial.print("Publish in topic ");
-        //   if(sensorDom && t1 != 85) Serial.print("Temperature: " + String(t1) + "." + String(t2) + "*C,   ");
-        //   if(sensorUl !=0 && sensorUl != 6 && t3 != 85) Serial.print("Na ulice: " + String(t3) + "." + String(t4) + "*C,   ");
-        //   if(sensorHumi == 2 && humSi7021 != 0) Serial.print("Humidity: " + String(humSi7021) + " %,  ");
+        if (not secFr) {    
+          printTime();
+          Serial.print("Publish in topic ");
+          if(si7021) Serial.print("Temperature: " + String(t1) + "." + String(t2) + "*C,   ");
+          if(bmp280) Serial.print("Na ulice: " + String(t3) + "." + String(t4) + "*C,   ");
+          if(humSi7021 != 0) Serial.print("Humidity: " + String(humSi7021) + " %,  ");
         //   if(sensorHumi == 4 && humBme != 0) Serial.print("Humidity: " + String(humBme) + " %,  ");
         //   if(sensorHumi == 5 && humiDht22 != 0) Serial.print("Humidity: " + String(humiDht22) + " %,  ");
-        //   if(sensorPrAl == 3 && pressBmp != 0) Serial.print("  Pressure: " + String(pressBmp) + " mmHg,  Altitude: " + String(altBmp) + " m.");
+          if(pressBmp != 0) Serial.print("  Pressure: " + String(pressBmp) + " mmHg,  Altitude: " + String(altBmp) + " m.");
         //   if(sensorPrAl == 4 && pressBme != 0) Serial.print("  Pressure: " + String(pressBme) + " mmHg,  Altitude: " + String(altBme) + " m.");
-        //   Serial.println("");
+          Serial.println("");
+        }  
         // }
       }
     // }
