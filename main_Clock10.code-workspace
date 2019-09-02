@@ -3,20 +3,11 @@
 		{
 			"name": "CLOCKNew_2",
 			"path": "."
-		},
-		{
-			"path": "C:\\Users\\sendsay\\Desktop\\ARDUINA\\LED_clock_weath_v25.10.2018"
-		},
-		{
-			"path": "C:\\Users\\sendsay\\Documents\\PlatformIO\\Projects\\I2CScanner"
-		},
-		{
-			"path": "C:\\Users\\sendsay\\Desktop\\JeeUIFramework-master"
 		}
 	],
 	"settings": {
 		"terminal.integrated.env.windows": {
-			"PATH": "C:\\Users\\sendsay\\.platformio\\penv\\Scripts;C:\\Users\\sendsay\\.platformio\\penv;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\Program Files (x86)\\Embarcadero\\Studio\\19.0\\bin;C:\\Users\\Public\\Documents\\Embarcadero\\Studio\\19.0\\Bpl;C:\\Program Files (x86)\\Embarcadero\\Studio\\19.0\\bin64;C:\\Users\\Public\\Documents\\Embarcadero\\Studio\\19.0\\Bpl\\Win64;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\TwinCAT\\Common32;C:\\TwinCAT\\Common64;C:\\Program Files\\Git\\cmd;C:\\Program Files\\LLVM\\bin;C:\\Users\\sendsay\\AppData\\Local\\Programs\\Python\\Python37-32;C:\\Users\\sendsay\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\sendsay\\AppData\\Local\\atom\\bin;C:\\Users\\sendsay\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\sendsay\\AppData\\Local\\Programs\\Python\\Python37-32;C:\\ProgramData\\Oracle\\Java\\javapath;C:\\Program Files (x86)\\Embarcadero\\Studio\\19.0\\bin;C:\\Users\\Public\\Documents\\Embarcadero\\Studio\\19.0\\Bpl;C:\\Program Files (x86)\\Embarcadero\\Studio\\19.0\\bin64;C:\\Users\\Public\\Documents\\Embarcadero\\Studio\\19.0\\Bpl\\Win64;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\TwinCAT\\Common32;C:\\TwinCAT\\Common64;C:\\Program Files\\Git\\cmd;C:\\Program Files\\LLVM\\bin;C:\\Users\\sendsay\\AppData\\Local\\Programs\\Python\\Python37-32;C:\\Users\\sendsay\\AppData\\Local\\Microsoft\\WindowsApps;C:\\Users\\sendsay\\AppData\\Local\\atom\\bin;C:\\Users\\sendsay\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Users\\sendsay\\AppData\\Local\\Programs\\Python\\Python37-32",
+			"PATH": "C:\\Users\\Professional\\.platformio\\penv\\Scripts;C:\\Users\\Professional\\.platformio\\penv;C:\\Program Files (x86)\\Embarcadero\\Studio\\20.0\\bin;C:\\Users\\Public\\Documents\\Embarcadero\\Studio\\20.0\\Bpl;C:\\Program Files (x86)\\Embarcadero\\Studio\\20.0\\bin64;C:\\Users\\Public\\Documents\\Embarcadero\\Studio\\20.0\\Bpl\\Win64;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Git\\cmd;C:\\Users\\Professional\\AppData\\Local\\Microsoft\\WindowsApps;;C:\\Users\\Professional\\AppData\\Local\\Programs\\Microsoft VS Code\\bin;C:\\Program Files (x86)\\Embarcadero\\Studio\\20.0\\bin;C:\\Users\\Public\\Documents\\Embarcadero\\Studio\\20.0\\Bpl;C:\\Program Files (x86)\\Embarcadero\\Studio\\20.0\\bin64;C:\\Users\\Public\\Documents\\Embarcadero\\Studio\\20.0\\Bpl\\Win64;C:\\Windows\\system32;C:\\Windows;C:\\Windows\\System32\\Wbem;C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\;C:\\Program Files\\Git\\cmd;C:\\Users\\Professional\\AppData\\Local\\Microsoft\\WindowsApps;;C:\\Users\\Professional\\AppData\\Local\\Programs\\Microsoft VS Code\\bin",
 			"PLATFORMIO_CALLER": "vscode"
 		},
 		"files.associations": {
