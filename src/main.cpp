@@ -4,7 +4,7 @@
        LOAD/CS_________________D8/GPIO 15      |
        CLK_____________________D5/GPIO 14      |
  Кнопка________________________D0/GPIO 16      |
- Бaзер_________________________D6/GPIO 12      |
+ Бaзер_________________________D4/GPIO 12      |
  DS18B20_______________________D3/GPIO 0       |
  Si7021/BMP/BME280/DS3231 DA___D2/GPIO 4       | 
  Si7021/BMP/BME280/DS3231 CL___D1/GPIO 5       |
@@ -74,7 +74,7 @@ void setup()
     updateTime();                           // Обновление времени
 
     initMAX7219();                          // Инициализация ЛЕД панели
-    sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели
+    sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели 
     sendCmdAll(CMD_INTENSITY, 15);           // Установка яркости
 
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
@@ -263,18 +263,18 @@ void loop()
     }
 
 //=== Работа с кнопкой ==========================================
-    if (digitalRead(buttonPin) == HIGH) {
+//     if (digitalRead(buttonPin) == HIGH) {
         
-        if (not alarm) {
-            // mode = 1;
-            printStringWithShift(weatherString.c_str(), 17); 
-        } else {
-            alarm = false;
-        }
-//delay(500);
-    //   while((millis() - timing > 500) == 0) {PRN("BUTTON")};            // Пауза 
-    //   PRN("UNBUTTON");
-    }
+//         if (not alarm) {
+//             // mode = 1;
+//             printStringWithShift(weatherString.c_str(), 17); 
+//         } else {
+//             alarm = false;
+//         }
+// //delay(500);
+//     //   while((millis() - timing > 500) == 0) {PRN("BUTTON")};            // Пауза 
+//     //   PRN("UNBUTTON");
+//     }
 
 //=== Синронизация таймеров каждые десят минут и 5 секунд ==========================================
     // if (((timeDate.minute % 10) == 0) and (timeDate.second == 0) and (not secFr))  {      // Синхронизация таймеров 
