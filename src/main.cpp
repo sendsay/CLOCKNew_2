@@ -34,6 +34,7 @@ ______________________________________________*/
 #include <Adafruit_BMP280.h>
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
+#include <math.h>
 
 
 #include <T_ukr.h>
@@ -59,6 +60,7 @@ PubSubClient MQTTclient(ESPclient); // Клиент MQTT
 //======================================================================================
 void setup()
 {
+    delay(100);
     Serial.begin(115200);
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
     pinMode(buttonPin, INPUT);              // Вход кнопки
@@ -67,11 +69,17 @@ void setup()
     PRN("");
     PRN("");
     PRN(" ============>START!");
+    delay(100);
     bip();                                  // Сигнал при старте
 
-    RTClock.begin();                        // Инициализация часов
-    PRN("============> Itialize clock!");
-    updateTime();                           // Обновление времени
+    // RTClock.begin();                        // Инициализация часов
+    // PRN("============> Itialize clock!");
+
+    localMillisAtUpdate = millis();
+    localEpoc = (hour * 60 * 60 + minute * 60 + second);
+
+
+  //  updateTime();                           // Обновление времени
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели 
@@ -125,14 +133,14 @@ void setup()
 void loop()
 {
 //=== Мигалка =====================================================
-    digitalWrite(lightPin, (((timeDate.second % 2) == 0) ? HIGH : LOW)); 
+    digitalWrite(lightPin, (((second % 2) == 0) ? HIGH : LOW)); 
 
 //=== Обновление таймеров =====================================================
     // modeChangeTimer.update();               // Смена режимов отображения
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
-    if(timeDate.second != lastSecond) {     // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
-        lastSecond = timeDate.second;
+    if(second != lastSecond) {     // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
+        lastSecond = second;
         secFr = 0;                          // флаг для процессов                                   
     } else {
         secFr++;
@@ -140,12 +148,12 @@ void loop()
 
 
 //=== Обновление датчиков каждую минуту =============================================================
-    if ((timeDate.second == 0) and (not secFr)) {
+    if ((second == 0) and (not secFr)) {
         updateSensors();     
     }
 
 //=== Обновление погоды с сайта каждые 15 минут ==============================================================
-    if (((timeDate.minute % 15 ) == 0) and (timeDate.second == 0) and (not secFr)) {
+    if (((minute % 15 ) == 0) and (second == 0) and (not secFr)) {
         if (WIFI_connected) {
             getWeather();
         } else {
@@ -161,7 +169,7 @@ void loop()
 
     if (alarm) {
         showAnimClock();
-        if(secFr==0 && timeDate.second>1 && timeDate.second<=59){
+        if(secFr==0 && second>1 && second<=59){
             clr();
         //    sendCmdAll(CMD_INTENSITY, 15);
             refreshAll();
@@ -177,24 +185,24 @@ void loop()
 
 
 //===Основной цикл отображения ==========================================
-    if (((timeDate.minute % 5) == 0)) {
-        if ((timeDate.second >= 2) and (timeDate.second < 4)) {
+    if (((minute % 5) == 0)) {
+        if ((second >= 2) and (second < 4)) {
             if (si7021) {                           // Вывести темп в доме на экран
                 showSimpleTemp();
             }
-        } else if ((timeDate.second >= 4) and (timeDate.second < 6)) {
+        } else if ((second >= 4) and (second < 6)) {
             if (bmp280) {
                 // showSimpleTempU();                  // Вывести темп на улице на экран 
             }          
-        } else if ((timeDate.second >= 6) and (timeDate.second < 8)) {
+        } else if ((second >= 6) and (second < 8)) {
             if (si7021) {                           // Вывести влажность в доме                     
                 showSimpleHum();
             }
-        } else if ((timeDate.second >= 8) and (timeDate.second < 10)) {
+        } else if ((second >= 8) and (second < 10)) {
             if (bmp280) {
                 // showSimplePre();                    // Вывести давление на экран  
             }            
-        } else if ((timeDate.second >= 10) and (timeDate.second < 12)) {
+        } else if ((second >= 10) and (second < 12)) {
             printStringWithShift(weatherString.c_str(), 17);    // Бегуща строка   
         } else {        
             showAnimClock();                        // Вывод времени на часы            
@@ -252,7 +260,7 @@ void loop()
 //     }
 
 //=== Сигнал каждый час и обновление времени ==========================================
-    if ((timeDate.minute == 0) and (timeDate.second == 0) and (secFr == 0) and (timeDate.hour >= timeSigOn) and (timeDate.hour <= timeSigOff)) {
+    if ((minute == 0) and (second == 0) and (secFr == 0) and (hour >= timeSigOn) and (hour <= timeSigOff)) {
         PRN("============> BIP!!!");
         bip();
         bip();
@@ -286,19 +294,19 @@ void loop()
     // }
 
 //=== Проверка подключения к вайфай ==========================================
-    if ((timeDate.second > 30 && timeDate.second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
+    if ((second > 30 && second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
         WIFI_connected = false;
         Serial.println("============> Check WIFI connect!!!");
         
         WiFi.disconnect();
-        if(timeDate.minute % 5 == 1) {
+        if(minute % 5 == 1) {
             wifiConnect();
             if(WiFi.status() == WL_CONNECTED) WIFI_connected = true;
         }
     }
 
     // ---------- 50 сек. перевірка доступності MQTT та публікація температури ---------
-    if (timeDate.second == 50 && MQTTClientas.mqttOn && !alarm_stat && WIFI_connected) {
+    if (second == 50 && MQTTClientas.mqttOn && !alarm_stat && WIFI_connected) {
       if (WiFi.status() != WL_CONNECTED) {
             WIFI_connected = false;
       }
@@ -493,7 +501,7 @@ void wifiConnect()
 //===Вывод времени в ПОРТ ==================================================================================================================================
 void printTime()
 {
-    PRN((timeDate.hour < 10 ? "0" : "") + String(timeDate.hour) + ":" + (timeDate.minute < 10 ? "0" : "") + String(timeDate.minute) + ":" + (timeDate.second < 10 ? "0" : "") + String(timeDate.second) + "  ");
+    PRN((hour < 10 ? "0" : "") + String(hour) + ":" + (minute < 10 ? "0" : "") + String(minute) + ":" + (second < 10 ? "0" : "") + String(second) + "  ");
 }
 
 //=== Печать бегущей строки *s - текст, shiftDelay - скорость ==========================================
@@ -686,14 +694,21 @@ void showAnimWifi(byte probaWifi)
 //=== Обновление времени ==============================================
 void updateTime()
 {
-    dt = RTClock.getDateTime();
-    timeDate.hour = dt.hour;
-    timeDate.minute = dt.minute;
-    timeDate.second = dt.second;
-    timeDate.day = dt.day;
-    timeDate.dayOfWeek = dt.dayOfWeek + 1;
-    timeDate.month = dt.month;
-    timeDate.year = dt.year; 
+  long curEpoch = localEpoc + ((millis() - localMillisAtUpdate) / 1000);
+  long epoch = round(double((curEpoch + 86400L) % 86400L));
+  hour = ((epoch % 86400L) / 3600) % 24;
+  minute = (epoch % 3600) / 60;
+  second = epoch % 60;
+
+
+    // dt = RTClock.getDateTime();
+    // timeDate.hour = dt.hour;
+    // timeDate.minute = dt.minute;
+    // timeDate.second = dt.second;
+    // timeDate.day = dt.day;
+    // timeDate.dayOfWeek = dt.dayOfWeek + 1;
+    // timeDate.month = dt.month;
+    // timeDate.year = dt.year; 
 
   
 }
@@ -712,14 +727,13 @@ void showAnimClock() {
         // }
         int digHt = 16;
         int num = 4;
-        int i;
-        if(del == 0) {
+        int i;        if(del == 0) {
             del = digHt;
             for(i = 0; i < num; i++) digold[i] = dig[i];
-            dig[0] = timeDate.hour / 10; // ? timeDate.hour / 10 : 10;
-            dig[1] = timeDate.hour % 10;
-            dig[2] = timeDate.minute / 10;
-            dig[3] = timeDate.minute % 10;
+            dig[0] = hour / 10; // ? timeDate.hour / 10 : 10;
+            dig[1] = hour % 10;
+            dig[2] = minute / 10;
+            dig[3] = minute % 10;
             for(i = 0; i < num; i++)  digtrans[i] = (dig[i] == digold[i]) ? 0 : digHt;
         } else del--;
         clr();
@@ -811,21 +825,23 @@ void timeUpdateNTP() {
         }
     }
 
-    RTClock.setDateTime(g_year, g_month, g_day, g_hour, g_minute, g_second);  // Устанвока времени
+ //   RTClock.setDateTime(g_year, g_month, g_day, g_hour, g_minute, g_second);  // Устанвока времени
 
-    timeDate.hour=g_hour;
-    timeDate.minute=g_minute;
-    timeDate.second=g_second;
-    timeDate.day=g_day;
-    timeDate.dayOfWeek=g_dayOfWeek;
-    timeDate.month=g_month;
-    timeDate.year=g_year; 
-    // localMillisAtUpdate = millis();
-    // localEpoc = (timeDate.hour * 60 * 60 + timeDate.minute * 60 + timeDate.second);
+    hour=g_hour;
+    minute=g_minute;
+    second=g_second;
+    day=g_day;
+    dayOfWeek=g_dayOfWeek;
+    month=g_month;
+    year=g_year; 
+
+
+    localMillisAtUpdate = millis();
+    localEpoc = (hour * 60 * 60 + minute * 60 + second);
     convertDw();
     convertMonth();
     printTime();
-    Serial.println((timeDate.day < 10 ? "0" : "") + String(timeDate.day) + "." + (timeDate.month < 10 ? "0" : "") + String(timeDate.month) + "." + String(timeDate.year) + " DW = " + String(timeDate.dayOfWeek));
+    Serial.println((day < 10 ? "0" : "") + String(day) + "." + (month < 10 ? "0" : "") + String(month) + "." + String(year) + " DW = " + String(dayOfWeek));
     Serial.println("          Time update OK.");  
 }
 
@@ -863,9 +879,9 @@ void getNTPtime() {
     const unsigned long seventyYears = 2208988800UL;        // Unix час станом на 1 січня 1970. в секундах, то 2208988800:
     unsigned long epoch = secsSince1900 - seventyYears;
     boolean summerTime;
-    if(timeDate.month < 3 || timeDate.month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
-    if(timeDate.month > 3 && timeDate.month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
-    if(((timeDate.month == 3) && (timeDate.hour + 24 * timeDate.day)) >= (3 + 24 * (31 - (5 * timeDate.year / 4 + 4) % 7)) || ((timeDate.month == 10) && (timeDate.hour + 24 * timeDate.day)) < (3 + 24 * (31 - (5 * timeDate.year / 4 + 1) % 7))) summerTime = true; 
+    if(month < 3 || month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
+    if(month > 3 && month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
+    if(((month == 3) && (hour + 24 * day)) >= (3 + 24 * (31 - (5 * year / 4 + 4) % 7)) || ((month == 10) && (hour + 24 * day)) < (3 + 24 * (31 - (5 * year / 4 + 1) % 7))) summerTime = true; 
     epoch += (int)(timeZone*3600 + (3600*(isDayLightSaving && summerTime)));      
     g_year = 0;
     int days = 0;
@@ -902,7 +918,7 @@ void getNTPtime() {
 
 // ===========================КОНВЕРТАЦІЯ НАЗВ ДНІВ ТИЖНЯ НА УКРАЇНСЬКУ МОВУ============================================
 void convertDw(){
-  switch(timeDate.dayOfWeek){
+  switch(dayOfWeek){
     case 1 : dw = tSunday;     break;
     case 2 : dw = tMonday;    break;
     case 3 : dw = tTuesday;   break;
@@ -914,7 +930,7 @@ void convertDw(){
 }
 // ===========================КОНВЕРТАЦІЯ НАЗВ МІСЯЦІВ НА УКРАЇНСЬКУ МОВУ============================================
 void convertMonth(){
-  switch(timeDate.month){
+  switch(month){
     case 1 : _month = tJanuary;      break;
     case 2 : _month = tFebruary;     break;
     case 3 : _month = tMarch;        break;
