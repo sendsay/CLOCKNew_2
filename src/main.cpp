@@ -161,7 +161,7 @@ void loop() {
     }
 
 //=== Работа с кнопкой и показ данных из датчиков==========================================
-    if (((digitalRead(buttonPin) == HIGH) || (((minute % 5) == 0) && (second == 3))) && ShowFlag == false) {
+    if (((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3)) || (ShowFlagMQTT == true)) && ShowFlag == false) {
         ChangeMode.start();  
         ShowFlag = true;  
         showSimpleTemp();        
@@ -272,7 +272,7 @@ void SwitchShowMode() {
         Mode = 0;
         ChangeMode.stop();
         ShowFlag = false;
-        // show = false;
+        ShowFlagMQTT = false;
         printStringWithShift(weatherString.c_str(), 20);    
         break;
     default:
@@ -1059,7 +1059,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
      if(String(topic) == MQTTClientas.mqtt_butt) {       //Кнопка
         bip();
-        printStringWithShift(weatherString.c_str(), 17);    // Бегуща строка     
+        ShowFlagMQTT = true;                             // Показ данных с датчика  
     }
   
   if(String(topic) == MQTTClientas.mqtt_sub) {
