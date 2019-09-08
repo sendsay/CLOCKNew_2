@@ -69,15 +69,12 @@ void setup() {
 
     Serial.begin(115200);
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
-    pinMode(buttonPin, INPUT);              // Вход кнопки
+  //  pinMode(buttonPin, INPUT);              // Вход кнопки
     pinMode(lightPin, OUTPUT);              // Выход мигалки
 
     PRN("");
     PRN("");
     PRN(" ============>START!");
-
-    localMillisAtUpdate = millis();
-    localEpoc = (hour * 60 * 60 + minute * 60 + second);
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели 
@@ -107,6 +104,9 @@ void setup() {
     else if (lang == 5) enText();                 
 
     wifiConnect();                          // подключение к Вайфай
+
+    localMillisAtUpdate = millis();
+    localEpoc = (hour * 60 * 60 + minute * 60 + second);
 
     if(WiFi.status() == WL_CONNECTED) {
         ntpUDP.begin(localPort);            // Запуск UDP для получения времени
