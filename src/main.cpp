@@ -37,7 +37,6 @@ ______________________________________________*/
 #include <math.h>
 #include <Ticker.h>
 
-
 #include <T_ukr.h>
 #include <T_cz.h>
 #include <T_de.h>
@@ -46,24 +45,20 @@ ______________________________________________*/
 #include <T_rus.h>
 
 //=====================================================================================================================================
-DS3231 RTClock;                 // Часы
 RTCDateTime dt;                 // Дата/время для часов
 IPAddress apIP(192, 168, 4, 1); // Адресс для точки доступа
 WiFiUDP ntpUDP;                 // Клиент для получения NTP
 IPAddress timeServerIP;         // ??
 Adafruit_BMP280 bmp;            // Датчик bmp
-Adafruit_Si7021 sensor = Adafruit_Si7021(); 
-// Ticker modeChangeTimer(changeMode, 3*1000);  // Таймер переключения режимов
+Adafruit_Si7021 sensor = Adafruit_Si7021();     // Датчик SI
 HTTPClient client;              // Клиент для погоды
 WiFiClient ESPclient;           // Клиент подключения к ВАЙФАЙ
 PubSubClient MQTTclient(ESPclient); // Клиент MQTT
-
-Ticker ChangeMode(SwitchShowMode, 3000);
+Ticker ChangeMode(SwitchShowMode, 2*1000);          // Таймер переключения режимов отображение данных с датчиков
 
 //======================================================================================
-void setup()
-{
-    delay(100);
+void setup() {
+
     Serial.begin(115200);
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
     pinMode(buttonPin, INPUT);              // Вход кнопки
@@ -72,15 +67,13 @@ void setup()
     PRN("");
     PRN("");
     PRN(" ============>START!");
-    delay(100);
-    bip();                                  // Сигнал при старте
 
     localMillisAtUpdate = millis();
     localEpoc = (hour * 60 * 60 + minute * 60 + second);
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели 
-    sendCmdAll(CMD_INTENSITY, 15);           // Установка яркости
+    sendCmdAll(CMD_INTENSITY, 15);          // Установка яркости
 
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
         PRN("============> YES!!! find BMP280 sensor!");
@@ -113,10 +106,6 @@ void setup()
         getWeather();                       // Получение данныз прогноза погоды
     }
 
-    // modeChangeTimer.interval(7*1000);       // Настройка таймера переключения режимов
-    // modeChangeTimer.start();                // Таймер переключения режимов
-
-
     MQTTclient.setServer(MQTTClientas.mqtt_server, MQTTClientas.mqtt_port);
     MQTTclient.setCallback(callback);
     MQTTclient.connect(MQTTClientas.mqtt_name);
@@ -124,16 +113,11 @@ void setup()
     MQTTclient.subscribe(MQTTClientas.mqtt_sub);
 }
 
-void loop()
-{
-
-    ChangeMode.update();
+void loop() { 
+    ChangeMode.update();                    // Обновление таймера отображения данных из датчиков
 
 //=== Мигалка =====================================================
     digitalWrite(lightPin, (((second % 2) == 0) ? HIGH : LOW)); 
-
-//=== Обновление таймеров =====================================================
-    // modeChangeTimer.update();               // Смена режимов отображения
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
     if(second != lastSecond) {     // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
@@ -142,7 +126,6 @@ void loop()
     } else {
         secFr++;
     }
-
 
 //=== Обновление датчиков каждую минуту =============================================================
     if ((second == 0) and (not secFr)) {
@@ -157,111 +140,19 @@ void loop()
             PRN("============> Can't get Weather, check WiFi!!!");
         }
     }   
-       
-
-//=== Работа с будильником==============================================================
-    // if (RTClock.isAlarm1() or RTClock.isAlarm2()) {
-    //     alarm = true;
-    // }    
-
-    // if (alarm) {
-    //     showAnimClock();
-    //     if(secFr==0 && second>1 && second<=59){
-    //         clr();
-    //     //    sendCmdAll(CMD_INTENSITY, 15);
-    //         refreshAll();
-    //         bip();
-    //         bip();
-    //     } else {
-    //     refreshAll();     
-    //     }
-    // }
 
 //=== Обновление переменных времени, ход часов ==========================================
     updateTime();
 
-
 //===Основной цикл отображения ==========================================
-    // if (((minute % 5) == 0)) {
-    //     if ((second >= 2) and (second < 4)) {
-    //         if (si7021) {                           // Вывести темп в доме на экран
-    //             showSimpleTemp();
-    //         }
-    //     } else if ((second >= 4) and (second < 6)) {
-    //         if (bmp280) {
-    //             // showSimpleTempU();                  // Вывести темп на улице на экран 
-    //         }          
-    //     } else if ((second >= 6) and (second < 8)) {
-    //         if (si7021) {                           // Вывести влажность в доме                     
-    //             showSimpleHum();
-    //         }
-    //     } else if ((second >= 8) and (second < 10)) {
-    //         if (bmp280) {
-    //             // showSimplePre();                    // Вывести давление на экран  
-    //         }            
-    //     } else if ((second >= 10) and (second < 12)) {
-    //         printStringWithShift(weatherString.c_str(), 17);    // Бегуща строка   
-    //     } else {        
-    //         showAnimClock();                        // Вывод времени на часы            
-    //     }
-    // } else { 
-    //         showAnimClock();                        // Вывод времени на часы 
-    // }
-
-    showAnimClock();                        // Вывод времени на часы 
-
-
-//===Основной цикл отображения ==========================================
-//     if(not alarm){   
-//         switch (mode)  {
-//             case 0 : {
-//                     showAnimClock();                     // Вывод времени на часы 
-//                 
-//                 modeChangeTimer.interval(showTimeInterval * 1000);       
-//             }
-//                 break;
-//             case 1 : {
-//                 modeChangeTimer.interval(showAllInterval * 1000);  
-//                 convertDw();        
-//                 convertMonth();
-//                 String date = "     " + dw + ", " + String(timeDate.day) + " " + _month + " " + String(timeDate.year) + "          ";
-//                 printStringWithShift(date.c_str(), 15); 
-
-//             }
-//             break;
-//             case 2 : {
-
-//                 if (si7021) {                            // Вывести темп в доме на экран
-//                     showSimpleTemp();
-//                 } else { mode++; }
-//             }
-//             break;
-//             case 3 : {
-//       //         if (bmp280) showSimpleTempU();          // Вывести темп на улице на экран           
-//             }
-//             break;
-//             case 4 : {
-//                 if (si7021) {                            // Вывести влажность в доме                     
-//                     showSimpleHum();
-//                 } else { mode++; }
-//             }
-//             break;
-//             case 5 : {
-//          //      if (bmp280) showSimplePre();            // Вывести давление на экран
-//             break;
-//             } 
-//             case 6 : {
-//                 printStringWithShift(weatherString.c_str(), 20);    
-//             }   
-//             default:
-//                 break;
-//         }
-//     }
+    if (!ShowFlag) {
+        showAnimClock();                        // Вывод времени на часы 
+    }
 
 //=== Сигнал каждый час и обновление времени ==========================================
     if ((minute == 0) and (second == 0) and (secFr == 0) and (hour >= timeSigOn) and (hour <= timeSigOff)) {
-        PRN("============> BIP!!!");
-        bip();
+        PRN("============> BIP!!!");       
+        bip();    
         bip();
 
         if (WIFI_connected) {
@@ -270,7 +161,7 @@ void loop()
     }
 
 //=== Работа с кнопкой и показ данных из датчиков==========================================
-    if (((digitalRead(buttonPin) == HIGH) || (((minute % 5) == 0) && (second == 0)) ) && ShowFlag == false) {
+    if (((digitalRead(buttonPin) == HIGH) || (((minute % 5) == 0) && (second == 3))) && ShowFlag == false) {
         ChangeMode.start();  
         ShowFlag = true;  
         showSimpleTemp();        
@@ -387,9 +278,7 @@ void SwitchShowMode() {
     default:
         break;
     }
-
 }
-
 
 //=== Вывод только цифр ==================================================================================
 void showDigit(char ch, int col, const uint8_t *data)
@@ -710,57 +599,49 @@ void updateTime()
 
 //=== Показ анимир часов ==============================================
 void showAnimClock() {
+    if ((millis() % 25) == 0) {
+        byte digPos[6] = {1, 8, 18, 25, 15, 16};
 
-    if (!ShowFlag) {
-
-        if ((millis() % 25) == 0) {
-            byte digPos[6] = {1, 8, 18, 25, 15, 16};
-
-            int digHt = 16;
-            int num = 4;
-            int i;        if(del == 0) {
-                del = digHt;
-                for(i = 0; i < num; i++) digold[i] = dig[i];
-                dig[0] = hour / 10; // ? timeDate.hour / 10 : 10;
-                dig[1] = hour % 10;
-                dig[2] = minute / 10;
-                dig[3] = minute % 10;
-                for(i = 0; i < num; i++)  digtrans[i] = (dig[i] == digold[i]) ? 0 : digHt;
-            } else del--;
-            clr();
-                for(i = 0; i < num; i++) {
-                    if(digtrans[i] == 0) {
-                    dy = 0;
-                    showDigit(dig[i], digPos[i], dig6x8);
-                    } else {
-                    dy = digHt - digtrans[i];
-                    showDigit(digold[i], digPos[i], dig6x8);
-                    dy =- digtrans[i];
-                    showDigit(dig[i], digPos[i], dig6x8);
-                    digtrans[i]--;
-                    }
-                }
+        int digHt = 16;
+        int num = 4;
+        int i;        if(del == 0) {
+            del = digHt;
+            for(i = 0; i < num; i++) digold[i] = dig[i];
+            dig[0] = hour / 10; // ? timeDate.hour / 10 : 10;
+            dig[1] = hour % 10;
+            dig[2] = minute / 10;
+            dig[3] = minute % 10;
+            for(i = 0; i < num; i++)  digtrans[i] = (dig[i] == digold[i]) ? 0 : digHt;
+        } else del--;
+        clr();
+            for(i = 0; i < num; i++) {
+                if(digtrans[i] == 0) {
                 dy = 0;
-            
-            int flash = millis() % 2000;
-            
-            if(!alarm_stat){
-
-                if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
-                    
-                    setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
-                    setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);              
+                showDigit(dig[i], digPos[i], dig6x8);
+                } else {
+                dy = digHt - digtrans[i];
+                showDigit(digold[i], digPos[i], dig6x8);
+                dy =- digtrans[i];
+                showDigit(dig[i], digPos[i], dig6x8);
+                digtrans[i]--;
                 }
-
-            } else {
-                setCol(digPos[4], 0x66);
-                setCol(digPos[5], 0x66);
             }
-            refreshAll();
+            dy = 0;
+        
+        int flash = millis() % 2000;
+        
+        if(!alarm_stat){
+            if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
+                setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
+                setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);              
+            }
+        } else {
+            setCol(digPos[4], 0x66);
+            setCol(digPos[5], 0x66);
         }
-    }
+        refreshAll();
+    }    
 }
-
 
 //=== Обновление времени из сервера==============================================
 void timeUpdateNTP() {
@@ -771,26 +652,21 @@ void timeUpdateNTP() {
         getNTPtime();
         PRN("          ");
         PRN("Proba #"+String(timeTest+1)+"   "+String(g_hour)+":"+((g_minute<10)?"0":"")+String(g_minute)+":"+((g_second<10)?"0":"")+String(g_second)+":"+String(g_dayOfWeek)+":"+String(g_day)+":"+String(g_month)+":"+String(g_year));
-        
-        
+             
         hourTest[timeTest] = g_hour;
         minuteTest[timeTest] = g_minute;
-        if(statusUpdateNtpTime == 0) {
-        
-        printTime();
-        PRN("ERROR TIME!!!\r\n");
-        
-            return;
-        }
-        if(timeTest > 0) {
-        if((hourTest[timeTest] != hourTest[timeTest - 1]||minuteTest[timeTest] != minuteTest[timeTest - 1])) {
-            statusUpdateNtpTime = 0;
-            
+        if(statusUpdateNtpTime == 0) {        
             printTime();
             PRN("ERROR TIME!!!\r\n");
-            
-            return;
+                return;
         }
+        if(timeTest > 0) {
+            if((hourTest[timeTest] != hourTest[timeTest - 1]||minuteTest[timeTest] != minuteTest[timeTest - 1])) {
+                statusUpdateNtpTime = 0;            
+                printTime();
+                PRN("ERROR TIME!!!\r\n");            
+                return;
+            }
         }
     }
 
@@ -801,7 +677,6 @@ void timeUpdateNTP() {
     dayOfWeek=g_dayOfWeek;
     month=g_month;
     year=g_year; 
-
 
     localMillisAtUpdate = millis();
     localEpoc = (hour * 60 * 60 + minute * 60 + second);
