@@ -199,6 +199,9 @@ void convertWeatherDes();                             // Конвертация 
 void callback(char* topic, byte* payload, unsigned int length); // Коллбек функция для MQTT
 void reconnect();                                     // Переподключение для MQTT
 
+void SwitchShowMode();                                // Переключение режимов показа
+bool ShowFlag = false;                                // Показывать данные с датчиков                        
+int Mode = 0;                                         // Режим показа данныхs
 
 
 //=================================================

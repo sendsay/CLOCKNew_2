@@ -35,6 +35,7 @@ ______________________________________________*/
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <math.h>
+#include <Ticker.h>
 
 
 #include <T_ukr.h>
@@ -56,6 +57,8 @@ Adafruit_Si7021 sensor = Adafruit_Si7021();
 HTTPClient client;              // Клиент для погоды
 WiFiClient ESPclient;           // Клиент подключения к ВАЙФАЙ
 PubSubClient MQTTclient(ESPclient); // Клиент MQTT
+
+Ticker ChangeMode(SwitchShowMode, 3000);
 
 //======================================================================================
 void setup()
@@ -119,11 +122,13 @@ void setup()
     MQTTclient.connect(MQTTClientas.mqtt_name);
     MQTTclient.subscribe(MQTTClientas.mqtt_sub_inform);
     MQTTclient.subscribe(MQTTClientas.mqtt_sub);
-
 }
 
 void loop()
 {
+
+    ChangeMode.update();
+
 //=== Мигалка =====================================================
     digitalWrite(lightPin, (((second % 2) == 0) ? HIGH : LOW)); 
 
@@ -159,49 +164,51 @@ void loop()
     //     alarm = true;
     // }    
 
-    if (alarm) {
-        showAnimClock();
-        if(secFr==0 && second>1 && second<=59){
-            clr();
-        //    sendCmdAll(CMD_INTENSITY, 15);
-            refreshAll();
-            bip();
-            bip();
-        } else {
-        refreshAll();     
-        }
-    }
+    // if (alarm) {
+    //     showAnimClock();
+    //     if(secFr==0 && second>1 && second<=59){
+    //         clr();
+    //     //    sendCmdAll(CMD_INTENSITY, 15);
+    //         refreshAll();
+    //         bip();
+    //         bip();
+    //     } else {
+    //     refreshAll();     
+    //     }
+    // }
 
 //=== Обновление переменных времени, ход часов ==========================================
     updateTime();
 
 
 //===Основной цикл отображения ==========================================
-    if (((minute % 5) == 0)) {
-        if ((second >= 2) and (second < 4)) {
-            if (si7021) {                           // Вывести темп в доме на экран
-                showSimpleTemp();
-            }
-        } else if ((second >= 4) and (second < 6)) {
-            if (bmp280) {
-                // showSimpleTempU();                  // Вывести темп на улице на экран 
-            }          
-        } else if ((second >= 6) and (second < 8)) {
-            if (si7021) {                           // Вывести влажность в доме                     
-                showSimpleHum();
-            }
-        } else if ((second >= 8) and (second < 10)) {
-            if (bmp280) {
-                // showSimplePre();                    // Вывести давление на экран  
-            }            
-        } else if ((second >= 10) and (second < 12)) {
-            printStringWithShift(weatherString.c_str(), 17);    // Бегуща строка   
-        } else {        
-            showAnimClock();                        // Вывод времени на часы            
-        }
-    } else { 
-            showAnimClock();                        // Вывод времени на часы 
-    }
+    // if (((minute % 5) == 0)) {
+    //     if ((second >= 2) and (second < 4)) {
+    //         if (si7021) {                           // Вывести темп в доме на экран
+    //             showSimpleTemp();
+    //         }
+    //     } else if ((second >= 4) and (second < 6)) {
+    //         if (bmp280) {
+    //             // showSimpleTempU();                  // Вывести темп на улице на экран 
+    //         }          
+    //     } else if ((second >= 6) and (second < 8)) {
+    //         if (si7021) {                           // Вывести влажность в доме                     
+    //             showSimpleHum();
+    //         }
+    //     } else if ((second >= 8) and (second < 10)) {
+    //         if (bmp280) {
+    //             // showSimplePre();                    // Вывести давление на экран  
+    //         }            
+    //     } else if ((second >= 10) and (second < 12)) {
+    //         printStringWithShift(weatherString.c_str(), 17);    // Бегуща строка   
+    //     } else {        
+    //         showAnimClock();                        // Вывод времени на часы            
+    //     }
+    // } else { 
+    //         showAnimClock();                        // Вывод времени на часы 
+    // }
+
+    showAnimClock();                        // Вывод времени на часы 
 
 
 //===Основной цикл отображения ==========================================
@@ -262,28 +269,12 @@ void loop()
         }
     }
 
-//=== Работа с кнопкой ==========================================
-//     if (digitalRead(buttonPin) == HIGH) {
-        
-//         if (not alarm) {
-//             // mode = 1;
-//             printStringWithShift(weatherString.c_str(), 17); 
-//         } else {
-//             alarm = false;
-//         }
-// //delay(500);
-//     //   while((millis() - timing > 500) == 0) {PRN("BUTTON")};            // Пауза 
-//     //   PRN("UNBUTTON");
-//     }
-
-//=== Синронизация таймеров каждые десят минут и 5 секунд ==========================================
-    // if (((timeDate.minute % 10) == 0) and (timeDate.second == 0) and (not secFr))  {      // Синхронизация таймеров 
-    //     printTime();
-    //     PRN("============> Synchro timers");
-
-    //     // modeChangeTimer.start();                    // Смена режимов отображения
-    //     firstRun = false; 
-    // }
+//=== Работа с кнопкой и показ данных из датчиков==========================================
+    if (((digitalRead(buttonPin) == HIGH) || (((minute % 5) == 0) && (second == 0)) ) && ShowFlag == false) {
+        ChangeMode.start();  
+        ShowFlag = true;  
+        showSimpleTemp();        
+    }
 
 //=== Проверка подключения к вайфай ==========================================
     if ((second > 30 && second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
@@ -376,6 +367,29 @@ void loop()
     //   sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 15, 0, 15));
    
 }
+
+//=== Переключение режимов ==================================================================================
+void SwitchShowMode() {
+    Mode++;
+
+    switch (Mode)
+    {
+    case 1:
+        showSimpleHum();
+        break;
+    case 2:
+        Mode = 0;
+        ChangeMode.stop();
+        ShowFlag = false;
+        // show = false;
+        printStringWithShift(weatherString.c_str(), 20);    
+        break;
+    default:
+        break;
+    }
+
+}
+
 
 //=== Вывод только цифр ==================================================================================
 void showDigit(char ch, int col, const uint8_t *data)
@@ -696,50 +710,54 @@ void updateTime()
 
 //=== Показ анимир часов ==============================================
 void showAnimClock() {
-    if ((millis() % 25) == 0) {
-        byte digPos[6] = {1, 8, 18, 25, 15, 16};
 
-        int digHt = 16;
-        int num = 4;
-        int i;        if(del == 0) {
-            del = digHt;
-            for(i = 0; i < num; i++) digold[i] = dig[i];
-            dig[0] = hour / 10; // ? timeDate.hour / 10 : 10;
-            dig[1] = hour % 10;
-            dig[2] = minute / 10;
-            dig[3] = minute % 10;
-            for(i = 0; i < num; i++)  digtrans[i] = (dig[i] == digold[i]) ? 0 : digHt;
-        } else del--;
-        clr();
-            for(i = 0; i < num; i++) {
-                if(digtrans[i] == 0) {
-                dy = 0;
-                showDigit(dig[i], digPos[i], dig6x8);
-                } else {
-                dy = digHt - digtrans[i];
-                showDigit(digold[i], digPos[i], dig6x8);
-                dy =- digtrans[i];
-                showDigit(dig[i], digPos[i], dig6x8);
-                digtrans[i]--;
+    if (!ShowFlag) {
+
+        if ((millis() % 25) == 0) {
+            byte digPos[6] = {1, 8, 18, 25, 15, 16};
+
+            int digHt = 16;
+            int num = 4;
+            int i;        if(del == 0) {
+                del = digHt;
+                for(i = 0; i < num; i++) digold[i] = dig[i];
+                dig[0] = hour / 10; // ? timeDate.hour / 10 : 10;
+                dig[1] = hour % 10;
+                dig[2] = minute / 10;
+                dig[3] = minute % 10;
+                for(i = 0; i < num; i++)  digtrans[i] = (dig[i] == digold[i]) ? 0 : digHt;
+            } else del--;
+            clr();
+                for(i = 0; i < num; i++) {
+                    if(digtrans[i] == 0) {
+                    dy = 0;
+                    showDigit(dig[i], digPos[i], dig6x8);
+                    } else {
+                    dy = digHt - digtrans[i];
+                    showDigit(digold[i], digPos[i], dig6x8);
+                    dy =- digtrans[i];
+                    showDigit(dig[i], digPos[i], dig6x8);
+                    digtrans[i]--;
+                    }
                 }
-            }
-            dy = 0;
-        
-        int flash = millis() % 2000;
-        
-        if(!alarm_stat){
+                dy = 0;
+            
+            int flash = millis() % 2000;
+            
+            if(!alarm_stat){
 
-            if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
-                
-                setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
-                setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);              
-            }
+                if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
+                    
+                    setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
+                    setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);              
+                }
 
-        } else {
-            setCol(digPos[4], 0x66);
-            setCol(digPos[5], 0x66);
+            } else {
+                setCol(digPos[4], 0x66);
+                setCol(digPos[5], 0x66);
+            }
+            refreshAll();
         }
-        refreshAll();
     }
 }
 
