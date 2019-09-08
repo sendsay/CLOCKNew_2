@@ -31,16 +31,6 @@ int rotate = 90;        //поворот матрицы
 int dx = 0;             //координаты
 int dy = 0;             //координаты
 
-// struct time_struct {
-//   byte hour = 22;
-//   byte minute = 40;
-//   byte second = 42;
-//   byte month = 4;
-//   byte day = 6;
-//   byte dayOfWeek = 6;
-//   int year = 2018;
-// };
-// time_struct timeDate;
 
 String ssid = "PUTIN UTELE";            // Назва локального WiFi
 String password = "0674788273";         // Пароль локального WiFi
@@ -206,8 +196,6 @@ void getWeather();                                    // Получение по
                                   
 void convertWeatherDes();                             // Конвертация описания погоды
 
-// bool httpRequest();
-// bool parseData();
 void callback(char* topic, byte* payload, unsigned int length); // Коллбек функция для MQTT
 void reconnect();                                     // Переподключение для MQTT
 

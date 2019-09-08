@@ -72,14 +72,8 @@ void setup()
     delay(100);
     bip();                                  // Сигнал при старте
 
-    // RTClock.begin();                        // Инициализация часов
-    // PRN("============> Itialize clock!");
-
     localMillisAtUpdate = millis();
     localEpoc = (hour * 60 * 60 + minute * 60 + second);
-
-
-  //  updateTime();                           // Обновление времени
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели 
@@ -118,8 +112,6 @@ void setup()
 
     // modeChangeTimer.interval(7*1000);       // Настройка таймера переключения режимов
     // modeChangeTimer.start();                // Таймер переключения режимов
-
-    // RTClock.setAlarm1(0, 22,34, 00, DS3231_MATCH_H_M_S);
 
 
     MQTTclient.setServer(MQTTClientas.mqtt_server, MQTTClientas.mqtt_port);
@@ -699,32 +691,14 @@ void updateTime()
   hour = ((epoch % 86400L) / 3600) % 24;
   minute = (epoch % 3600) / 60;
   second = epoch % 60;
-
-
-    // dt = RTClock.getDateTime();
-    // timeDate.hour = dt.hour;
-    // timeDate.minute = dt.minute;
-    // timeDate.second = dt.second;
-    // timeDate.day = dt.day;
-    // timeDate.dayOfWeek = dt.dayOfWeek + 1;
-    // timeDate.month = dt.month;
-    // timeDate.year = dt.year; 
-
-  
+ 
 }
 
 //=== Показ анимир часов ==============================================
 void showAnimClock() {
     if ((millis() % 25) == 0) {
         byte digPos[6] = {1, 8, 18, 25, 15, 16};
-        
-        // if(timeDate.hour < 10) {
-        //     digPos[1] = 5;
-        //     digPos[2] = 15;
-        //     digPos[3] = 22;
-        //     digPos[4] = 12;
-        //     digPos[5] = 13;
-        // }
+
         int digHt = 16;
         int num = 4;
         int i;        if(del == 0) {
@@ -754,36 +728,13 @@ void showAnimClock() {
         int flash = millis() % 2000;
         
         if(!alarm_stat){
-            
-        //  setCol(digPos[4], 0x66);
-        //  setCol(digPos[5], 0x66);
 
-        //  setCol(digPos[4], flash < 500 ? 0x66 : 0x00);
-        //  setCol(digPos[5], flash < 500 ? 0x66 : 0x00);    
-            
-        //   if((flash >= 180 && flash < 360) || flash >= 540) {                       // мерегтіння двокрапок в годиннику підвязуємо до личильника циклів
-        //     setCol(digPos[4], WIFI_connected ? 0x66 : 0x60);
-        //     setCol(digPos[5], WIFI_connected ? 0x66 : 0x60);
-            //}
             if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
-            //  if(flash >= 0 && flash < 180) {
-            //    setCol(digPos[4], WIFI_connected ? 0x24 : 0x20);
-            //    setCol(digPos[5], WIFI_connected ? 0x42 : 0x40);
-            //  }
-            //  if(flash >= 360 && flash < 540) {
-            //   setCol(digPos[4], WIFI_connected ? 0x42 : 0x40);
-            //   setCol(digPos[5], WIFI_connected ? 0x24 : 0x20);
-            // }
-            
-            setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
-            setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);   
-
-
-            
+                
+                setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
+                setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);              
             }
 
-        //  if(updateForecast && WIFI_connected) setCol(00, flash < 500 ? 0x80 : 0x00);
-        //   if(updateForecasttomorrow && WIFI_connected) setCol(31, flash < 500 ? 0x80 : 0x00);
         } else {
             setCol(digPos[4], 0x66);
             setCol(digPos[5], 0x66);
@@ -824,8 +775,6 @@ void timeUpdateNTP() {
         }
         }
     }
-
- //   RTClock.setDateTime(g_year, g_month, g_day, g_hour, g_minute, g_second);  // Устанвока времени
 
     hour=g_hour;
     minute=g_minute;
