@@ -1060,19 +1060,38 @@ void convertWeatherDes(){
 //=== Коллбек функция MQTT ========================================
 void callback(char* topic, byte* payload, unsigned int length) {
 
-  if(!MQTTClientas.mqttOn) return;
+    if(!MQTTClientas.mqttOn) return;
 
-  if(String(topic) == MQTTClientas.mqtt_sub_inform) {
-    String Text = "        ";
-    for(unsigned i = 0; i < length; i++) {
-      Text += ((char)payload[i]);
+      if(String(topic) == MQTTClientas.mqtt_sub_inform) {
+      String Text = "";
+      char CountRepeat = 0;
+
+        for(unsigned i = 0; i < length; i++) {
+        Text += ((char)payload[i]);
+        }
+
+        PRN("==========> MQTT >" + Text);
+
+        if (Text.startsWith("##"))  {
+            CountRepeat = Text.charAt(2);
+            Text = "        " + Text.substring(3, Text.length()) + "            "; 
+            int CntRepeat = CountRepeat - '0';
+            for (int ii = 0; ii < CntRepeat; ii++) {            
+                for(int i = 0; i < 4; i++) {        
+                    bip();
+                }
+                printStringWithShift(Text.c_str(), 20);
+            } 
+        } else {
+            Text = "        " + Text + "            "; 
+            for(int i = 0; i < 4; i++) {        
+                bip();
+            }
+            printStringWithShift(Text.c_str(), 20); 
+        }
+        
+   
     }
-    Text += "             ";
-    for(int i = 0; i < 4; i++) {
-      bip();
-    }
-    printStringWithShift(Text.c_str(), 20);
-  }
 
      if(String(topic) == MQTTClientas.mqtt_butt) {       //Кнопка
         bip();
