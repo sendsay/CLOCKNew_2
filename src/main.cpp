@@ -67,7 +67,7 @@ Ticker ChangeMode(SwitchShowMode, 2*1000);          // Таймер перекл
 */
 void setup() {
 
-    Serial.begin(115200);
+    Serial.begin(921600);
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
   //  pinMode(buttonPin, INPUT);              // Вход кнопки
     pinMode(lightPin, OUTPUT);              // Выход мигалки
@@ -448,8 +448,7 @@ void printCharWithShift(unsigned char c, int shiftDelay)
 
 //=== Конвертация символов если исползуется украинский язык ==================
 byte dualChar = 0;
-unsigned char convert_UA_RU_PL_DE(unsigned char _c)
-{
+unsigned char convert_UA_RU_PL_DE(unsigned char _c) {
     unsigned char c = _c;
     // конвертирование латиницы
     if (c == 208) {
