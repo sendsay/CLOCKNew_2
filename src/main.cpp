@@ -608,9 +608,11 @@ void updateTime()
   long curEpoch = localEpoc + ((millis() - localMillisAtUpdate) / 1000);
   long epoch = round(double((curEpoch + 86400L) % 86400L));
   hour = ((epoch % 86400L) / 3600) % 24;
+
+
+
   minute = (epoch % 3600) / 60;
-  second = epoch % 60;
- 
+  second = epoch % 60; 
 }
 
 //=== Показ анимир часов ==============================================
@@ -623,7 +625,9 @@ void showAnimClock() {
         int i;        if(del == 0) {
             del = digHt;
             for(i = 0; i < num; i++) digold[i] = dig[i];
-            dig[0] = hour / 10; // ? timeDate.hour / 10 : 10;
+   
+            
+            dig[0] = hour / 10;
             dig[1] = hour % 10;
             dig[2] = minute / 10;
             dig[3] = minute % 10;
@@ -687,6 +691,11 @@ void timeUpdateNTP() {
     }
 
     hour=g_hour;
+
+    if (!summerTime) {
+        hour = hour - 1;
+    }
+
     minute=g_minute;
     second=g_second;
     day=g_day;

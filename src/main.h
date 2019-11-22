@@ -53,6 +53,7 @@ int timeZone = 2.0;                     // Временная зона для ч
 long timeUpdate = 60000;                // Период обновления времени
 uint8_t hourTest[3], minuteTest[3];     // ??
 int g_hour, g_minute, g_second, g_month=1, g_day, g_dayOfWeek, g_year;  // ??
+bool summerTime = false;                // летнее время
 
 String ntpServerName = "ntp3.time.in.ua";   // Сервер обновления времени
 const int NTP_PACKET_SIZE = 48;         // Размер пакета от сервера времени
