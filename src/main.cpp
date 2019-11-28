@@ -648,12 +648,16 @@ void showAnimClock() {
             }
             dy = 0;
         
+        // unsigned long flash = millis() % 2000;
         int flash = millis() % 2000;
         
         if(!alarm_stat){
             if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
                 setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
                 setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);              
+            } else {
+                setCol(digPos[5], flash < 1000 ? 0x40 : 0x00);
+                   
             }
         } else {
             setCol(digPos[4], 0x66);
