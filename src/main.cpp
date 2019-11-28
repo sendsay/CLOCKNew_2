@@ -65,11 +65,9 @@ Ticker ChangeMode(SwitchShowMode, 2*1000);          // Таймер перекл
 .##....##.##..........##....##.....##.##.......
 ..######..########....##.....#######..##.......
 */
-void setup() {
+void setup() {    
 
-    
-
-    Serial.begin(921600);
+    Serial.begin(115200);
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
   //  pinMode(buttonPin, INPUT);              // Вход кнопки
     pinMode(lightPin, OUTPUT);              // Выход мигалки
