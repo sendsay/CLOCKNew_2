@@ -67,6 +67,8 @@ Ticker ChangeMode(SwitchShowMode, 2*1000);          // Таймер перекл
 */
 void setup() {
 
+    
+
     Serial.begin(921600);
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
   //  pinMode(buttonPin, INPUT);              // Вход кнопки
@@ -609,8 +611,6 @@ void updateTime()
   long epoch = round(double((curEpoch + 86400L) % 86400L));
   hour = ((epoch % 86400L) / 3600) % 24;
 
-
-
   minute = (epoch % 3600) / 60;
   second = epoch % 60; 
 }
@@ -653,11 +653,11 @@ void showAnimClock() {
         
         if(!alarm_stat){
             if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
-                setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
-                setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);              
+                setCol(digPos[4], flash < 1000 ? 0x24 : 0x42);
+                setCol(digPos[5], flash > 1000 ? 0x42 : 0x24);              
             } else {
-                setCol(digPos[5], flash < 1000 ? 0x40 : 0x00);
-                   
+                setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
+                setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);                   
             }
         } else {
             setCol(digPos[4], 0x66);
