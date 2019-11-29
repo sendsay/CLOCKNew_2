@@ -205,6 +205,12 @@ bool ShowFlag = false;                                // Показывать д
 int Mode = 0;                                         // Режим показа данных
 bool ShowFlagMQTT = false;                            // Показывать данные с датчиков по MQTT
 
+void fileindex();
+void bootstrap();
+void popper();
+void bootstrapmin();
+
+
 
 //=================================================
 // END.

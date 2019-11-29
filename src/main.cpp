@@ -37,6 +37,11 @@ ______________________________________________*/
 #include <math.h>
 #include <Ticker.h>
 
+#include <FS.h>
+//#include <WiFiClient.h>
+
+
+
 #include <T_ukr.h>
 #include <T_cz.h>
 #include <T_de.h>
@@ -56,6 +61,8 @@ WiFiClient ESPclient;           // Клиент подключения к ВАЙ
 PubSubClient MQTTclient(ESPclient); // Клиент MQTT
 Ticker ChangeMode(SwitchShowMode, 2*1000);          // Таймер переключения режимов отображение данных с датчиков
 
+ESP8266WebServer server(80);    // Веб сервер 
+
 /*
 ..######..########.########.##.....##.########.
 .##....##.##..........##....##.....##.##.....##
@@ -67,7 +74,8 @@ Ticker ChangeMode(SwitchShowMode, 2*1000);          // Таймер перекл
 */
 void setup() {    
 
-    Serial.begin(115200);
+    Serial.begin(57600);
+
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
   //  pinMode(buttonPin, INPUT);              // Вход кнопки
     pinMode(lightPin, OUTPUT);              // Выход мигалки
@@ -119,7 +127,25 @@ void setup() {
     MQTTclient.connect(MQTTClientas.mqtt_name);
     MQTTclient.subscribe(MQTTClientas.mqtt_sub_inform);
     MQTTclient.subscribe(MQTTClientas.mqtt_sub);
+
+
+    server.begin();
+
+    server.on("/", fileindex);
+
+    server.on("/index.html", fileindex);
+    server.on("/bootstrap.min.css", bootstrap);
+    server.on("bootstrap.min.css", bootstrap);
+    server.on("/popper.min.js", popper);
+    server.on("/bootstrap.min.js", bootstrapmin);
+    server.on("bootstrap.min.js", bootstrapmin);
+
+    SPIFFS.begin();
 }
+
+
+
+
 
 /*
 .##........#######...#######..########.
@@ -132,6 +158,8 @@ void setup() {
 */
 void loop() { 
     ChangeMode.update();                    // Обновление таймера отображения данных из датчиков
+
+    server.handleClient();                  // Работа Веб страницы
 
 //=== Мигалка =====================================================
     digitalWrite(lightPin, (((second % 2) == 0) ? HIGH : LOW)); 
@@ -275,6 +303,39 @@ void loop() {
     //   sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 15, 0, 15));
    
 }
+
+
+
+void fileindex()
+{
+    File file = SPIFFS.open("/index.html.gz", "r");
+    size_t sent = server.streamFile(file, "text/html");
+}
+void bootstrap()
+{
+    File file = SPIFFS.open("/bootstrap.min.css.gz", "r");
+    size_t sent = server.streamFile(file, "text/css");
+}
+void popper()
+{
+    File file = SPIFFS.open("/popper.min.js.gz", "r");
+    size_t sent = server.streamFile(file, "application/javascript");
+}
+void bootstrapmin()
+{
+    File file = SPIFFS.open("/bootstrap.min.js.gz", "r");
+    size_t sent = server.streamFile(file, "application/javascript");
+}
+
+/*
+..######..##......##.####.########..######..##.....##....##.....##..#######..########..########
+.##....##.##..##..##..##.....##....##....##.##.....##....###...###.##.....##.##.....##.##......
+.##.......##..##..##..##.....##....##.......##.....##....####.####.##.....##.##.....##.##......
+..######..##..##..##..##.....##....##.......#########....##.###.##.##.....##.##.....##.######..
+.......##.##..##..##..##.....##....##.......##.....##....##.....##.##.....##.##.....##.##......
+.##....##.##..##..##..##.....##....##....##.##.....##....##.....##.##.....##.##.....##.##......
+..######...###..###..####....##.....######..##.....##....##.....##..#######..########..########
+*/
 
 //=== Переключение режимов ==================================================================================
 void SwitchShowMode() {
@@ -613,9 +674,21 @@ void updateTime()
   second = epoch % 60; 
 }
 
+
+/*
+..######..##.....##..#######..##......##.########.####.##.....##.########
+.##....##.##.....##.##.....##.##..##..##....##.....##..###...###.##......
+.##.......##.....##.##.....##.##..##..##....##.....##..####.####.##......
+..######..#########.##.....##.##..##..##....##.....##..##.###.##.######..
+.......##.##.....##.##.....##.##..##..##....##.....##..##.....##.##......
+.##....##.##.....##.##.....##.##..##..##....##.....##..##.....##.##......
+..######..##.....##..#######...###..###.....##....####.##.....##.########
+*/
+
+
 //=== Показ анимир часов ==============================================
 void showAnimClock() {
-    if ((millis() % 25) == 0) {
+    if ((millis() % 20) == 0) {
         byte digPos[6] = {1, 8, 18, 25, 15, 16};
 
         int digHt = 16;
