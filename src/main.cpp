@@ -36,11 +36,7 @@ ______________________________________________*/
 #include <PubSubClient.h>
 #include <math.h>
 #include <Ticker.h>
-
 #include <FS.h>
-//#include <WiFiClient.h>
-
-
 
 #include <T_ukr.h>
 #include <T_cz.h>
@@ -87,6 +83,9 @@ void setup() {
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели 
     sendCmdAll(CMD_INTENSITY, 15);          // Установка яркости
+
+
+    loadConfig("/config.json", config);   // загрузка конфига 
 
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
         PRN("============> YES!!! find BMP280 sensor!");
@@ -142,10 +141,6 @@ void setup() {
 
     SPIFFS.begin();
 }
-
-
-
-
 
 /*
 .##........#######...#######..########.
@@ -306,26 +301,61 @@ void loop() {
 
 
 
-void fileindex()
-{
+void fileindex() {
     File file = SPIFFS.open("/index.html.gz", "r");
     size_t sent = server.streamFile(file, "text/html");
 }
-void bootstrap()
-{
+void bootstrap() {
     File file = SPIFFS.open("/bootstrap.min.css.gz", "r");
     size_t sent = server.streamFile(file, "text/css");
 }
-void popper()
-{
+void popper() {
     File file = SPIFFS.open("/popper.min.js.gz", "r");
     size_t sent = server.streamFile(file, "application/javascript");
 }
-void bootstrapmin()
-{
+void bootstrapmin() {
     File file = SPIFFS.open("/bootstrap.min.js.gz", "r");
     size_t sent = server.streamFile(file, "application/javascript");
 }
+
+/*
+..######...#######..##....##.########.####..######..
+.##....##.##.....##.###...##.##........##..##....##.
+.##.......##.....##.####..##.##........##..##.......
+.##.......##.....##.##.##.##.######....##..##...####
+.##.......##.....##.##..####.##........##..##....##.
+.##....##.##.....##.##...###.##........##..##....##.
+..######...#######..##....##.##.......####..######..
+*/
+void loadConfig(const char *filename, Config &config) {
+
+    File file = SPIFFS.open(filename, "r");
+
+    StaticJsonDocument<512> doc;
+
+    DeserializationError error = deserializeJson(doc, file);
+    if (error)
+        Serial.println(F("Failed to read file, using default configuration"));
+    
+    strlcpy(config.ssid, doc["ssid"] | "myHOME", sizeof(config.ssid));
+    strlcpy(config.password, doc["password"] | "123456789", sizeof(config.password));
+    strlcpy(config.ssidAP, doc["ssidAP"] | "myCLOCK", sizeof(config.ssidAP));
+    strlcpy(config.passwordAP, doc["passwordAP"] | "", sizeof(config.passwordAP));
+    config.timeZone = doc["timezone"] | 2;
+    config.summerTime = doc["summertime"] | false;
+    strlcpy(config.ntpServerName, doc["ntpServerName"] | "ntp3.time.in.ua", sizeof(config.ntpServerName));
+    strlcpy(config.apiKey, doc["apiKey"] | "3bdyjnd7", sizeof(config.apiKey));
+    config.cityId = doc["cityId"] | 598098;
+    strlcpy(config.weatherServer, doc["weatherServer"] | "api.openweathermap.org", sizeof(config.weatherServer));
+    strlcpy(config.langWeather, doc["langWeather"] | "ua", sizeof(config.langWeather));
+      
+
+
+
+  file.close();
+}
+
+
 
 /*
 ..######..##......##.####.########..######..##.....##....##.....##..#######..########..########

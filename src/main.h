@@ -139,27 +139,46 @@ byte timeSigOff = 22;                         // Время конца сигн�
 bool alarm = false;                           // Флаг сработки будильника
 
 struct MQTTstruct {
-char mqtt_server[21] = "m24.cloudmqtt.com";                                             // Имя сервера MQTT
-int  mqtt_port = 17049;                                                                 // Порт для подключения к серверу MQTT
-char mqtt_user[25] = "zqyslqbd";                                                        // Логи от сервер
-char mqtt_pass[25] = "ghCaEZLP2i0V";                                                    // Пароль от сервера MQTT
-char mqtt_name[25] = "Informer";
-char mqtt_sub_inform[25] = "Inform/mess";
-char mqtt_sub[25] = "Ulica/temp";
-char mqtt_pub_temp[25] = "Informer/temp";
-char mqtt_pub_tempUl[25] = "Informer/tempUl";
-char mqtt_pub_hum[25] = "Informer/hum";
-char mqtt_pub_press[25] = "Informer/press";
-char mqtt_pub_alt[25] = "Informer/alt";
-char mqtt_pub_forecast[25] = "Informer/forecast";
-String mqtt_forecast = "No data!";
-char mqtt_butt[25] = "Informer/button";
-bool mqttOn = true;
-int tMqtt3 = 85;
-int tMqtt4 = 0;
-int tMqtt5 = 0;
+  char mqtt_server[21] = "m24.cloudmqtt.com";                                             // Имя сервера MQTT
+  int  mqtt_port = 17049;                                                                 // Порт для подключения к серверу MQTT
+  char mqtt_user[25] = "zqyslqbd";                                                        // Логи от сервер
+  char mqtt_pass[25] = "ghCaEZLP2i0V";                                                    // Пароль от сервера MQTT
+  char mqtt_name[25] = "Informer";
+  char mqtt_sub_inform[25] = "Inform/mess";
+  char mqtt_sub[25] = "Ulica/temp";
+  char mqtt_pub_temp[25] = "Informer/temp";
+  char mqtt_pub_tempUl[25] = "Informer/tempUl";
+  char mqtt_pub_hum[25] = "Informer/hum";
+  char mqtt_pub_press[25] = "Informer/press";
+  char mqtt_pub_alt[25] = "Informer/alt";
+  char mqtt_pub_forecast[25] = "Informer/forecast";
+  String mqtt_forecast = "No data!";
+  char mqtt_butt[25] = "Informer/button";
+  bool mqttOn = true;
+  int tMqtt3 = 85;
+  int tMqtt4 = 0;
+  int tMqtt5 = 0;
 };
 MQTTstruct MQTTClientas;
+
+
+struct Config {                                       // Структура с настройками
+  char ssid[32];
+  char password[20];                                 // Пароль локального WiFi
+  char ssidAP[32];                                   // Назва точки доступу
+  char passwordAP[20];                               // Пароль точки доступу
+  int timeZone;                                      // Временная зона для часов
+  bool summerTime;                                   // летнее время
+  char ntpServerName[40];                            // Сервер обновления времени
+  char apiKey[60];                                   // Ключ для погоды
+  int cityId;                                        // локация погоды
+  char weatherServer[50];                            // Сервер погоды
+  char langWeather[2];                               // Язык погоды
+
+
+};
+
+Config config;
 
 //=====================================================================================================================================
 void showDigit(char ch, int col, const uint8_t *data);// показ цифры на позиции
@@ -205,10 +224,15 @@ bool ShowFlag = false;                                // Показывать д
 int Mode = 0;                                         // Режим показа данных
 bool ShowFlagMQTT = false;                            // Показывать данные с датчиков по MQTT
 
-void fileindex();
-void bootstrap();
-void popper();
-void bootstrapmin();
+void fileindex();                                     // Главная страница
+void bootstrap();                                     // бутсрап
+void popper();                                        // поппер
+void bootstrapmin();                                  // бутсрап минимальный
+
+void loadConfig(const char *filename, Config &config); // загрузка конфига
+
+
+
 
 
 
