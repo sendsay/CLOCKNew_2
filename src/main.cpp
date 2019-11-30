@@ -140,6 +140,8 @@ void setup() {
     server.on("/bootstrap.min.js", bootstrapmin);
     server.on("bootstrap.min.js", bootstrapmin);
 
+    printFile("/config.json");
+
 }
 
 /*
@@ -360,8 +362,10 @@ void loadConfig(const char *filename, Config &config) {
     StaticJsonDocument<800> doc;
 
     DeserializationError error = deserializeJson(doc, file);
-    if (error)
+    if (error) {
+        Serial.println(error);
         Serial.println(F("Failed to read file, using default configuration"));
+    }
     //Wifi
     strlcpy(config.ssid, doc["ssid"] | "myHOME", sizeof(config.ssid));
     strlcpy(config.password, doc["password"] | "123456789", sizeof(config.password));
