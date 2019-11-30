@@ -336,20 +336,40 @@ void loadConfig(const char *filename, Config &config) {
     DeserializationError error = deserializeJson(doc, file);
     if (error)
         Serial.println(F("Failed to read file, using default configuration"));
-    
+    //Wifi
     strlcpy(config.ssid, doc["ssid"] | "myHOME", sizeof(config.ssid));
     strlcpy(config.password, doc["password"] | "123456789", sizeof(config.password));
     strlcpy(config.ssidAP, doc["ssidAP"] | "myCLOCK", sizeof(config.ssidAP));
     strlcpy(config.passwordAP, doc["passwordAP"] | "", sizeof(config.passwordAP));
+    //Time
     config.timeZone = doc["timezone"] | 2;
     config.summerTime = doc["summertime"] | false;
     strlcpy(config.ntpServerName, doc["ntpServerName"] | "ntp3.time.in.ua", sizeof(config.ntpServerName));
+    config.timeSigOn = doc["timeSigOn"] | 6;
+    config.timeSigOff = doc["timeSigOff"] | 22;
+    //Weather
     strlcpy(config.apiKey, doc["apiKey"] | "3bdyjnd7", sizeof(config.apiKey));
     config.cityId = doc["cityId"] | 598098;
     strlcpy(config.weatherServer, doc["weatherServer"] | "api.openweathermap.org", sizeof(config.weatherServer));
     strlcpy(config.langWeather, doc["langWeather"] | "ua", sizeof(config.langWeather));
-      
+    //Mqtt
+    strlcpy(config.mqtt_server, doc["mqtt_server"], sizeof(config.mqtt_server));
+    strlcpy(config.mqtt_server, doc["mqtt_server"] | "", sizeof(config.mqtt_server)); 
 
+    config.mqtt_port = doc["mqtt_port"] | 0;
+
+    strlcpy(config.mqtt_user, doc["mqtt_user"] | "", sizeof(config.mqtt_user));   
+    strlcpy(config.mqtt_pass, doc["mqtt_pass"] | "", sizeof(config.mqtt_pass));   
+    strlcpy(config.mqtt_name, doc["mqtt_name"] | "", sizeof(config.mqtt_name));   
+    strlcpy(config.mqtt_sub_inform, doc["mqtt_sub_inform"] | "", sizeof(config.mqtt_sub_inform));   
+    strlcpy(config.mqtt_sub, doc["mqtt_sub"] | "", sizeof(config.mqtt_sub));   
+    strlcpy(config.mqtt_pub_temp, doc["mqtt_pub_temp"] | "", sizeof(config.mqtt_pub_temp));   
+    strlcpy(config.mqtt_pub_tempUl, doc["mqtt_pub_tempUl"] | "", sizeof(config.mqtt_pub_tempUl));   
+    strlcpy(config.mqtt_pub_hum, doc["mqtt_pub_hum"] | "", sizeof(config.mqtt_pub_hum));   
+    strlcpy(config.mqtt_pub_press, doc["mqtt_pub_press"] | "", sizeof(config.mqtt_pub_press));   
+    strlcpy(config.mqtt_pub_alt, doc["mqtt_pub_alt"] | "", sizeof(config.mqtt_pub_alt));   
+    strlcpy(config.mqtt_pub_forecast, doc["mqtt_pub_forecast"] | "", sizeof(config.mqtt_pub_forecast));   
+    strlcpy(config.mqtt_butt, doc["mqtt_butt"] | "", sizeof(config.mqtt_butt));   
 
 
   file.close();

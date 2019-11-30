@@ -167,14 +167,32 @@ struct Config {                                       // Структура с �
   char password[20];                                 // Пароль локального WiFi
   char ssidAP[32];                                   // Назва точки доступу
   char passwordAP[20];                               // Пароль точки доступу
+ 
   int timeZone;                                      // Временная зона для часов
   bool summerTime;                                   // летнее время
   char ntpServerName[40];                            // Сервер обновления времени
+  byte timeSigOn;                                    // Время начала сигнала
+  byte timeSigOff;                                   // Время конца сигнала
+
   char apiKey[60];                                   // Ключ для погоды
   int cityId;                                        // локация погоды
   char weatherServer[50];                            // Сервер погоды
   char langWeather[2];                               // Язык погоды
 
+  char mqtt_server[21];;                             // Имя сервера MQTT
+  int  mqtt_port;                                    // Порт для подключения к серверу MQTT
+  char mqtt_user[25];                                // Логи от сервер
+  char mqtt_pass[25];                                // Пароль от сервера MQTT
+  char mqtt_name[25];
+  char mqtt_sub_inform[25];
+  char mqtt_sub[25];
+  char mqtt_pub_temp[25];
+  char mqtt_pub_tempUl[25];
+  char mqtt_pub_hum[25];
+  char mqtt_pub_press[25];
+  char mqtt_pub_alt[25];
+  char mqtt_pub_forecast[25];
+  char mqtt_butt[25];
 
 };
 
