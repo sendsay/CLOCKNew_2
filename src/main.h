@@ -177,9 +177,9 @@ struct Config {                                       // Структура с �
   char apiKey[60];                                   // Ключ для погоды
   int cityId;                                        // локация погоды
   char weatherServer[50];                            // Сервер погоды
-  char langWeather[2];                               // Язык погоды
+  char langWeather[3];                               // Язык погоды
 
-  char mqtt_server[21];;                             // Имя сервера MQTT
+  char mqtt_server[50];;                             // Имя сервера MQTT
   int  mqtt_port;                                    // Порт для подключения к серверу MQTT
   char mqtt_user[25];                                // Логи от сервер
   char mqtt_pass[25];                                // Пароль от сервера MQTT
@@ -249,8 +249,8 @@ void bootstrapmin();                                  // бутсрап мини
 
 void loadConfig(const char *filename, Config &config); // загрузка конфига
 
-
-
+void saveConfig(const char *filename, Config &config);
+void printFile(const char *filename);
 
 
 
