@@ -80,7 +80,7 @@ void setup() {
 
     PRN("");
     PRN("");
-    PRN(" ============>START!");
+    PRN("============>START!");
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели 
@@ -141,7 +141,7 @@ void setup() {
     server.on("bootstrap.min.js", bootstrapmin);
 
     printFile("/config.json");
-
+ 
 }
 
 /*
@@ -359,15 +359,16 @@ void loadConfig(const char *filename, Config &config) {
 
     File file = SPIFFS.open(filename, "r");
 
-    StaticJsonDocument<800> doc;
+    StaticJsonDocument<900> doc;
 
     DeserializationError error = deserializeJson(doc, file);
-    if (error) {
-        Serial.println(error);
-        Serial.println(F("Failed to read file, using default configuration"));
+    if (error) {        
+        PRN(F("Failed to read file, using default configuration"));
+        PRN("Error is :");
+        PRN(error.c_str());
     }
     //Wifi
-    strlcpy(config.ssid, doc["ssid"] | "myHOME", sizeof(config.ssid));
+    strlcpy(config.ssid, doc["ssid"] | "22222", sizeof(config.ssid));
     strlcpy(config.password, doc["password"] | "123456789", sizeof(config.password));
     strlcpy(config.ssidAP, doc["ssidAP"] | "myCLOCK", sizeof(config.ssidAP));
     strlcpy(config.passwordAP, doc["passwordAP"] | "", sizeof(config.passwordAP));
@@ -413,7 +414,7 @@ void saveConfig(const char *filename, Config &config) {
         return;
     }
 
-    StaticJsonDocument<800> doc;
+    StaticJsonDocument<900> doc;
 
     doc["ssid"] = config.ssid;
     doc["password"] = config.password;
