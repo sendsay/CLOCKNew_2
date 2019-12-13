@@ -1,12 +1,12 @@
 /*_______By IvanUA ed. by Sendsay______________
- Піни LED------NodeMCU  1.0                    | 
+ Піни LED------NodeMCU  1.0                    |
        DataIn__________________D7/GPIO 13      |
        LOAD/CS_________________D8/GPIO 15      |
        CLK_____________________D5/GPIO 14      |
  Кнопка________________________D0/GPIO 16      |
  Бaзер_________________________D4/GPIO 12      |
  DS18B20_______________________D3/GPIO 0       |
- Si7021/BMP/BME280/DS3231 DA___D2/GPIO 4       | 
+ Si7021/BMP/BME280/DS3231 DA___D2/GPIO 4       |
  Si7021/BMP/BME280/DS3231 CL___D1/GPIO 5       |
  GND - FotoRezistor ___________A0              |
  +3,3 - rezistor 2-100k _______A0              |
@@ -57,7 +57,7 @@ WiFiClient ESPclient;           // Клиент подключения к ВАЙ
 PubSubClient MQTTclient(ESPclient); // Клиент MQTT
 Ticker ChangeMode(SwitchShowMode, 2*1000);          // Таймер переключения режимов отображение данных с датчиков
 
-ESP8266WebServer server(80);    // Веб сервер 
+ESP8266WebServer server(80);    // Веб сервер
 
 /*
 ..######..########.########.##.....##.########.
@@ -68,7 +68,7 @@ ESP8266WebServer server(80);    // Веб сервер
 .##....##.##..........##....##.....##.##.......
 ..######..########....##.....#######..##.......
 */
-void setup() {    
+void setup() {
 
     Serial.begin(57600);
 
@@ -83,10 +83,10 @@ void setup() {
     PRN("============>START!");
 
     initMAX7219();                          // Инициализация ЛЕД панели
-    sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели 
+    sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели
     sendCmdAll(CMD_INTENSITY, 15);          // Установка яркости
 
-    loadConfig("/config.json", config);     // загрузка конфига 
+    loadConfig("/config.json", config);     // загрузка конфига
 
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
         PRN("============> YES!!! find BMP280 sensor!");
@@ -102,14 +102,14 @@ void setup() {
         sensorsSi7021();
     } else {
         PRN("============> Did not find Si7021 sensor!");
-    }  
+    }
 
-    if (lang == 0) ukrText();               // Выбор языка для сообщений 
+    if (lang == 0) ukrText();               // Выбор языка для сообщений
     else if (lang == 1) rusText();
     else if (lang == 2) polText();
     else if (lang == 3) czText();
     else if (lang == 4) deText();
-    else if (lang == 5) enText();                 
+    else if (lang == 5) enText();
 
     wifiConnect();                          // подключение к Вайфай
 
@@ -132,16 +132,30 @@ void setup() {
     server.begin();
 
     server.on("/", fileindex);
-
     server.on("/index.html", fileindex);
+
     server.on("/bootstrap.min.css", bootstrap);
     server.on("bootstrap.min.css", bootstrap);
+
     server.on("/popper.min.js", popper);
+
     server.on("/bootstrap.min.js", bootstrapmin);
     server.on("bootstrap.min.js", bootstrapmin);
 
+    server.on("jquery.min.js", jquery);
+    server.on("/jquery.min.js", jquery);
+
+    server.on("style.css", style);
+    server.on("/style.css", style);
+
+    server.on("/getData", sendData);
+
+    server.on("/logo.png", logo);
+
+    server.on("/saveContent", saveContent);
+
     printFile("/config.json");
- 
+
 }
 
 /*
@@ -153,25 +167,25 @@ void setup() {
 .##.......##.....##.##.....##.##.......
 .########..#######...#######..##.......
 */
-void loop() { 
+void loop() {
     ChangeMode.update();                    // Обновление таймера отображения данных из датчиков
 
     server.handleClient();                  // Работа Веб страницы
 
 //=== Мигалка =====================================================
-    digitalWrite(lightPin, (((second % 2) == 0) ? HIGH : LOW)); 
+    digitalWrite(lightPin, (((second % 2) == 0) ? HIGH : LOW));
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
     if(second != lastSecond) {     // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
         lastSecond = second;
-        secFr = 0;                          // флаг для процессов                                   
+        secFr = 0;                          // флаг для процессов
     } else {
         secFr++;
     }
 
 //=== Обновление датчиков каждую минуту =============================================================
     if ((second == 0) and (not secFr)) {
-        updateSensors();     
+        updateSensors();
     }
 
 //=== Обновление погоды с сайта каждые 2 часа 59 минут ==============================================================
@@ -181,20 +195,20 @@ void loop() {
         } else {
             PRN("============> Can't get Weather, check WiFi!!!");
         }
-    }   
+    }
 
 //=== Обновление переменных времени, ход часов ==========================================
     updateTime();
 
 //===Основной цикл отображения ==========================================
     if (!ShowFlag) {
-        showAnimClock();                        // Вывод времени на часы 
+        showAnimClock();                        // Вывод времени на часы
     }
 
 //=== Сигнал каждый час и обновление времени ==========================================
     if ((minute == 0) and (second == 0) and (secFr == 0) and (hour >= timeSigOn) and (hour <= timeSigOff)) {
-        PRN("============> BIP!!!");       
-        bip();    
+        PRN("============> BIP!!!");
+        bip();
         bip();
 
         if (WIFI_connected) {
@@ -213,9 +227,9 @@ void loop() {
 */
 
 if (((((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3))) && ((hour >= timeSigOn) and (hour <= timeSigOff))) || (ShowFlagMQTT == true)) && ShowFlag == false) {
-    ChangeMode.start();  
-    ShowFlag = true;  
-    showSimpleTemp();        
+    ChangeMode.start();
+    ShowFlag = true;
+    showSimpleTemp();
 }
 
 /*
@@ -230,7 +244,7 @@ if (((((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3
     if ((second > 30 && second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
         WIFI_connected = false;
         Serial.println("============> Check WIFI connect!!!");
-        
+
         WiFi.disconnect();
         if(minute % 5 == 1) {
             wifiConnect();
@@ -253,9 +267,9 @@ if (((((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3
         if(si7021) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humSi7021)).c_str());
         // if(sensorHumi == 4 && humBme != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humBme)).c_str());
         // if(sensorHumi == 5 && humiDht22 != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humiDht22)).c_str());
-      } 
+      }
         MQTTclient.publish(MQTTClientas.mqtt_pub_forecast, String(MQTTClientas.mqtt_forecast).c_str());
-        
+
         // if(sensorPrAl == 3 && pressBmp != 0) {
         //   MQTTclient.publish(MQTTClientas.mqtt_pub_press, String(pressBmp).c_str());
         //   MQTTclient.publish(MQTTClientas.mqtt_pub_alt, String(altBmp).c_str());
@@ -265,7 +279,7 @@ if (((((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3
         //   MQTTclient.publish(MQTTClientas.mqtt_pub_alt, String(altBme).c_str());
         // }
         // if(printCom) {
-        if (not secFr) {    
+        if (not secFr) {
           printTime();
           Serial.print("Publish in topic ");
           if(si7021) Serial.print("Temperature: " + String(t1) + "." + String(t2) + "*C,   ");
@@ -276,11 +290,11 @@ if (((((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3
           if(pressBmp != 0) Serial.print("  Pressure: " + String(pressBmp) + " mmHg,  Altitude: " + String(altBmp) + " m.");
         //   if(sensorPrAl == 4 && pressBme != 0) Serial.print("  Pressure: " + String(pressBme) + " mmHg,  Altitude: " + String(altBme) + " m.");
           Serial.println("");
-        }  
+        }
         // }
       }
     // }
-  
+
     // ---------- якщо мережа WiFi доступна то виконуємо наступні функції ----------------------------
     if(WIFI_connected){
         if(MQTTClientas.mqttOn) MQTTclient.loop();           // перевіряємо чи намає вхідних повідомлень, як є, то кoлбек функція
@@ -293,7 +307,7 @@ if (((((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3
     // int lightSensor = analogRead(PIN_A0);
     // int screenDarkness = 0;
 
-    // if ((lightSensor > 0) and (lightSensor < 240)) 
+    // if ((lightSensor > 0) and (lightSensor < 240))
     // {
     //     screenDarkness = 0;
     // } else if (lightSensor > 270 and lightSensor < 470)
@@ -311,11 +325,11 @@ if (((((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3
     // } else if (lightSensor > 900 and lightSensor < 1024)
     // {
     //     screenDarkness = 15;
-    // }   
+    // }
 
     // sendCmdAll(CMD_INTENSITY, screenDarkness);
     //   sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 15, 0, 15));
-   
+
 }
 
 
@@ -328,7 +342,8 @@ if (((((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3
 .##..##..##.##.......##.....##..##..##...###....##....##.......##....##..##.......##.....##.##....##.##......
 ..###..###..########.########..####.##....##....##....########.##.....##.##.......##.....##..######..########
 
-*/void fileindex() {
+*/
+void fileindex() {
     File file = SPIFFS.open("/index.html.gz", "r");
     size_t sent = server.streamFile(file, "text/html");
 }
@@ -338,11 +353,150 @@ void bootstrap() {
 }
 void popper() {
     File file = SPIFFS.open("/popper.min.js.gz", "r");
-    size_t sent = server.streamFile(file, "application/javascript");
+    size_t sent = server.streamFile(file, "applicat ion/javascript");
 }
 void bootstrapmin() {
     File file = SPIFFS.open("/bootstrap.min.js.gz", "r");
+    size_t sent = server.streamFile(file, "application/javascript");}
+
+void jquery() {
+    File file = SPIFFS.open("/jquery.min.js.gz", "r");
     size_t sent = server.streamFile(file, "application/javascript");
+}
+
+void style() {
+    File file = SPIFFS.open("/style.css.gz", "r");
+    size_t sent = server.streamFile(file, "text/css");
+}
+
+void logo() {
+    File file = SPIFFS.open("/logo.png.gz", "r");
+    size_t sent = server.streamFile(file, "image/png");
+}
+
+void sendData() {
+    PRN("sending Data in WEB!");
+
+    String json = "{";
+    //wifi
+    json += "\"ssid\":\"";
+    json += config.ssid;
+    json += "\",\"password\":\"";
+    json += config.password;
+    json += "\",\"ssidAP\":\"";
+    json += config.ssidAP;
+    json += "\",\"passwordAP\":\"";
+    json += config.passwordAP;
+    json += "\",\"passwordAP\":\"";
+    json += config.passwordAP;
+    //Time
+    json += "\",\"timezone\":\"";
+    json += config.timeZone;
+    json += "\",\"summertime\":\"";
+    json += config.summerTime;
+    json += "\",\"sigOn\":\"";
+    json += config.timeSigOn;
+    json += "\",\"sigOff\":\"";
+    json += config.timeSigOff;
+    json += "\",\"ntpServerName\":\"";
+    json += config.ntpServerName;
+    //weather
+    json += "\",\"apiKey\":\"";
+    json += config.apiKey;
+    json += "\",\"cityId\":\"";
+    json += config.cityId;
+    json += "\",\"weatherServer\":\"";
+    json += config.weatherServer;
+    json += "\",\"langWeather\":\"";
+    json += config.langWeather;
+    json += "\",\"mqttserver\":\"";
+    json += config.mqttserver;
+    json += "\",\"mqttport\":\"";
+    json += config.mqttport;
+    json += "\",\"mqttUserName\":\"";
+    json += config.mqttUserName;
+    json += "\",\"mqttpass\":\"";
+    json += config.mqttpass;
+    json += "\",\"mqttname\":\"";
+    json += config.mqttname;
+    json += "\",\"mqttsubinform\":\"";
+    json += config.mqttsubinform;
+    json += "\",\"mqttsub\":\"";
+    json += config.mqttsub;
+    json += "\",\"mqttpubtemp\":\"";
+    json += config.mqttpubtemp;
+    json += "\",\"mqttpubtempUl\":\"";
+    json += config.mqttpubtempUl;
+    json += "\",\"mqttpubhum\":\"";
+    json += config.mqttpubhum;
+    json += "\",\"mqttpubpress\":\"";
+    json += config.mqttpubpress;
+    json += "\",\"mqttpubalt\":\"";
+    json += config.mqttpubalt;
+    json += "\",\"mqttpubforecast\":\"";
+    json += config.mqttpubforecast;
+    json += "\",\"mqttbutt\":\"";
+    json += config.mqttbutt;
+
+    json += "\"}";
+
+    server.send (200, "text/json", json);
+
+    Serial.println(json);
+
+
+}
+
+void saveContent() {
+    PRN("save Content!!!");
+
+    //Wifi
+    strlcpy(config.ssid, server.arg("ssid").c_str(), sizeof(server.arg("ssid")));
+
+    strlcpy(config.password, (server.arg("password").c_str()), sizeof(server.arg("password")));
+    strlcpy(config.ssidAP, (server.arg("ssidAP").c_str()), sizeof(server.arg("ssidAP")));
+    strlcpy(config.passwordAP, (server.arg("passwordAP").c_str()), sizeof(server.arg("passwordAP")));
+
+
+    //Time
+    config.timeZone = server.arg("timezone").toFloat();
+    config.summerTime = server.arg("summertime").toInt();
+    config.timeSigOn = server.arg("sigOn").toInt();
+    config.timeSigOff = server.arg("sigOff").toInt();
+    config.ntpServerName = server.arg("ntpServerName").c_str();
+
+    //weather
+    config.apiKey = server.arg("apiKey").c_str();
+    config.cityId = server.arg("cityId").toInt();
+    config.weatherServer = server.arg("weatherServer").c_str();
+    strlcpy(config.langWeather, (server.arg("langWeather").c_str()), sizeof(server.arg("langWeather")));
+
+    //mqtt
+    config.mqttserver = server.arg("mqttserver").c_str();
+    config.mqttport = server.arg("mqttport").toInt();
+    strlcpy(config.mqttUserName, (server.arg("mqttUserName").c_str()), sizeof(server.arg("mqttUserName")));
+    strlcpy(config.mqttpass, (server.arg("mqttpass").c_str()), sizeof(server.arg("mqttpass")));
+    config.mqttname = server.arg("mqttname").c_str();
+    config.mqttsubinform = server.arg("mqttsubinform").c_str();
+    config.mqttsub = server.arg("mqttsub").c_str();
+    config.mqttpubtemp = server.arg("mqttpubtemp").c_str();
+    config.mqttpubtempUl = server.arg("mqttpubtempUl").c_str();
+    config.mqttpubhum = server.arg("mqttpubhum").c_str();
+    config.mqttpubpress = server.arg("mqttpubpress").c_str();
+    config.mqttpubalt = server.arg("mqttpubalt").c_str();
+    config.mqttpubforecast = server.arg("mqttpubforecast").c_str();
+    config.mqttbutt = server.arg("mqttbutt").c_str();
+
+
+
+
+
+
+    Serial.println(config.summerTime);
+    Serial.println(server.arg("summertime"));
+
+
+    saveConfig("/config.json", config);
 }
 
 /*
@@ -357,50 +511,50 @@ void bootstrapmin() {
 
 void loadConfig(const char *filename, Config &config) {
 
-    File file = SPIFFS.open(filename, "r");
+    File file = SPIFFS.open("/config.json", "r");
 
-    StaticJsonDocument<900> doc;
+    StaticJsonDocument<1900> doc;
 
     DeserializationError error = deserializeJson(doc, file);
-    if (error) {        
+    if (error) {
         PRN(F("Failed to read file, using default configuration"));
         PRN("Error is :");
         PRN(error.c_str());
     }
     //Wifi
-    strlcpy(config.ssid, doc["ssid"] | "22222", sizeof(config.ssid));
+    strlcpy(config.ssid, doc["ssid"] | "myHome", sizeof(config.ssid));
     strlcpy(config.password, doc["password"] | "123456789", sizeof(config.password));
-    strlcpy(config.ssidAP, doc["ssidAP"] | "myCLOCK", sizeof(config.ssidAP));
+    strlcpy(config.ssidAP, doc["ssidAP"] | "CLOCKat", sizeof(config.ssidAP));
     strlcpy(config.passwordAP, doc["passwordAP"] | "", sizeof(config.passwordAP));
     //Time
     config.timeZone = doc["timezone"] | 2;
     config.summerTime = doc["summertime"] | false;
-    strlcpy(config.ntpServerName, doc["ntpServerName"] | "ntp3.time.in.ua", sizeof(config.ntpServerName));
+    config.ntpServerName = doc["ntpServerName"] | "ntp3.time.in.ua";
     config.timeSigOn = doc["timeSigOn"] | 7;
     config.timeSigOff = doc["timeSigOff"] | 21;
     //Weather
-    strlcpy(config.apiKey, doc["apiKey"] | "3bdyjnd7", sizeof(config.apiKey));
+    config.apiKey = doc["apiKey"] | "3bdyjnd7";
     config.cityId = doc["cityId"] | 598098;
-    strlcpy(config.weatherServer, doc["weatherServer"] | "api.openweathermap.org", sizeof(config.weatherServer));
+    config.weatherServer = doc["weatherServer"] | "api.openweathermap.org";
     strlcpy(config.langWeather, doc["langWeather"] | "ua", sizeof(config.langWeather));
     //Mqtt
-    strlcpy(config.mqtt_server, doc["mqtt_server"] | "", sizeof(config.mqtt_server));
-    config.mqtt_port = doc["mqtt_port"] | 0;
-    strlcpy(config.mqtt_user, doc["mqtt_user"] | "", sizeof(config.mqtt_user));   
-    strlcpy(config.mqtt_pass, doc["mqtt_pass"] | "", sizeof(config.mqtt_pass));   
-    strlcpy(config.mqtt_name, doc["mqtt_name"] | "", sizeof(config.mqtt_name));   
-    strlcpy(config.mqtt_sub_inform, doc["mqtt_sub_inform"] | "", sizeof(config.mqtt_sub_inform));   
-    strlcpy(config.mqtt_sub, doc["mqtt_sub"] | "", sizeof(config.mqtt_sub));   
-    strlcpy(config.mqtt_pub_temp, doc["mqtt_pub_temp"] | "", sizeof(config.mqtt_pub_temp));   
-    strlcpy(config.mqtt_pub_tempUl, doc["mqtt_pub_tempUl"] | "", sizeof(config.mqtt_pub_tempUl));   
-    strlcpy(config.mqtt_pub_hum, doc["mqtt_pub_hum"] | "", sizeof(config.mqtt_pub_hum));   
-    strlcpy(config.mqtt_pub_press, doc["mqtt_pub_press"] | "", sizeof(config.mqtt_pub_press));   
-    strlcpy(config.mqtt_pub_alt, doc["mqtt_pub_alt"] | "", sizeof(config.mqtt_pub_alt));   
-    strlcpy(config.mqtt_pub_forecast, doc["mqtt_pub_forecast"] | "", sizeof(config.mqtt_pub_forecast));   
-    strlcpy(config.mqtt_butt, doc["mqtt_butt"] | "", sizeof(config.mqtt_butt));   
+    config.mqttserver = doc["mqtt_server"] | "m24.cloudmqtt.com";
+    config.mqttport = doc["mqtt_port"] | 56254;
+    strlcpy(config.mqttUserName, doc["mqtt_user"] | "4gd6fg", sizeof(config.mqttUserName));
+    strlcpy(config.mqttpass, doc["mqtt_pass"] | "6jhj65", sizeof(config.mqttpass));
+    config.mqttname = doc["mqtt_name"] | "Informer";
+    config.mqttsubinform = doc["mqtt_sub_inform"] | "Inform/mess";
+    config.mqttsub = doc["mqtt_sub"] | "Ulica/temp";
+    config.mqttpubtemp = doc["mqtt_pub_temp"] | "Informer/temp";
+    config.mqttpubtempUl = doc["mqtt_pub_tempUl"] | "Informer/tempUl";
+    config.mqttpubhum = doc["mqtt_pub_hum"] | "Informer/hum";
+    config.mqttpubpress = doc["mqtt_pub_press"] | "Informer/press";
+    config.mqttpubalt = doc["mqtt_pub_alt"] | "Informer/alt";
+    config.mqttpubforecast = doc["mqtt_pub_forecast"] | "Informer/forecast";
+    config.mqttbutt = doc["mqtt_butt"] | "Informer/button";
 
+    file.close();
 
-  file.close();
 }
 
 void saveConfig(const char *filename, Config &config) {
@@ -408,13 +562,13 @@ void saveConfig(const char *filename, Config &config) {
     SPIFFS.remove("/config.json");
 
     // Open file for writing
-    File file = SPIFFS.open(filename, "w");
+    File file = SPIFFS.open("/config.json", "w");
     if (!file) {
         Serial.println(F("Failed to create file"));
         return;
     }
 
-    StaticJsonDocument<900> doc;
+    StaticJsonDocument<1900> doc;
 
     doc["ssid"] = config.ssid;
     doc["password"] = config.password;
@@ -429,20 +583,21 @@ void saveConfig(const char *filename, Config &config) {
     doc["cityId"] = config.cityId;
     doc["weatherServer"] = config.weatherServer;
     doc["langWeather"] = config.langWeather;
-    doc["mqtt_server"] = config.mqtt_server;
-    doc["mqtt_port"] = config.mqtt_port;
-    doc["mqtt_user"] = config.mqtt_user;
-    doc["mqtt_pass"] = config.mqtt_pass;
-    doc["mqtt_name"] = config.mqtt_name;
-    doc["mqtt_sub_inform"] = config.mqtt_sub_inform;
-    doc["mqtt_sub"] = config.mqtt_sub;
-    doc["mqtt_pub_temp"] = config.mqtt_pub_temp;
-    doc["mqtt_pub_tempUl"] = config.mqtt_pub_tempUl;
-    doc["mqtt_pub_hum"] = config.mqtt_pub_hum;
-    doc["mqtt_pub_press"] = config.mqtt_pub_press;
-    doc["mqtt_pub_alt"] = config.mqtt_pub_alt;
-    doc["mqtt_pub_forecast"] = config.mqtt_pub_forecast;
-    doc["mqtt_butt"] = config.mqtt_butt;
+    doc["mqtt_server"] = config.mqttserver;
+    doc["mqtt_port"] = config.mqttport;
+    doc["mqtt_user"] = config.mqttUserName;
+    doc["mqtt_pass"] = config.mqttpass;
+    doc["mqtt_name"] = config.mqttname;
+    doc["mqtt_sub_inform"] = config.mqttsubinform;
+    doc["mqtt_sub"] = config.mqttsub;
+    doc["mqtt_pub_temp"] = config.mqttpubtemp;
+    doc["mqtt_pub_tempUl"] = config.mqttpubtempUl;
+    doc["mqtt_pub_hum"] = config.mqttpubhum;
+    doc["mqtt_pub_press"] = config.mqttpubpress;
+    doc["mqtt_pub_alt"] = config.mqttpubalt;
+    doc["mqtt_pub_forecast"] = config.mqttpubforecast;
+    doc["mqtt_butt"] = config.mqttbutt;
+
 
     if (serializeJson(doc, file) == 0) {
         Serial.println(F("Failed to write to file"));
@@ -493,7 +648,7 @@ void SwitchShowMode() {
         ChangeMode.stop();
         ShowFlag = false;
         ShowFlagMQTT = false;
-        printStringWithShift(weatherString.c_str(), 20);    
+        printStringWithShift(weatherString.c_str(), 20);
         break;
     default:
         break;
@@ -549,13 +704,13 @@ int showChar(char ch, const uint8_t *data)
 void wifiConnect()
 {
     printTime();
-    PRN("Connecting WiFi (ssid=" + String(ssid.c_str()) + "  pass=" + String(password.c_str()) + ") ");
+    PRN("Connecting WiFi (ssid=" + String(config.ssid) + "  pass=" + String(config.password) + ") ");
 
     if (!firstStart)
         printStringWithShift("WiFi", 15);
     WiFi.disconnect();
     WiFi.mode(WIFI_STA);
-    WiFi.begin(ssid.c_str(), password.c_str());
+    WiFi.begin(config.ssid, config.password);
     for (int i = 1; i < 21; i++)
     {
         if (WiFi.status() == WL_CONNECTED)
@@ -584,7 +739,7 @@ void wifiConnect()
                     showAnimWifi(i);
                 j++;
                 delay(2);
-              
+
             }
         }
        // delay(800);
@@ -600,7 +755,7 @@ void wifiConnect()
     {
         WiFi.mode(WIFI_AP);
         WiFi.softAPConfig(apIP, apIP, IPAddress(255, 255, 255, 0));
-        WiFi.softAP(ssidAP.c_str(), passwordAP.c_str());
+        WiFi.softAP(config.ssidAP, config.passwordAP);
 
         printTime();
         PRN("Start AP mode!!!");
@@ -626,7 +781,7 @@ void printStringWithShift(const char *s, int shiftDelay)
     { // коли працює ця функція, основний цикл зупиняється
         printCharWithShift(*s, shiftDelay);
         s++;
-        // server.handleClient();                     // зберігаемо можливість відповіді на HTML запити під час бігучої стоки
+        server.handleClient();                     // зберігаемо можливість відповіді на HTML запити під час бігучої стоки
         if(MQTTClientas.mqttOn) MQTTclient.loop();   // зберігаемо можливість слухати MQTT топік під час бігучої стоки
 
     }
@@ -642,7 +797,7 @@ void printCharWithShift(unsigned char c, int shiftDelay)
     int w = showChar(c, fontUA_RU_PL_DE);
     for (int i = 0; i < w + 1; i++)
     {
-        
+
         delay(shiftDelay);
         scrollLeft();
         refreshAll();
@@ -821,7 +976,7 @@ void updateTime()
   hour = ((epoch % 86400L) / 3600) % 24;
 
   minute = (epoch % 3600) / 60;
-  second = epoch % 60; 
+  second = epoch % 60;
 }
 
 /*
@@ -843,8 +998,8 @@ void showAnimClock() {
         int i;        if(del == 0) {
             del = digHt;
             for(i = 0; i < num; i++) digold[i] = dig[i];
-   
-            
+
+
             dig[0] = hour / 10;
             dig[1] = hour % 10;
             dig[2] = minute / 10;
@@ -865,24 +1020,24 @@ void showAnimClock() {
                 }
             }
             dy = 0;
-        
+
         // unsigned long flash = millis() % 2000;
         int flash = millis() % 2000;
-        
+
         if(!alarm_stat){
             if(statusUpdateNtpTime) {                                                 // якщо останнє оновленя часу було вдалим, то двокрапки в годиннику будуть анімовані
                 setCol(digPos[4], flash < 1000 ? 0x24 : 0x42);
-                setCol(digPos[5], flash > 1000 ? 0x42 : 0x24);              
+                setCol(digPos[5], flash > 1000 ? 0x42 : 0x24);
             } else {
                 setCol(digPos[4], flash < 1000 ? 0x66 : 0x00);
-                setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);                   
+                setCol(digPos[5], flash < 1000 ? 0x66 : 0x00);
             }
         } else {
             setCol(digPos[4], 0x66);
             setCol(digPos[5], 0x66);
         }
         refreshAll();
-    }    
+    }
 }
 
 /*
@@ -903,19 +1058,19 @@ void timeUpdateNTP() {
         getNTPtime();
         PRN("          ");
         PRN("Proba #"+String(timeTest+1)+"   "+String(g_hour)+":"+((g_minute<10)?"0":"")+String(g_minute)+":"+((g_second<10)?"0":"")+String(g_second)+":"+String(g_dayOfWeek)+":"+String(g_day)+":"+String(g_month)+":"+String(g_year));
-             
+
         hourTest[timeTest] = g_hour;
         minuteTest[timeTest] = g_minute;
-        if(statusUpdateNtpTime == 0) {        
+        if(statusUpdateNtpTime == 0) {
             printTime();
             PRN("ERROR TIME!!!\r\n");
                 return;
         }
         if(timeTest > 0) {
             if((hourTest[timeTest] != hourTest[timeTest - 1]||minuteTest[timeTest] != minuteTest[timeTest - 1])) {
-                statusUpdateNtpTime = 0;            
+                statusUpdateNtpTime = 0;
                 printTime();
-                PRN("ERROR TIME!!!\r\n");            
+                PRN("ERROR TIME!!!\r\n");
                 return;
             }
         }
@@ -923,16 +1078,16 @@ void timeUpdateNTP() {
 
     hour=g_hour;
 
-    if (!summerTime) {
-        hour = hour - 1;
-    }
+    // if (!config.summerTime) {
+    //     hour = hour - 1;
+    // }
 
     minute=g_minute;
     second=g_second;
     day=g_day;
     dayOfWeek=g_dayOfWeek;
     month=g_month;
-    year=g_year; 
+    year=g_year;
 
     localMillisAtUpdate = millis();
     localEpoc = (hour * 60 * 60 + minute * 60 + second);
@@ -940,7 +1095,7 @@ void timeUpdateNTP() {
     convertMonth();
     printTime();
     Serial.println((day < 10 ? "0" : "") + String(day) + "." + (month < 10 ? "0" : "") + String(month) + "." + String(year) + " DW = " + String(dayOfWeek));
-    Serial.println("          Time update OK.");  
+    Serial.println("          Time update OK.");
 }
 
 /*
@@ -954,7 +1109,7 @@ void timeUpdateNTP() {
 */
 
 void getNTPtime() {
-  WiFi.hostByName(ntpServerName.c_str(), timeServerIP); 
+  WiFi.hostByName(config.ntpServerName.c_str(), timeServerIP);
   int cb;
   for(int i = 0; i < 3; i++){
     memset(packetBuffer, 0, NTP_PACKET_SIZE);
@@ -971,7 +1126,7 @@ void getNTPtime() {
     ntpUDP.endPacket();
     delay(800);                                                  // чекаємо пів секуни
     cb = ntpUDP.parsePacket();
-    if(!cb) Serial.println("          no packet yet..." + String (i + 1)); 
+    if(!cb) Serial.println("          no packet yet..." + String (i + 1));
     if(!cb && i == 2) {                                          // якщо час не отримано
       statusUpdateNtpTime = 0;
       return;                                                    // вихіз з getNTPtime()
@@ -986,10 +1141,17 @@ void getNTPtime() {
     const unsigned long seventyYears = 2208988800UL;        // Unix час станом на 1 січня 1970. в секундах, то 2208988800:
     unsigned long epoch = secsSince1900 - seventyYears;
     boolean summerTime;
+
     if(month < 3 || month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
     if(month > 3 && month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
-    if(((month == 3) && (hour + 24 * day)) >= (3 + 24 * (31 - (5 * year / 4 + 4) % 7)) || ((month == 10) && (hour + 24 * day)) < (3 + 24 * (31 - (5 * year / 4 + 1) % 7))) summerTime = true; 
-    epoch += (int)(timeZone*3600 + (3600*(isDayLightSaving && summerTime)));      
+    if(((month == 3) && (hour + 24 * day)) >= (3 + 24 * (31 - (5 * year / 4 + 4) % 7)) || ((month == 10) && (hour + 24 * day)) < (3 + 24 * (31 - (5 * year / 4 + 1) % 7))) summerTime = true;
+    epoch += (int)(config.timeZone*3600 + (3600*(config.summerTime   /*isDayLightSaving*/ && summerTime)));
+
+    Serial.println("********************");
+    Serial.println(config.summerTime);
+    Serial.println("********************");
+
+
     g_year = 0;
     int days = 0;
     uint32_t time;
@@ -1016,7 +1178,7 @@ void getNTPtime() {
       else break;
     }
     g_month++;
-    g_day = time + 1;               
+    g_day = time + 1;
     g_year += 1970;
     return;
   }
@@ -1064,10 +1226,10 @@ void convertMonth(){
 */
 
 void changeMode() {                                      // Переключение режимов
-    mode++;  
+    mode++;
     if (mode == 7) {
         mode = 0;
-    }          
+    }
 }
 
 /*
@@ -1108,7 +1270,7 @@ void showSimpleTemp() {
     clr();
     showDigit((t1 < 0 ? 14 : 13), 0, dig5x8rn); // друкуємо D+ альбо D-
     if(t1 <= -10.0 || t1 >= 10) showDigit((t1 < 0 ? (t1 * -1) / 10 : t1 / 10), 4, dig5x8rn);
-    
+
     showDigit((t1 < 0 ? (t1 * -1) % 10 : t1 % 10), 10, dig5x8rn);
     showDigit(12, 16, dig5x8rn);
     showDigit(t2, 18, dig5x8rn);
@@ -1116,7 +1278,7 @@ void showSimpleTemp() {
     showDigit(11, 27, dig5x8rn);
     refreshAll();
 }
-       
+
 
 //=== Вывод на экран влажности в доме ========================================
 void showSimpleHum() {
@@ -1152,7 +1314,7 @@ void sensorsBmp() {  //1
 }
 
 //=== Чтение данных с датчика si7021 ==============================================
-void sensorsSi7021() {  //2 
+void sensorsSi7021() {  //2
     if(si7021 == false) return;
 
     humSi7021 = sensor.readHumidity();
@@ -1166,17 +1328,17 @@ void sensorsSi7021() {  //2
     h3 = int(humSi7021 * 10) % 10;
 
     Serial.println("Temperature Si7021: " + String(celsiusSi7021) + " *C,  Humidity: " + String(humSi7021) + " %");
- 
+
 }
 
 //=== Вывод на экран давления атмосферы ========================================
 void showSimplePre() {
   dx = dy = 0;
   clr();
-  showDigit(19, 0, dig5x8rn);     // друкуємо знак тиску   
+  showDigit(19, 0, dig5x8rn);     // друкуємо знак тиску
   showDigit(int(pressBmp) / 100, 6, dig5x8rn);
   showDigit((int(pressBmp) % 100) / 10, 12, dig5x8rn);
-  showDigit(int(pressBmp) % 10, 18, dig5x8rn); 
+  showDigit(int(pressBmp) % 10, 18, dig5x8rn);
   showDigit(20, 24, dig5x8rn);
   showDigit(21, 29, dig5x8rn);
   refreshAll();
@@ -1196,7 +1358,7 @@ void bip(){
     digitalWrite(buzzerPin, HIGH);
     delay(80);
     digitalWrite(buzzerPin, LOW);
-    delay(120);  
+    delay(120);
 }
 
 /*
@@ -1209,16 +1371,16 @@ void bip(){
 ..###..###..########.##.....##....##....##.....##.########.##.....##
 */
 
-void getWeather() { 
+void getWeather() {
 
     if(!WIFI_connected) return;
 
     String payload = "";            // ОТвет от сервера
 
-    Serial.println("\nStarting connection to server..."); 
+    Serial.println("\nStarting connection to server...");
 
     String url = "http://api.openweathermap.org/data/2.5/weather";
-            
+
             url = url + "?id=" + cityId;
             url += "&appid=" + apiKey;
             url += "&cnt=1";
@@ -1230,14 +1392,14 @@ void getWeather() {
 
     payload = client.getString();
     PRN(payload);
-    
+
     if (httpCode > 0) {
         if (httpCode == HTTP_CODE_OK) {
             payload = client.getString();
         } else {
             Serial.println("Can't load weather data! #" + t_http_codes(httpCode));
             return;
-        }        
+        }
     }
 
     client.end();
@@ -1265,13 +1427,13 @@ void getWeather() {
     weather.clouds = doc["clouds"]["all"];
 
     httpData = "";
-    
+
     weatherDescription = weather.descript;
     weatherDescription.toLowerCase();
     if(lang!=5) convertWeatherDes();
 
     cityName = weather.cityName;
-    cityId = weather.cityId; 
+    cityId = weather.cityId;
   //  convertCity();
     temp = weather.temp;
     humidity = weather.humidity;
@@ -1295,23 +1457,23 @@ void getWeather() {
 
     weatherString += "     \213 " + String(humidity) + "%";
 
-    // weatherString += "     \215 " + String(pressure, 0) + tPress;    
+    // weatherString += "     \215 " + String(pressure, 0) + tPress;
     weatherString += "     \215 " + String(pressBmp) + tPress;
-    
+
     weatherString += "     \214 " + windDegString + String(windSpeed, 1) + tSpeed;
     weatherString += "     \216 " + String(clouds) + "%     " + weatherDescription + "                ";
 
-  
+
   //заполняем строку для mqtt
-    MQTTClientas.mqtt_forecast = "T.:" + String(temp, 0) + " H:" + String(humidity) + "%" + 
-                  " W. deg:"+ windDeg + " W. spd:" + String(windSpeed, 1) + tSpeed + 
+    MQTTClientas.mqtt_forecast = "T.:" + String(temp, 0) + " H:" + String(humidity) + "%" +
+                  " W. deg:"+ windDeg + " W. spd:" + String(windSpeed, 1) + tSpeed +
                   " Desc:" + weatherDescription;
 
-  
-  
-  
+
+
+
     PRN("          Getting weather forecast - is OK.");
-} 
+}
 
 //=== Конвертация описания погоды ========================================
 void convertWeatherDes(){
@@ -1321,7 +1483,7 @@ void convertWeatherDes(){
   else if(weatherDescription == "scattered clouds") weatherDescription = tScatteredClouds;
   else if(weatherDescription == "broken clouds") weatherDescription = tBrokenClouds;
   else if(weatherDescription == "overcast clouds") weatherDescription = tOvercastClouds;
-  else if(weatherDescription == "light rain") weatherDescription = tLightRain;  
+  else if(weatherDescription == "light rain") weatherDescription = tLightRain;
   else if(weatherDescription == "moderate rain") weatherDescription = tModerateRain;
   else if(weatherDescription == "light intensity shower rain") weatherDescription = tLightIntensityShowerRain;
   else if(weatherDescription == "shower rain") weatherDescription = tShowerRain;
@@ -1333,8 +1495,8 @@ void convertWeatherDes(){
   else if(weatherDescription == "mist") weatherDescription = tMist;
   else if(weatherDescription == "shower sleet") weatherDescription = tShowerSleet;
   else if(weatherDescription == "light snow") weatherDescription = tLightSnow;
-  else if(weatherDescription == "light shower snow") weatherDescription = tLightShowerSnow; 
-  else if(weatherDescription == "snow") weatherDescription = tSnow; 
+  else if(weatherDescription == "light shower snow") weatherDescription = tLightShowerSnow;
+  else if(weatherDescription == "snow") weatherDescription = tSnow;
 }
 
 //=== Коллбек функция MQTT ========================================
@@ -1354,35 +1516,35 @@ void callback(char* topic, byte* payload, unsigned int length) {
 
         if (Text.startsWith("##"))  {
             CountRepeat = Text.charAt(2);
-            Text = "        " + Text.substring(3, Text.length()) + "            "; 
+            Text = "        " + Text.substring(3, Text.length()) + "            ";
             int CntRepeat = CountRepeat - '0';
-            for (int ii = 0; ii < CntRepeat; ii++) {            
-                for(int i = 0; i < 4; i++) {        
+            for (int ii = 0; ii < CntRepeat; ii++) {
+                for(int i = 0; i < 4; i++) {
                     bip();
                 }
                 printStringWithShift(Text.c_str(), 20);
-            } 
+            }
         } else {
-            Text = "        " + Text + "            "; 
-            for(int i = 0; i < 4; i++) {        
+            Text = "        " + Text + "            ";
+            for(int i = 0; i < 4; i++) {
                 bip();
             }
-            printStringWithShift(Text.c_str(), 20); 
+            printStringWithShift(Text.c_str(), 20);
         }
-        
-   
+
+
     }
 
      if(String(topic) == MQTTClientas.mqtt_butt) {       //Кнопка
         bip();
-        ShowFlagMQTT = true;                             // Показ данных с датчика  
+        ShowFlagMQTT = true;                             // Показ данных с датчика
     }
-  
+
   if(String(topic) == MQTTClientas.mqtt_sub) {
     MQTTClientas.tMqtt3 = 0;
     MQTTClientas.tMqtt4 = 0;
     if((payload[0] >= 48 && payload[0] < 58) || payload[0] == 45) { // в payload[0] - хранится первый полученный символ. 48, 58 и 45 - это коды знаков можете их посмотреть в fontUA_RU_PL_DE[]
-      if(payload[0] == 45) {                                        // если первый символ = "-" (равен минусу) то tMqtt5 = -1 
+      if(payload[0] == 45) {                                        // если первый символ = "-" (равен минусу) то tMqtt5 = -1
         MQTTClientas.tMqtt5 = -1;
         if(payload[1] >= 48 && payload[1] < 58) {                   //  здесь проверяем уже второй символ что он является числом...
           MQTTClientas.tMqtt3 = payload[1] - 48;                                 // если от кода числа отнять 48 то получим число.... К примеру код "0" = 48 если от 48-48 то получим 0
