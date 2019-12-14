@@ -387,13 +387,11 @@ void sendData() {
     json += config.ssidAP;
     json += "\",\"passwordAP\":\"";
     json += config.passwordAP;
-    json += "\",\"passwordAP\":\"";
-    json += config.passwordAP;
     //Time
     json += "\",\"timezone\":\"";
     json += config.timeZone;
     json += "\",\"summertime\":\"";
-    json += config.summerTime;
+    json += config.summertime;
     json += "\",\"sigOn\":\"";
     json += config.timeSigOn;
     json += "\",\"sigOff\":\"";
@@ -440,6 +438,10 @@ void sendData() {
 
     json += "\"}";
 
+    Serial.println("888888888 SEND content");
+    Serial.println(config.summertime);
+
+
     server.send (200, "text/json", json);
 
     Serial.println(json);
@@ -457,10 +459,9 @@ void saveContent() {
     strlcpy(config.ssidAP, (server.arg("ssidAP").c_str()), sizeof(server.arg("ssidAP")));
     strlcpy(config.passwordAP, (server.arg("passwordAP").c_str()), sizeof(server.arg("passwordAP")));
 
-
     //Time
     config.timeZone = server.arg("timezone").toFloat();
-    config.summerTime = server.arg("summertime").toInt();
+    config.summertime = server.arg("summertime").toInt();
     config.timeSigOn = server.arg("sigOn").toInt();
     config.timeSigOff = server.arg("sigOff").toInt();
     config.ntpServerName = server.arg("ntpServerName").c_str();
@@ -487,16 +488,13 @@ void saveContent() {
     config.mqttpubforecast = server.arg("mqttpubforecast").c_str();
     config.mqttbutt = server.arg("mqttbutt").c_str();
 
-
-
-
-
-
-    Serial.println(config.summerTime);
+    Serial.println("888888888 save content");
+    Serial.println(config.summertime);
     Serial.println(server.arg("summertime"));
 
 
     saveConfig("/config.json", config);
+
 }
 
 /*
@@ -513,7 +511,10 @@ void loadConfig(const char *filename, Config &config) {
 
     File file = SPIFFS.open("/config.json", "r");
 
-    StaticJsonDocument<1900> doc;
+    // StaticJsonDocument<1900> doc;
+
+    const size_t capacity = JSON_OBJECT_SIZE(27) + 620;
+    DynamicJsonDocument doc(capacity);
 
     DeserializationError error = deserializeJson(doc, file);
     if (error) {
@@ -522,13 +523,13 @@ void loadConfig(const char *filename, Config &config) {
         PRN(error.c_str());
     }
     //Wifi
-    strlcpy(config.ssid, doc["ssid"] | "myHome", sizeof(config.ssid));
-    strlcpy(config.password, doc["password"] | "123456789", sizeof(config.password));
+    strlcpy(config.ssid, doc["ssid"] | "PUTIN UTELE", sizeof(config.ssid));
+    strlcpy(config.password, doc["password"] | "0674788273", sizeof(config.password));
     strlcpy(config.ssidAP, doc["ssidAP"] | "CLOCKat", sizeof(config.ssidAP));
     strlcpy(config.passwordAP, doc["passwordAP"] | "", sizeof(config.passwordAP));
     //Time
     config.timeZone = doc["timezone"] | 2;
-    config.summerTime = doc["summertime"] | false;
+    config.summertime = doc["summertime"] | 0;
     config.ntpServerName = doc["ntpServerName"] | "ntp3.time.in.ua";
     config.timeSigOn = doc["timeSigOn"] | 7;
     config.timeSigOff = doc["timeSigOff"] | 21;
@@ -554,7 +555,6 @@ void loadConfig(const char *filename, Config &config) {
     config.mqttbutt = doc["mqtt_butt"] | "Informer/button";
 
     file.close();
-
 }
 
 void saveConfig(const char *filename, Config &config) {
@@ -568,14 +568,17 @@ void saveConfig(const char *filename, Config &config) {
         return;
     }
 
-    StaticJsonDocument<1900> doc;
+    // StaticJsonDocument<1900> doc;
+
+    const size_t capacity = JSON_OBJECT_SIZE(27) + 620;
+    DynamicJsonDocument doc(capacity);
 
     doc["ssid"] = config.ssid;
     doc["password"] = config.password;
     doc["ssidAP"] = config.ssidAP;
     doc["passwordAP"] = config.passwordAP;
     doc["timezone"] = config.timeZone;
-    doc["summertime"] = config.summerTime;
+    doc["summertime"] = config.summertime;
     doc["ntpServerName"] = config.ntpServerName;
     doc["timeSigOn"] = config.timeSigOn;
     doc["timeSigOff"] = config.timeSigOff;
@@ -598,6 +601,10 @@ void saveConfig(const char *filename, Config &config) {
     doc["mqtt_pub_forecast"] = config.mqttpubforecast;
     doc["mqtt_butt"] = config.mqttbutt;
 
+
+
+    // Serial.println("88888888888888 save");
+    // Serial.println(config.summertime);
 
     if (serializeJson(doc, file) == 0) {
         Serial.println(F("Failed to write to file"));
@@ -1078,7 +1085,7 @@ void timeUpdateNTP() {
 
     hour=g_hour;
 
-    // if (!config.summerTime) {
+    // if (!config.summertime) {
     //     hour = hour - 1;
     // }
 
@@ -1145,12 +1152,7 @@ void getNTPtime() {
     if(month < 3 || month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
     if(month > 3 && month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
     if(((month == 3) && (hour + 24 * day)) >= (3 + 24 * (31 - (5 * year / 4 + 4) % 7)) || ((month == 10) && (hour + 24 * day)) < (3 + 24 * (31 - (5 * year / 4 + 1) % 7))) summerTime = true;
-    epoch += (int)(config.timeZone*3600 + (3600*(config.summerTime   /*isDayLightSaving*/ && summerTime)));
-
-    Serial.println("********************");
-    Serial.println(config.summerTime);
-    Serial.println("********************");
-
+    epoch += (int)(config.timeZone*3600 + (3600*(config.summertime   /*isDayLightSaving*/ && summerTime)));
 
     g_year = 0;
     int days = 0;

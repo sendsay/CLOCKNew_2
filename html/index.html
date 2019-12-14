@@ -294,6 +294,8 @@
           //time
           document.getElementById("timezone").value = json.timezone;
           if (json.summertime == 1) { document.getElementById("summerTime").checked = true; }
+         // document.getElementById("summerTime").checked = json.summertime;
+
           document.getElementById("sigOn").value = json.sigOn;
           document.getElementById("sigOff").value = json.sigOff;
           document.getElementById("ntpServerName").value = json.ntpServerName;
