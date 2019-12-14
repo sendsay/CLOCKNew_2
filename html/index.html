@@ -183,8 +183,8 @@
           <h4>Pressure :</h4>
           <input id="mqttpubpress" type="text" class="inputData">
 
-          <h4>Altitude :</h4>
-          <input id="mqttpubalt" type="text" class="inputData">
+          <!-- <h4>Altitude :</h4>
+          <input id="mqttpubalt" type="text" class="inputData"> -->
 
           <h4>Forecast :</h4>
           <input id="mqttpubforecast" type="text" class="inputData">
@@ -317,7 +317,7 @@
           document.getElementById("mqttpubtempUl").value = json.mqttpubtempUl;
           document.getElementById("mqttpubhum").value = json.mqttpubhum;
           document.getElementById("mqttpubpress").value = json.mqttpubpress;
-          document.getElementById("mqttpubalt").value = json.mqttpubalt;
+          // document.getElementById("mqttpubalt").value = json.mqttpubalt;
           document.getElementById("mqttpubforecast").value = json.mqttpubforecast;
           document.getElementById("mqttbutt").value = json.mqttbutt;
 
@@ -337,7 +337,7 @@
                   "&langWeather=" + val("langWeather") + "&mqttserver=" + val("mqttserver") + "&mqttport=" + val('mqttport') +
                   "&mqttUserName=" + val('mqttUserName') + "&mqttpass=" + val('mqttpass') + "&mqttname=" + val('mqttname') +
                   "&mqttsubinform=" + val('mqttsubinform') + "&mqttsub=" + val('mqttsub') + "&mqttpubtemp=" + val('mqttpubtemp') +
-                  "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') + "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubalt=" + val('mqttpubalt') + "&mqttpubforecast=" + val('mqttpubforecast') + "&mqttbutt=" + val('mqttbutt');
+                  "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') + "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') + "&mqttbutt=" + val('mqttbutt');
 
 
 

@@ -93,10 +93,10 @@ int showAllInterval = 1;                              // Интервал пок
 
 int secFr, lastSecond, lastMinute;                    // Работа с временем
 
-String apiKey= "df9c74ff1a47dcb48aab814fa5500429";    // Ключ для погоды
-int cityId = 598098;                                  // локация погоды
-char weatherServer[] = "api.openweathermap.org";      // Сервер погоды
-String langWeather = "ua";                            // Язык погоды
+// String apiKey= "df9c74ff1a47dcb48aab814fa5500429";    // Ключ для погоды
+// int cityId = 598098;                                  // локация погоды
+// char weatherServer[] = "api.openweathermap.org";      // Сервер погоды
+// String langWeather = "ua";                            // Язык погоды
 String weatherDescription = "";                       // Описание погоды
 String tClearSky, tSkyIsClear, tFewClouds, tScatteredClouds, tBrokenClouds, tOvercastClouds, tLightRain, tModerateRain, tLightIntensityShowerRain, tShowerRain, tHeavyIntensityRain, tVeryHeavyRain, tThunderstorm, tHaze, tFog, tMist, tShowerSleet, tLightSnow, tLightShowerSnow, tSnow, tWeatrNot, tWeatrTN;   // Описание погоды
 byte lang = 0;                                        // Язык текста часов
@@ -133,27 +133,27 @@ struct weather_structure {
 weather_structure weather;
 String url;
 
-byte timeSigOn = 5;                           // Время начала сигнала
-byte timeSigOff = 22;                         // Время конца сигнала
+// byte timeSigOn = 5;                           // Время начала сигнала
+// byte timeSigOff = 22;                         // Время конца сигнала
 
 bool alarm = false;                           // Флаг сработки будильника
 
 struct MQTTstruct {
-  char mqtt_server[21] = "m24.cloudmqtt.com";                                             // Имя сервера MQTT
-  int  mqtt_port = 17049;                                                                 // Порт для подключения к серверу MQTT
-  char mqtt_user[25] = "zqyslqbd";                                                        // Логи от сервер
-  char mqtt_pass[25] = "ghCaEZLP2i0V";                                                    // Пароль от сервера MQTT
-  char mqtt_name[25] = "Informer";
-  char mqtt_sub_inform[25] = "Inform/mess";
-  char mqtt_sub[25] = "Ulica/temp";
-  char mqtt_pub_temp[25] = "Informer/temp";
-  char mqtt_pub_tempUl[25] = "Informer/tempUl";
-  char mqtt_pub_hum[25] = "Informer/hum";
-  char mqtt_pub_press[25] = "Informer/press";
-  char mqtt_pub_alt[25] = "Informer/alt";
-  char mqtt_pub_forecast[25] = "Informer/forecast";
+  // char mqtt_server[21] = "m24.cloudmqtt.com";                                             // Имя сервера MQTT
+  // int  mqtt_port = 17049;                                                                 // Порт для подключения к серверу MQTT
+  // char mqtt_user[25] = "zqyslqbd";                                                        // Логи от сервер
+  // char mqtt_pass[25] = "ghCaEZLP2i0V";                                                    // Пароль от сервера MQTT
+  // char mqtt_name[25] = "Informer";
+  // char mqtt_sub_inform[25] = "Inform/mess";
+  // char mqtt_sub[25] = "Ulica/temp";
+  // char mqtt_pub_temp[25] = "Informer/temp";
+  // char mqtt_pub_tempUl[25] = "Informer/tempUl";
+  // char mqtt_pub_hum[25] = "Informer/hum";
+  // char mqtt_pub_press[25] = "Informer/press";
+  // char mqtt_pub_alt[25] = "Informer/alt";
+  // char mqtt_pub_forecast[25] = "Informer/forecast";
   String mqtt_forecast = "No data!";
-  char mqtt_butt[25] = "Informer/button";
+  // char mqtt_butt[25] = "Informer/button";
   bool mqttOn = true;
   int tMqtt3 = 85;
   int tMqtt4 = 0;
@@ -177,22 +177,22 @@ struct Config {                                       // Структура с �
   String apiKey;                                     // Ключ для погоды
   int cityId;                                        // локация погоды
   String weatherServer;                              // Сервер погоды
-  char langWeather[3];                               // Язык погоды
+  String langWeather;                                // Язык погоды
 
-  String mqttserver;                                 // Имя сервера MQTT
-  int  mqttport;                                     // Порт для подключения к серверу MQTT
-  char mqttUserName[25];                             // Логи от сервер
-  char mqttpass[25];                                 // Пароль от сервера MQTT
-  String mqttname;                                   // Имя информера
-  String mqttsubinform;                              // Сообщение
-  String mqttsub;                                    // Темп. на улице
-  String mqttpubtemp;                                // Темп. на улице
-  String mqttpubtempUl;                               // Темп на улице
-  String mqttpubhum;                                  // Влажность
-  String mqttpubpress;                                // Давление
-  String mqttpubalt;                                  // Высота
-  String mqttpubforecast;                             // Погда из нета
-  String mqttbutt;                                    // Кнопка
+  char mqttserver[21];                                // Имя сервера MQTT
+  int  mqttport;                                      // Порт для подключения к серверу MQTT
+  char mqttUserName[25];                              // Логи от сервер
+  char mqttpass[25];                                  // Пароль от сервера MQTT
+  char mqttname[25];                                 // Имя информера
+  char mqttsubinform[25];                            // Сообщение
+  char mqttsub[25];                                  // Темп. на улице
+  char mqttpubtemp[25];                              // Темп. на улице
+  char mqttpubtempUl[25];                               // Темп на улице
+  char mqttpubhum[25];                                  // Влажность
+  char mqttpubpress[25];                                // Давление
+  // String mqttpubalt;                                  // Высота
+  char  mqttpubforecast[25];                             // Погда из нета
+  char mqttbutt[25];                                    // Кнопка
 
 };
 
