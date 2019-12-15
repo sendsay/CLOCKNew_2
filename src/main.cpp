@@ -183,7 +183,7 @@ void loop() {
     }
 
 //=== Обновление погоды с сайта каждые 29 минут ==============================================================
-    if (((minute == 29 ) and (second == 0) and (not secFr)) {
+    if ((minute == 29 ) and (second == 0) and (not secFr)) {
         if (WIFI_connected) {
             getWeather();
         } else {
