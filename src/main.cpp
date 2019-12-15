@@ -21,7 +21,6 @@ ______________________________________________*/
 #include <fonts.h>
 
 #include <Wire.h>
-#include <DS3231.h>
 #include <ESP8266WiFi.h>
 #include <WiFiClientSecure.h>
 #include <ESP8266HTTPClient.h>
@@ -35,18 +34,13 @@ ______________________________________________*/
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <math.h>
-#include <Ticker.h>
-#include <FS.h>
+//  #include <FS.h>
 
 #include <T_ukr.h>
-#include <T_cz.h>
-#include <T_de.h>
 #include <T_en.h>
-#include <T_pol.h>
 #include <T_rus.h>
 
 //=====================================================================================================================================
-RTCDateTime dt;                 // Дата/время для часов
 IPAddress apIP(192, 168, 4, 1); // Адресс для точки доступа
 WiFiUDP ntpUDP;                 // Клиент для получения NTP
 IPAddress timeServerIP;         // ??

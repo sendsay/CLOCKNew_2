@@ -31,11 +31,11 @@ body {
   overflow: hidden;
   height: 120px;
   /* position: fixed;
-  top: 0; 
+  top: 0;
   width: 100%; */
 }
 
-/* h1, 
+/* h1,
 h2  {
     font-weight: 300;
     text-transform: uppercase;
@@ -46,6 +46,10 @@ h4 {
   font-size: 20px;
   margin-top: 5px;
   margin-bottom: 3px;
+}
+
+.header {
+  width: 500px;
 }
 
 .logo {
@@ -60,7 +64,7 @@ h4 {
 }
 
 .logo-text {
-  text-transform: uppercase;  
+  text-transform: uppercase;
   font-family: 'Archivo Black', sans-serif;
   font-size: 45px;
   color: #4CAF50;
@@ -70,17 +74,18 @@ h4 {
 }
 
 .name-section {
-  text-transform: uppercase; 
+  text-transform: uppercase;
   font-size: 45px;
 }
 
 .card {
+  width: 350px;
   margin-top: 10px;
-  padding-bottom: 16px;
+  padding: 16px;
   margin-bottom: 30px;
   -webkit-box-shadow: 10px 10px 21px -8px rgba(0,0,0,0.75);
   -moz-box-shadow: 10px 10px 21px -8px rgba(0,0,0,0.75);
-  box-shadow: 10px 10px 21px -8px rgba(0,0,0,0.75);  
+  box-shadow: 10px 10px 21px -8px rgba(0,0,0,0.75);
 }
 
 .main {
@@ -98,26 +103,26 @@ footer {
   padding: 30px;
   font-size: 80%;
   }
- 
+
  .footer-nav {
      list-style: none;
      float: left;
- } 
- 
+ }
+
   /* .social-links {
      list-style: none;
-     float: right;    
- } */ 
- 
+     float: right;
+ } */
+
   .footer-nav li,
  .social-links li {
      display: inline-block;
      margin-right: 20px;
- } 
- 
+ }
+
   .footer-nav li:last-child,
  .social-links li:last-child { margin-right: 0px; }
- 
+
  .footer-nav li a:link,
  .footer-nav li a:visited,
  .social-links li a:link,
@@ -126,22 +131,22 @@ footer {
      border: 0px;
      color: #888;
      transition: color 0.2s;
- } 
- 
+ }
+
  .footer-nav li a:hover,
  .footer-nav li a:active { color: #ddd; } */
- 
+
  /* .social-links li a:link,
  .social-links li a:visited { font-size: 170%; }
- 
+
  .facebook,
  .twitter,
  .insta { transition: color 0.2s; }
- 
+
  .facebook:hover { color: #3b5998; }
- 
+
  .twitter:hover { color: #55acee; }
- 
+
  .insta:hover { color: #e95950; }
   */
  footer p {
@@ -149,8 +154,3 @@ footer {
      text-align: center;
      color: #888;
  }
- 
-
-
-
-
