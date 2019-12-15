@@ -1,287 +1,315 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <title>Bootstrap Example</title>
+  <title>Clock at.</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
-
-  <link href="https://fonts.googleapis.com/css?family=Archivo+Black&display=swap" rel="stylesheet">
 </head>
 <body onload="getData()">
 
-<div class="top">
-  <div class="row">
-    <!-- <div class="col-sm-4"> </div> -->
-
-    <div class="mx-auto header">
-      <img class="logo rounded-circle" src="logo.png" alt="Clock at.">
-      <h2 class="logo-text">Clock at.</h2>
+  <header>
+    <div class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top" >
+      <div class="row mx-auto">
+        <div class="col" style="width: 100%;">
+        <img class="logo rounded-circle" src="logo.png" alt="Clock at.">
+        </div>
+        <div class="col" style="width: 190%;">
+        <h2 class="logo-text">Clock at.</h2>
+        </div>
+      </div>
     </div>
+  </header>
 
-    <!-- <div class="col-sm-4"> </div> -->
-  </div>
-</div>
-
-<div class="container">
-  <div class="row">
-    <!-- <div class="col-sm-4"> </div> -->
-
-      <div class="card mx-auto">
-        <h3 class="name-section">Wifi</h3>
-        <h4>SSID name:</h4>
-        <input id="ssid" type="text" class="inputData">
-
-        <h4>SSID password :</h4>
-        <input id="password" type="text" class="inputData">
-
-        <h4>AP name:</h4>
-        <input id="ssidAP" type="text" class="inputData">
-
-        <h4>AP password :</h4>
-        <input id="passwordAP" type="text" class="inputData">
-
+  <div class="container">
+    <div class="row">
+      <div class="col-sm">
+        <div class="card mx-auto ">
+          <div class="card-header">
+            WIFI
+          </div>
+          <div class="card-body">
+            <h4>SSID name:</h4>
+            <input id="ssid" type="text" class="form-control">
+            <h4>SSID password :</h4>
+            <input id="password" type="text" class="form-control">
+            <h4>AP name:</h4>
+            <input id="ssidAP" type="text" class="form-control">
+            <h4>AP password :</h4>
+            <input id="passwordAP" type="text" class="form-control">
+          </div>
+        </div>
       </div>
 
-    <!-- <div class="col-sm-4"></div> -->
-  </div>
+      <div class="col-sm">
+        <div class="card mx-auto">
+          <div class="card-header">
+            Time
+          </div>
+          <div class="card-body">
+            <h4>Ntp server:</h4>
+            <input id="ntpServerName" type="text" class="form-control">
+            <h4>Time zone: :</h4>
+            <select id="timezone" class="custom-select">
+              <option value="-12.00"> (GMT) -12:00 </option>
+              <option value="-11.00"> (GMT) -11:00 </option>
+              <option value="-10.00"> (GMT) -10:00 </option>
+              <option value="-9.00" > (GMT) -09:00 </option>
+              <option value="-8.00" > (GMT) -08:00 </option>
+              <option value="-7.00" > (GMT) -07:00 </option>
+              <option value="-6.00" > (GMT) -06:00 </option>
+              <option value="-5.00" > (GMT) -05:00 </option>
+              <option value="-4.00" > (GMT) -04:00 </option>
+              <option value="-3.50" > (GMT) -03:30 </option>
+              <option value="-3.00" > (GMT) -03:00 </option>
+              <option value="-2.00" > (GMT) -02:00 </option>
+              <option value="-1.00" > (GMT) -01:00 </option>
+              <option value="0.00"  > (GMT) +00:00 </option>
+              <option value="1.00"  > (GMT) +01:00 </option>
+              <option value="2.00"  > (GMT) +02:00 </option>
+              <option value="3.00"  > (GMT) +03:00 </option>
+              <option value="3.50"  > (GMT) +03:30 </option>
+              <option value="4.00"  > (GMT) +04:00 </option>
+              <option value="4.50"  > (GMT) +04:30 </option>
+              <option value="5.00"  > (GMT) +05:00 </option>
+              <option value="5.50"  > (GMT) +05:30 </option>
+              <option value="5.75"  > (GMT) +05:45 </option>
+              <option value="6.00"  > (GMT) +06:00 </option>
+              <option value="6.50"  > (GMT) +06:30 </option>
+              <option value="7.00"  > (GMT) +07:00 </option>
+              <option value="8.00"  > (GMT) +08:00 </option>
+              <option value="8.50"  > (GMT) +08:30 </option>
+              <option value="8.75"  > (GMT) +08:45 </option>
+              <option value="9.00"  > (GMT) +09:00 </option>
+              <option value="9.50"  > (GMT) +09:30 </option>
+              <option value="10.00" > (GMT) +10:00 </option>
+              <option value="10.50" > (GMT) +10:30 </option>
+              <option value="11.00" > (GMT) +11:00 </option>
+              <option value="12.00" > (GMT) +12:00 </option>
+              <option value="12.75" > (GMT) +12:45 </option>
+              <option value="13.00" > (GMT) +13:00 </option>
+              <option value="14.00" > (GMT) +14:00 </option>
+            </select>
 
+            <div class="custom-control custom-switch switch">
+              <input type="checkbox" class="custom-control-input" id="summerTime" name="example">
+              <label class="custom-control-label" for="summerTime">Summer time</label>
+            </div>
 
-  <div class="row">
-      <!-- <div class="col-sm-4"> </div> -->
+            <h4>Hour signal on :</h4>
+            <input id="sigOn" type="number" class="form-control">
 
-      <div class="card mx-auto">
-        <h3 class="name-section">Time</h3>
-        <h4>Ntp server:</h4>
-        <input id="ntpServerName" type="text" class="inputData">
-
-        <h4>Time zone: :</h4>
-        <select id="timezone">
-          <option value="-12.00"> (GMT) -12:00 </option>
-          <option value="-11.00"> (GMT) -11:00 </option>
-          <option value="-10.00"> (GMT) -10:00 </option>
-          <option value="-9.00" > (GMT) -09:00 </option>
-          <option value="-8.00" > (GMT) -08:00 </option>
-          <option value="-7.00" > (GMT) -07:00 </option>
-          <option value="-6.00" > (GMT) -06:00 </option>
-          <option value="-5.00" > (GMT) -05:00 </option>
-          <option value="-4.00" > (GMT) -04:00 </option>
-          <option value="-3.50" > (GMT) -03:30 </option>
-          <option value="-3.00" > (GMT) -03:00 </option>
-          <option value="-2.00" > (GMT) -02:00 </option>
-          <option value="-1.00" > (GMT) -01:00 </option>
-          <option value="0.00"  > (GMT) +00:00 </option>
-          <option value="1.00"  > (GMT) +01:00 </option>
-          <option value="2.00"  > (GMT) +02:00 </option>
-          <option value="3.00"  > (GMT) +03:00 </option>
-          <option value="3.50"  > (GMT) +03:30 </option>
-          <option value="4.00"  > (GMT) +04:00 </option>
-          <option value="4.50"  > (GMT) +04:30 </option>
-          <option value="5.00"  > (GMT) +05:00 </option>
-          <option value="5.50"  > (GMT) +05:30 </option>
-          <option value="5.75"  > (GMT) +05:45 </option>
-          <option value="6.00"  > (GMT) +06:00 </option>
-          <option value="6.50"  > (GMT) +06:30 </option>
-          <option value="7.00"  > (GMT) +07:00 </option>
-          <option value="8.00"  > (GMT) +08:00 </option>
-          <option value="8.50"  > (GMT) +08:30 </option>
-          <option value="8.75"  > (GMT) +08:45 </option>
-          <option value="9.00"  > (GMT) +09:00 </option>
-          <option value="9.50"  > (GMT) +09:30 </option>
-          <option value="10.00" > (GMT) +10:00 </option>
-          <option value="10.50" > (GMT) +10:30 </option>
-          <option value="11.00" > (GMT) +11:00 </option>
-          <option value="12.00" > (GMT) +12:00 </option>
-          <option value="12.75" > (GMT) +12:45 </option>
-          <option value="13.00" > (GMT) +13:00 </option>
-          <option value="14.00" > (GMT) +14:00 </option>
-          </select>
-
-          <!-- <input type="checkbox" id="summerTime"> -->
-          <!-- <input type="checkbox" class="custom-control-input" id="summerTime"> -->
-
-          <div class="custom-control custom-switch">
-           <input type="checkbox" class="custom-control-input" id="summerTime" name="example">
-           <label class="custom-control-label" for="summerTime">Summer time</label>
-           </div>
-
-          <h4>Time signal on :</h4>
-          <input id="sigOn" type="number" class="inputData">
-
-          <h4>Time signal off :</h4>
-          <input id="sigOff" type="number" class="inputData">
-
+            <h4>Hour signal off :</h4>
+            <input id="sigOff" type="number" class="form-control">
+          </div>
         </div>
-
-      <!-- <div class="col-sm-4"></div> -->
+      </div>
     </div>
 
-    <div class="row">
-      <!-- <div class="col-sm-4"> </div> -->
-
+  <div class="row">
+    <div class="col-sm">
+      <div class="col-sm">
         <div class="card mx-auto">
-          <h3 class="name-section">Weather</h3>
-          <h4>API Key:</h4>
-          <input id="apiKey" type="text" class="inputData">
+          <div class="card-header">
+            Weather
+          </div>
+          <div class="card-body">
+            <h4>API Key:</h4>
+            <input id="apiKey" type="text" class="form-control">
 
-          <h4>City ID :</h4>
-          <input id="cityId" type="text" class="inputData">
+            <h4>City ID :</h4>
+            <input id="cityId" type="number" class="form-control">
 
-          <h4>Weather server:</h4>
-          <input id="weatherServer" type="text" class="inputData">
+            <h4>Weather server:</h4>
+            <input id="weatherServer" type="text" class="form-control">
 
-          <h4>Weather language :</h4>
-            <select id="langWeather">
+            <h4>Weather language :</h4>
+            <select id="langWeather" class="custom-select">
               <option value="ua">Ukrainian</option>
               <option value="en">English</option>
               <option value="ru">Russian</option>
             </select>
-          <!-- <input id="weatherLang" type="text" class="inputData">                 -->
+          </div>
         </div>
+      </div>
 
-      <!-- <div class="col-sm-4"></div> -->
+      <div class="col-sm">
+        <div class="card mx-auto">
+          <div class="card-header">
+            Options
+          </div>
+          <div class="card-body">
+            <h4>Scroll speed:</h4>
+            <input id="scrollSpeed" type="text" class="form-control">
+
+            <div class="custom-control custom-switch switch">
+              <input type="checkbox" class="custom-control-input" id="autoBright" name="example">
+              <label class="custom-control-label" for="autoBright">Auto bright</label>
+            </div>
+
+            <h4>Bright :</h4>
+            <form>
+              <label for="customRange">Fixing bright</label>
+              <input type="range" class="custom-range" id="customRange" name="points1">
+            </form>
+
+
+
+          </div>
+        </div>
+      </div>
     </div>
 
-    <div class="row">
-      <!-- <div class="col-sm-4"> </div> -->
-
-        <div class="card mx-auto">
-          <h3 class="name-section">MQTT</h3>
+    <div class="col-sm">
+      <div class="card mx-auto">
+        <div class="card-header">
+          MQTT
+        </div>
+        <div class="card-body">
           <h4>Server :</h4>
-          <input id="mqttserver" type="text" class="inputData">
+          <input id="mqttserver" type="text" class="form-control">
 
           <h4>Port :</h4>
-          <input id="mqttport" type="number" class="inputData">
+          <input id="mqttport" type="number" class="form-control">
 
           <h4>User name :</h4>
-          <input id="mqttUserName" type="text" class="inputData">
+          <input id="mqttUserName" type="text" class="form-control">
 
           <h4>User password :</h4>
-          <input id="mqttpass" type="text" class="inputData">
+          <input id="mqttpass" type="text" class="form-control">
 
           <h4>Name :</h4>
-          <input id="mqttname" type="text" class="inputData">
+          <input id="mqttname" type="text" class="form-control">
 
           <h4>Inform :</h4>
-          <input id="mqttsubinform" type="text" class="inputData">
+          <input id="mqttsubinform" type="text" class="form-control">
 
           <h4>Sub :</h4>
-          <input id="mqttsub" type="text" class="inputData">
+          <input id="mqttsub" type="text" class="form-control">
 
           <h4>Temperature :</h4>
-          <input id="mqttpubtemp" type="text" class="inputData">
+          <input id="mqttpubtemp" type="text" class="form-control">
 
           <h4>Temp street :</h4>
-          <input id="mqttpubtempUl" type="text" class="inputData">
+          <input id="mqttpubtempUl" type="text" class="form-control">
 
           <h4>Humidity :</h4>
-          <input id="mqttpubhum" type="text" class="inputData">
+          <input id="mqttpubhum" type="text" class="form-control">
 
           <h4>Pressure :</h4>
-          <input id="mqttpubpress" type="text" class="inputData">
+          <input id="mqttpubpress" type="text" class="form-control">
 
           <!-- <h4>Altitude :</h4>
           <input id="mqttpubalt" type="text" class="inputData"> -->
 
           <h4>Forecast :</h4>
-          <input id="mqttpubforecast" type="text" class="inputData">
+          <input id="mqttpubforecast" type="text" class="form-control">
 
           <h4>Button :</h4>
-          <input id="mqttbutt" type="text" class="inputData">
-        </div>
-
-      <!-- <div class="col-sm-4"></div> -->
-    </div>
-
-
-    <div class="row button-panel">
-      <!-- <div class="col-sm-4"></div> -->
-      <div class="mx-auto">
-        <div class="row">
-          <div class="col-sm-4">
-            <button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#saveModal" onclick="saveButton()">Save</button>
-          </div>
-          <div class="col-sm-4">
-            <button class="btn btn-success btn-block" type="button" onclick="restartButton()">Restart</button>
-          </div>
-          <div class="col-sm-4">
-            <button class="btn btn-danger btn-block" type="button">Reset</button>
-          </div>
-        </div>
-      </div>
-      <!-- <div class="col-sm-4"></div> -->
-    </div>
-
-    <!-- The Modal -->
-    <div class="modal" id="saveModal">
-      <div class="modal-dialog">
-        <div class="modal-content">
-
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h4 class="modal-title">Clock At.</h4>
-            <button type="button" class="close" data-dismiss="modal">&times;</button>
-          </div>
-
-          <!-- Modal body -->
-          <div class="modal-body">
-            After save, need reboot clocks!
-          </div>
-
-          <!-- Modal footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-success" data-dismiss="modal">Ok</button>
-          </div>
-
+          <input id="mqttbutt" type="text" class="form-control">
         </div>
       </div>
     </div>
+  </div>
 
+  <div class="row">
+    <div class="modal-footer mx-auto btn-footer">
+      <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" onclick="saveButton()" data-target="#saveModal">Save</button>
+      <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#rebootModal">Restart</button>
+      <button type="button" class="btn btn-danger btn-lg"  data-toggle="modal" data-target="#resetModal">Reset</button>
+    </div>
+  </div>
+
+  <!-- Modal save-->
+  <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Save</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            After save, reboot required! Reboot clocks now?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="restartButton()">Reboot</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal reboot -->
+  <div class="modal fade" id="rebootModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Reboot</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            Reboot clocks now?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="restartButton()">Reboot</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- Modal reset-->
+  <div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Reset</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+            Reset to defaults?
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
+          <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="getData()">Reset</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
-    <footer>
-      <div class="row">
-          <div class="col-sm-4"></div>
 
-          <div class="col-sm-4">
-              <ul class="footer-nav">
-                  <li><a href="http:\\sendsay.ho.ua">About me</a></li>
-                  <li><a href="http:\\mechanicart.ho.ua">My work</a></li>
-                  <!-- <li><a href="#">Press</a></li>
-                  <li><a href="#">iOS App</a></li>
-                  <li><a href="#">Android App</a></li> -->
-              </ul>
-          </div>
-
-          <!-- <div class="col-sm-4">
-              <ul class="social-links">
-                  <li><a href="#"><ion-icon class="facebook" name="logo-facebook"></ion-icon></a></li>
-                  <li><a href="#"><ion-icon class="twitter" name="logo-twitter"></ion-icon></a></li>
-                  <li><a href="#"><ion-icon class="insta" name="logo-instagram"></ion-icon></a></li>
-              </ul>
-          </div> -->
-          <div class="col-sm-4"></div>
-      </div>
-
-      <div class="row">
-        <div class="col">
-          <p>Copyright &copy; 2019 by Shpakov Vladyslav (Aka SendSay). All right reseverd.</p>
+  <footer>
+    <div class="row">
+      <div class="col mx-auto">
+        <div class=" text-center py-4">© 2019
+          <a href="http://mechanicart.ho.ua" target="blank"> Shpakov Vladyslav</a> /
+          <a href="http://mechanicart.ho.ua" target="blank"> sendsay34@gmail.com</a> /
+          <a href="http://mechanicart.ho.ua" target="blank"> sendsay@yahoo.com</a> /
+          <a href="http://mechanicart.ho.ua" target="blank"> sendsay@mail.ru</a>
         </div>
       </div>
-    </footer>
+    </div>
+  </footer>
 
-<script>
-  var xmlHttp = new XMLHttpRequest();
 
-  function getData() {
+  <script>
+    var xmlHttp = new XMLHttpRequest();
+
+    function getData() {
       if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
       xmlHttp.open('GET','/getData',true);
       xmlHttp.send();
       xmlHttp.onload = function(e) {
 
           var str = xmlHttp.responseText;
-
-          console.log(str);
 
           json=JSON.parse(str);
           //wifi
@@ -292,8 +320,6 @@
           //time
           document.getElementById("timezone").value = json.timezone;
           if (json.summertime == 1) { document.getElementById("summerTime").checked = true; }
-         // document.getElementById("summerTime").checked = json.summertime;
-
           document.getElementById("sigOn").value = json.sigOn;
           document.getElementById("sigOff").value = json.sigOff;
           document.getElementById("ntpServerName").value = json.ntpServerName;
@@ -302,7 +328,6 @@
           document.getElementById("cityId").value = json.cityId;
           document.getElementById("weatherServer").value = json.weatherServer;
           document.getElementById("langWeather").value = json.langWeather;
-
           //mqtt
           document.getElementById("mqttserver").value = json.mqttserver;
           document.getElementById("mqttport").value = json.mqttport;
@@ -318,52 +343,47 @@
           // document.getElementById("mqttpubalt").value = json.mqttpubalt;
           document.getElementById("mqttpubforecast").value = json.mqttpubforecast;
           document.getElementById("mqttbutt").value = json.mqttbutt;
-
         }
-
       }
-  }
-
-  function saveButton() {
-    var content = "/saveContent?ssid=" + val('ssid') + "&password=" + val('password') + "&ssidAP=" + val('ssidAP') +
-                  "&passwordAP=" + val('passwordAP') + "&timezone=" + val('timezone') + "&summertime=" + val_sw('summerTime') +
-                  "&sigOn=" + val('sigOn') + "&sigOff=" + val('sigOff') + "&ntpServerName=" + val('ntpServerName') +
-                  "&apiKey=" + val('apiKey') + "&cityId=" + val('cityId') + "&weatherServer=" + val('weatherServer') +
-                  "&langWeather=" + val("langWeather") + "&mqttserver=" + val("mqttserver") + "&mqttport=" + val('mqttport') +
-                  "&mqttUserName=" + val('mqttUserName') + "&mqttpass=" + val('mqttpass') + "&mqttname=" + val('mqttname') +
-                  "&mqttsubinform=" + val('mqttsubinform') + "&mqttsub=" + val('mqttsub') + "&mqttpubtemp=" + val('mqttpubtemp') +
-                  "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') + "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') + "&mqttbutt=" + val('mqttbutt');
-
-    console.log(content);
-
-    xmlHttp.open('GET', content,true);
-    xmlHttp.send();
-    // xmlHttp.send(200, "text/plain", "OK");
-  }
-
-  function restartButton() {
-    xmlHttp.open("GET", "/restart", true);
-    xmlHttp.send();
-  }
-
-  function val(id){
-    var v = document.getElementById(id).value;
-    return v;
-  }
-
-  function val_sw(nameSwitch) {
-    switchOn = document.getElementById(nameSwitch);
-    if (switchOn.checked){
-      return 1;
     }
-    return 0;
-  }
 
-</script>
+    function saveButton() {
+      var content = "/saveContent?ssid=" + val('ssid') + "&password=" + val('password') + "&ssidAP=" + val('ssidAP') +
+                    "&passwordAP=" + val('passwordAP') + "&timezone=" + val('timezone') + "&summertime=" + val_sw('summerTime') +
+                    "&sigOn=" + val('sigOn') + "&sigOff=" + val('sigOff') + "&ntpServerName=" + val('ntpServerName') +
+                    "&apiKey=" + val('apiKey') + "&cityId=" + val('cityId') + "&weatherServer=" + val('weatherServer') +
+                    "&langWeather=" + val("langWeather") + "&mqttserver=" + val("mqttserver") + "&mqttport=" + val('mqttport') +
+                    "&mqttUserName=" + val('mqttUserName') + "&mqttpass=" + val('mqttpass') + "&mqttname=" + val('mqttname') +
+                    "&mqttsubinform=" + val('mqttsubinform') + "&mqttsub=" + val('mqttsub') + "&mqttpubtemp=" + val('mqttpubtemp') +
+                    "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') + "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') + "&mqttbutt=" + val('mqttbutt');
 
-<script src="jquery.min.js"></script>
-<script src="popper.min.js"></script>
-<script src="bootstrap.min.js"></script>
+      xmlHttp.open('GET', content,true);
+      xmlHttp.send();
+
+    }
+
+    function restartButton() {
+      xmlHttp.open("GET", "/restart", true);
+      xmlHttp.send();
+    }
+
+    function val(id){
+      var v = document.getElementById(id).value;
+      return v;
+    }
+
+    function val_sw(nameSwitch) {
+      switchOn = document.getElementById(nameSwitch);
+      if (switchOn.checked){
+        return 1;
+      }
+      return 0;
+    }
+  </script>
+
+  <script src="jquery.min.js"></script>
+  <script src="popper.min.js"></script>
+  <script src="bootstrap.min.js"></script>
 
 </body>
 </html>

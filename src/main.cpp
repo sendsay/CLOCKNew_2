@@ -543,12 +543,12 @@ void loadConfig(const char *filename, Config &config) {
     config.timeSigOn = doc["timeSigOn"] | 7;
     config.timeSigOff = doc["timeSigOff"] | 21;
     //Weather
-    strlcpy(config.apiKey, doc["apiKey"] | "3bdyjnd7", sizeof(config.apiKey));
+    strlcpy(config.apiKey, doc["apiKey"] | "df9c74ff1a47dcb48aab814fa5500429", sizeof(config.apiKey));
 
     // config.apiKey = doc["apiKey"] | "3bdyjnd7";
     config.cityId = doc["cityId"] | 598098;
 
-    strlcpy(config.weatherServer, doc["weatherServer"] | "3bdyjnd7", sizeof(config.weatherServer));
+    strlcpy(config.weatherServer, doc["weatherServer"] | "api.openweathermap.org", sizeof(config.weatherServer));
     strlcpy(config.langWeather, doc["langWeather"] | "ua", sizeof(config.langWeather));
 
 
@@ -558,13 +558,13 @@ void loadConfig(const char *filename, Config &config) {
 
     //Mqtt
     strlcpy(config.mqttserver, doc["mqtt_server"] | "m24.cloudmqtt.com", sizeof(config.mqttserver));
-    config.mqttport = doc["mqtt_port"] | 56254;
-    strlcpy(config.mqttUserName, doc["mqtt_user"] | "4gd6fg", sizeof(config.mqttUserName));
-    strlcpy(config.mqttpass, doc["mqtt_pass"] | "6jhj65", sizeof(config.mqttpass));
+    config.mqttport = doc["mqtt_port"] | 17049;
+    strlcpy(config.mqttUserName, doc["mqtt_user"] | "zqyslqbd", sizeof(config.mqttUserName));
+    strlcpy(config.mqttpass, doc["mqtt_pass"] | "ghCaEZLP2i0V", sizeof(config.mqttpass));
     strlcpy(config.mqttname, doc["mqtt_name"] | "Informer", sizeof(config.mqttname));
     strlcpy(config.mqttsubinform, doc["mqtt_sub_inform"] | "Inform/mess", sizeof(config.mqttsubinform));
     strlcpy(config.mqttsub, doc["mqtt_sub"] | "Ulica/temp", sizeof(config.mqttsub));
-    strlcpy(config.mqttpubtemp, doc["mqtt_pub_temp"] | "Informer/tem", sizeof(config.mqttpubtemp));
+    strlcpy(config.mqttpubtemp, doc["mqtt_pub_temp"] | "Informer/temp", sizeof(config.mqttpubtemp));
     strlcpy(config.mqttpubtempUl, doc["mqtt_pub_tempUl"] | "Informer/tempUl", sizeof(config.mqttpubtempUl));
     strlcpy(config.mqttpubhum, doc["mqtt_pub_hum"] | "Informer/hum", sizeof(config.mqttpubhum));
     strlcpy(config.mqttpubpress, doc["mqtt_pub_press"] | "Informer/press", sizeof(config.mqttpubpress));
