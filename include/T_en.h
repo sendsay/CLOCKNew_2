@@ -8,9 +8,7 @@ void enText(){
   tKurs = "Course Privat24";
   tSale = "Purchase/Sale.";
   tYour = "Your";
-  tPoint = "Connect to the WiFi-Clock access point and enter in the browser the address: 192.168.4.1         ";
-
-
+  tPoint = "Connect to the ClockAt access point and enter in the browser the address: 192.168.4.1         ";
   tJanuary = "January";
   tFebruary = "February";
   tMarch = "Martha";
@@ -23,7 +21,6 @@ void enText(){
   tOctober = "October";
   tNovember = "November";
   tDecember = "December";
-
   tMonday = "Monday";
   tTuesday = "Tuesday";
   tWednesday = "Wednesday";
@@ -31,10 +28,10 @@ void enText(){
   tFriday = "Friday";
   tSaturday = "Saturday";
   tSunday = "Sunday";
+  tFeels = "feels";
   tWeatrNot = "   There is no weather update for more than 6 hours !!!   ";
   tWeatrTN = "no weather updates - ";
 
   printTime();
   Serial.println("Text EN.");
 }
-

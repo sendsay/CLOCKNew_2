@@ -104,13 +104,6 @@ void setup() {
         PRN("============> Did not find Si7021 sensor!");
     }
 
-    if (lang == 0) ukrText();               // Выбор языка для сообщений
-    else if (lang == 1) rusText();
-    else if (lang == 2) polText();
-    else if (lang == 3) czText();
-    else if (lang == 4) deText();
-    else if (lang == 5) enText();
-
     wifiConnect();                          // подключение к Вайфай
 
     localMillisAtUpdate = millis();
@@ -127,7 +120,6 @@ void setup() {
     MQTTclient.connect(config.mqttname);
     MQTTclient.subscribe(config.mqttsubinform);
     MQTTclient.subscribe(config.mqttsub);
-
 
     server.begin();
 
@@ -153,6 +145,8 @@ void setup() {
     server.on("/logo.png", logo);
 
     server.on("/saveContent", saveContent);
+
+    server.on("/restart", restart);
 
     printFile("/config.json");
 
@@ -188,8 +182,8 @@ void loop() {
         updateSensors();
     }
 
-//=== Обновление погоды с сайта каждые 2 часа 59 минут ==============================================================
-    if (((hour % 2) == 0) and (minute == 59 ) and (second == 0) and (not secFr)) {
+//=== Обновление погоды с сайта каждые 29 минут ==============================================================
+    if (((minute == 29 ) and (second == 0) and (not secFr)) {
         if (WIFI_connected) {
             getWeather();
         } else {
@@ -446,44 +440,76 @@ void saveContent() {
     PRN("save Content!!!");
 
     //Wifi
-    strlcpy(config.ssid, server.arg("ssid").c_str(), sizeof(server.arg("ssid")));
+    server.arg("ssid").toCharArray(config.ssid, 50) ;
+    server.arg("password").toCharArray(config.password, 50) ;
+    server.arg("ssidAP").toCharArray(config.ssidAP, 50) ;
+    server.arg("passwordAP").toCharArray(config.passwordAP, 50) ;
 
-    strlcpy(config.password, (server.arg("password").c_str()), sizeof(server.arg("password")));
-    strlcpy(config.ssidAP, (server.arg("ssidAP").c_str()), sizeof(server.arg("ssidAP")));
-    strlcpy(config.passwordAP, (server.arg("passwordAP").c_str()), sizeof(server.arg("passwordAP")));
+
+    // strlcpy(config.ssid, server.arg("ssid").c_str(), sizeof(server.arg("ssid")));
+    // strlcpy(config.password, (server.arg("password").c_str()), sizeof(server.arg("password")));
+    // strlcpy(config.ssidAP, (server.arg("ssidAP").c_str()), sizeof(server.arg("ssidAP")));
+    // strlcpy(config.passwordAP, (server.arg("passwordAP").c_str()), sizeof(server.arg("passwordAP")));
 
     //Time
     config.timeZone = server.arg("timezone").toFloat();
     config.summertime = server.arg("summertime").toInt();
     config.timeSigOn = server.arg("sigOn").toInt();
     config.timeSigOff = server.arg("sigOff").toInt();
-    config.ntpServerName = server.arg("ntpServerName").c_str();
+    // config.ntpServerName = server.arg("ntpServerName").c_str();
+    server.arg("ntpServerName").toCharArray(config.ntpServerName, 50) ;
 
     //weather
-    config.apiKey = server.arg("apiKey").c_str();
+    // config.apiKey = server.arg("apiKey").c_str();
+    server.arg("apiKey").toCharArray(config.apiKey, 70) ;
+
+
     config.cityId = server.arg("cityId").toInt();
-    config.weatherServer = server.arg("weatherServer").c_str();
-    config.langWeather = server.arg("langWeather").c_str();
+
+    server.arg("weatherServer").toCharArray(config.weatherServer, 50) ;
+    server.arg("langWeather").toCharArray(config.langWeather, 4) ;
+
+    // config.weatherServer = server.arg("weatherServer").c_str();
+    // config.langWeather = server.arg("langWeather").c_str();
 
     //mqtt
-    strlcpy(config.mqttserver, (server.arg("mqttserver").c_str()), sizeof(server.arg("mqttserver")));
+    server.arg("mqttserver").toCharArray(config.mqttserver, 50);
     config.mqttport = server.arg("mqttport").toInt();
-    strlcpy(config.mqttUserName, (server.arg("mqttUserName").c_str()), sizeof(server.arg("mqttUserName")));
-    strlcpy(config.mqttpass, (server.arg("mqttpass").c_str()), sizeof(server.arg("mqttpass")));
-    strlcpy(config.mqttname, (server.arg("mqttname").c_str()), sizeof(server.arg("mqttname")));
-    strlcpy(config.mqttsubinform, (server.arg("mqttsubinform").c_str()), sizeof(server.arg("mqttsubinform")));
-    strlcpy(config.mqttsub, (server.arg("mqttsub").c_str()), sizeof(server.arg("mqttsub")));
-    strlcpy(config.mqttpubtemp, (server.arg("mqttpubtemp").c_str()), sizeof(server.arg("mqttpubtemp")));
-    strlcpy(config.mqttpubtempUl, (server.arg("mqttpubtempUl").c_str()), sizeof(server.arg("mqttpubtempUl")));
-    strlcpy(config.mqttpubhum, (server.arg("mqttpubhum").c_str()), sizeof(server.arg("mqttpubhum")));
-    strlcpy(config.mqttpubpress, (server.arg("mqttpubpress").c_str()), sizeof(server.arg("mqttpubpress")));
-    strlcpy(config.mqttpubforecast, (server.arg("mqttpubforecast").c_str()), sizeof(server.arg("mqttpubforecast")));
-    strlcpy(config.mqttbutt, (server.arg("mqttbutt").c_str()), sizeof(server.arg("mqttbutt")));
+    server.arg("mqttUserName").toCharArray(config.mqttUserName, 50);
+    server.arg("mqttpass").toCharArray(config.mqttpass, 50) ;
+    server.arg("mqttname").toCharArray(config.mqttname, 50) ;
+    server.arg("mqttsubinform").toCharArray(config.mqttsubinform, 50) ;
+    server.arg("mqttsub").toCharArray(config.mqttsub, 50) ;
+    server.arg("mqttpubtemp").toCharArray(config.mqttpubtemp, 50) ;
+    server.arg("mqttpubtempUl").toCharArray(config.mqttpubtempUl, 50) ;
+    server.arg("mqttpubhum").toCharArray(config.mqttpubhum, 50) ;
+    server.arg("mqttpubpress").toCharArray(config.mqttpubpress, 50) ;
+    server.arg("mqttpubforecast").toCharArray(config.mqttpubforecast, 50) ;
+    server.arg("mqttbutt").toCharArray(config.mqttbutt, 50) ;
+
+
+    // strlcpy(config.mqttname, (server.arg("mqttname").c_str()), sizeof(server.arg("mqttname")));
+    // strlcpy(config.mqttsubinform, (server.arg("mqttsubinform").c_str()), sizeof(server.arg("mqttsubinform")));
+    // strlcpy(config.mqttsub, (server.arg("mqttsub").c_str()), sizeof(server.arg("mqttsub")));
+    // strlcpy(config.mqttpubtemp, (server.arg("mqttpubtemp").c_str()), sizeof(server.arg("mqttpubtemp")));
+    // strlcpy(config.mqttpubtempUl, (server.arg("mqttpubtempUl").c_str()), sizeof(server.arg("mqttpubtempUl")));
+    // strlcpy(config.mqttpubhum, (server.arg("mqttpubhum").c_str()), sizeof(server.arg("mqttpubhum")));
+    // strlcpy(config.mqttpubpress, (server.arg("mqttpubpress").c_str()), sizeof(server.arg("mqttpubpress")));
+    // strlcpy(config.mqttpubforecast, (server.arg("mqttpubforecast").c_str()), sizeof(server.arg("mqttpubforecast")));
+    // strlcpy(config.mqttbutt, (server.arg("mqttbutt").c_str()), sizeof(server.arg("mqttbutt")));
 
     // config.mqttpubalt = server.arg("mqttpubalt").c_str();
+    Serial.println("**************************");
+    Serial.println(config.mqttserver);
+    Serial.println(server.arg("mqttserver").c_str());
 
     saveConfig("/config.json", config);
 }
+
+void restart() {
+    ESP.restart();
+}
+
 
 /*
 ..######...#######..##....##.########.####..######..
@@ -499,9 +525,7 @@ void loadConfig(const char *filename, Config &config) {
 
     File file = SPIFFS.open("/config.json", "r");
 
-    // StaticJsonDocument<1900> doc;
-
-    const size_t capacity = JSON_OBJECT_SIZE(27) + 620;
+    const size_t capacity = JSON_OBJECT_SIZE(26) + 720;
     DynamicJsonDocument doc(capacity);
 
     DeserializationError error = deserializeJson(doc, file);
@@ -518,16 +542,26 @@ void loadConfig(const char *filename, Config &config) {
     //Time
     config.timeZone = doc["timezone"] | 2;
     config.summertime = doc["summertime"] | 0;
-    config.ntpServerName = doc["ntpServerName"] | "ntp3.time.in.ua";
+
+    strlcpy(config.ntpServerName, doc["ntpServerName"] | "ntp3.time.in.ua", sizeof(config.ntpServerName));
+    // config.ntpServerName = doc["ntpServerName"] | "ntp3.time.in.ua";
+
     config.timeSigOn = doc["timeSigOn"] | 7;
     config.timeSigOff = doc["timeSigOff"] | 21;
     //Weather
-    config.apiKey = doc["apiKey"] | "3bdyjnd7";
-    config.cityId = doc["cityId"] | 598098;
-    config.weatherServer = doc["weatherServer"] | "api.openweathermap.org";
-    config.langWeather = doc["weatherServer"] | "api.openweathermap.org";
+    strlcpy(config.apiKey, doc["apiKey"] | "3bdyjnd7", sizeof(config.apiKey));
 
-    config.langWeather = doc["langWeather"] | "ua";
+    // config.apiKey = doc["apiKey"] | "3bdyjnd7";
+    config.cityId = doc["cityId"] | 598098;
+
+    strlcpy(config.weatherServer, doc["weatherServer"] | "3bdyjnd7", sizeof(config.weatherServer));
+    strlcpy(config.langWeather, doc["langWeather"] | "ua", sizeof(config.langWeather));
+
+
+    if (doc["langWeather"] == "ua") {ukrText(); lang = 0;}               // Выбор языка для сообщений
+    else if (doc["langWeather"] == "ru") {rusText(); lang = 1;}
+    else if (doc["langWeather"] == "en") {enText(); lang =2;}
+
     //Mqtt
     strlcpy(config.mqttserver, doc["mqtt_server"] | "m24.cloudmqtt.com", sizeof(config.mqttserver));
     config.mqttport = doc["mqtt_port"] | 56254;
@@ -561,7 +595,7 @@ void saveConfig(const char *filename, Config &config) {
 
     // StaticJsonDocument<1900> doc;
 
-    const size_t capacity = JSON_OBJECT_SIZE(27) + 620;
+    const size_t capacity = JSON_OBJECT_SIZE(26) + 720;
     DynamicJsonDocument doc(capacity);
 
     doc["ssid"] = config.ssid;
@@ -1108,7 +1142,7 @@ void timeUpdateNTP() {
 */
 
 void getNTPtime() {
-  WiFi.hostByName(config.ntpServerName.c_str(), timeServerIP);
+  WiFi.hostByName(config.ntpServerName, timeServerIP);
   int cb;
   for(int i = 0; i < 3; i++){
     memset(packetBuffer, 0, NTP_PACKET_SIZE);
@@ -1374,13 +1408,13 @@ void getWeather() {
     Serial.println("\nStarting connection to server...");
 
     String url = "http://";
-    url += config.weatherServer;
+    url += String(config.weatherServer);
     url += "/data/2.5/weather";
-    url = url + "?id=" + config.cityId;
-    url += "&appid=" + config.apiKey;
+    url += "?id=" + String(config.cityId);
+    url += "&appid=" + String(config.apiKey) ;
     url += "&cnt=1";
     url += "&units=metric";
-    url += "&lang=" + config.langWeather;
+    url += "&lang=" + String(config.langWeather);
 
     Serial.println(url);
 
@@ -1415,6 +1449,7 @@ void getWeather() {
     weather.descript = doc["weather"][0]["description"];
     weather.icon     = doc["weather"][0]["icon"];
     weather.temp     = doc["main"]["temp"];
+    weather.feels    = doc["main"]["feels_like"];
     weather.humidity = doc["main"]["humidity"];
     weather.pressure = doc["main"]["pressure"];
     weather.speed    = doc["wind"]["speed"];
@@ -1427,7 +1462,7 @@ void getWeather() {
 
     weatherDescription = weather.descript;
     weatherDescription.toLowerCase();
-    if(lang!=5) convertWeatherDes();
+    if(lang!=2) convertWeatherDes();
 
     cityName = weather.cityName;
     config.cityId = weather.cityId;
@@ -1452,12 +1487,15 @@ void getWeather() {
     // weatherString = "         " + tNow + ":    \212 " + String(temp, 0) + ("\202") + "C";
     weatherString = "         " + tNow + ":    \212 " + String(tempBmp, 0) + ("\202") + "C";
 
+    weatherString += "     " + tFeels + ":  " +String(weather.feels) + ("\202") + "C";;
+
     weatherString += "     \213 " + String(humidity) + "%";
 
     // weatherString += "     \215 " + String(pressure, 0) + tPress;
     weatherString += "     \215 " + String(pressBmp) + tPress;
 
     weatherString += "     \214 " + windDegString + String(windSpeed, 1) + tSpeed;
+
     weatherString += "     \216 " + String(clouds) + "%     " + weatherDescription + "                ";
 
 

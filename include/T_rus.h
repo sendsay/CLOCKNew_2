@@ -8,7 +8,7 @@ void rusText(){
   tKurs = "Курс Privat24";
   tSale = "Покуп/Прод.";
   tYour = "Ваш";
-  tPoint = "Подключитесь к точке доступа WiFi-Clock и введите в браузере адрес: 192.168.4.1         ";
+  tPoint = "Подключитесь к точке доступа ClockAt и введите в браузере адрес: 192.168.4.1         ";
   tJanuary = "января";
   tFebruary = "февраля";
   tMarch = "марта";
@@ -28,13 +28,14 @@ void rusText(){
   tFriday = "Пятница";
   tSaturday = "Суббота";
   tSunday = "Воскресенье";
+  tFeels = "чувст.";
   tClearSky = "чистое небо";
   tSkyIsClear = "ясное небо";
   tFewClouds = "малооблачно";
   tScatteredClouds = "разорванные облака";
   tBrokenClouds = "облачно с прояснениями";
   tOvercastClouds = "сильная облачность";
-  tLightRain = "небольшой дождь";  
+  tLightRain = "небольшой дождь";
   tModerateRain = "умеренный дождь";
   tLightIntensityShowerRain = "легкая интенсивность дождей";
   tShowerRain="ливень";
@@ -46,7 +47,7 @@ void rusText(){
   tMist = "густой туман";
   tShowerSleet = "снег с дождем";
   tLightSnow = "лёгкий снег";
-  tLightShowerSnow = "небольшой снегопад"; 
+  tLightShowerSnow = "небольшой снегопад";
   tSnow = "снeг";
   tWeatrNot = "   Нет обновления погоды более 6 часов!!!   ";
   tWeatrTN = "нет обновления погоды - ";
@@ -54,5 +55,3 @@ void rusText(){
   printTime();
   Serial.println("Text RUS.");
 }
-
-

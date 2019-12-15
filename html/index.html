@@ -11,10 +11,9 @@
 </head>
 <body onload="getData()">
 
-
 <div class="top">
   <div class="row">
-    <div class="col-sm-4"> </div>
+    <!-- <div class="col-sm-4"> </div> -->
 
     <div class="col-sm-4">
       <!-- <div class="logo rounded-circle" ></div> -->
@@ -22,7 +21,7 @@
       <h2 class="logo-text">Clock at.</h2>
     </div>
 
-    <div class="col-sm-4"> </div>
+    <!-- <div class="col-sm-4"> </div> -->
   </div>
 </div>
 
@@ -205,7 +204,7 @@
             <button class="btn btn-primary btn-block" type="button" data-toggle="modal" data-target="#saveModal" onclick="saveButton()">Save</button>
           </div>
           <div class="col-sm-4">
-            <button class="btn btn-success btn-block" type="button">Restart</button>
+            <button class="btn btn-success btn-block" type="button" onclick="restartButton()">Restart</button>
           </div>
           <div class="col-sm-4">
             <button class="btn btn-danger btn-block" type="button">Reset</button>
@@ -228,7 +227,7 @@
 
           <!-- Modal body -->
           <div class="modal-body">
-            After save, need reboot!
+            After save, need reboot clocks!
           </div>
 
           <!-- Modal footer -->
@@ -321,15 +320,12 @@
           document.getElementById("mqttpubforecast").value = json.mqttpubforecast;
           document.getElementById("mqttbutt").value = json.mqttbutt;
 
-
-
         }
 
       }
   }
 
   function saveButton() {
-
     var content = "/saveContent?ssid=" + val('ssid') + "&password=" + val('password') + "&ssidAP=" + val('ssidAP') +
                   "&passwordAP=" + val('passwordAP') + "&timezone=" + val('timezone') + "&summertime=" + val_sw('summerTime') +
                   "&sigOn=" + val('sigOn') + "&sigOff=" + val('sigOff') + "&ntpServerName=" + val('ntpServerName') +
@@ -339,13 +335,16 @@
                   "&mqttsubinform=" + val('mqttsubinform') + "&mqttsub=" + val('mqttsub') + "&mqttpubtemp=" + val('mqttpubtemp') +
                   "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') + "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') + "&mqttbutt=" + val('mqttbutt');
 
-
-
     console.log(content);
 
-    xmlHttp.open("GET", content, true);
+    xmlHttp.open('GET', content,true);
     xmlHttp.send();
     // xmlHttp.send(200, "text/plain", "OK");
+  }
+
+  function restartButton() {
+    xmlHttp.open("GET", "/restart", true);
+    xmlHttp.send();
   }
 
   function val(id){

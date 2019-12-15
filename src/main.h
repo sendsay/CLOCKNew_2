@@ -98,7 +98,7 @@ int secFr, lastSecond, lastMinute;                    // Работа с вре�
 // char weatherServer[] = "api.openweathermap.org";      // Сервер погоды
 // String langWeather = "ua";                            // Язык погоды
 String weatherDescription = "";                       // Описание погоды
-String tClearSky, tSkyIsClear, tFewClouds, tScatteredClouds, tBrokenClouds, tOvercastClouds, tLightRain, tModerateRain, tLightIntensityShowerRain, tShowerRain, tHeavyIntensityRain, tVeryHeavyRain, tThunderstorm, tHaze, tFog, tMist, tShowerSleet, tLightSnow, tLightShowerSnow, tSnow, tWeatrNot, tWeatrTN;   // Описание погоды
+String tClearSky, tSkyIsClear, tFewClouds, tScatteredClouds, tBrokenClouds, tOvercastClouds, tLightRain, tModerateRain, tLightIntensityShowerRain, tShowerRain, tHeavyIntensityRain, tVeryHeavyRain, tThunderstorm, tHaze, tFog, tMist, tShowerSleet, tLightSnow, tLightShowerSnow, tSnow, tWeatrNot, tWeatrTN, tFeels;   // Описание погоды
 byte lang = 0;                                        // Язык текста часов
 String cityName;                                      // Имя горола для погоды
 byte humidity;                                        // влажность для прогноза
@@ -125,6 +125,7 @@ struct weather_structure {
   float pressure;
   byte  humidity;
   float speed;
+  int feels;
   float deg;
   const char* cityName;
   unsigned int cityId;
@@ -164,35 +165,35 @@ MQTTstruct MQTTClientas;
 
 struct Config {                                       // Структура с настройками
   char ssid[50];
-  char password[20];                                 // Пароль локального WiFi
-  char ssidAP[32];                                   // Назва точки доступу
-  char passwordAP[20];                               // Пароль точки доступу
+  char password[50];                                 // Пароль локального WiFi
+  char ssidAP[50];                                   // Назва точки доступу
+  char passwordAP[50];                               // Пароль точки доступу
 
   float timeZone;                                    // Временная зона для часов
   int summertime;                                   // летнее время
-  String ntpServerName;                              // Сервер обновления времени
+  char ntpServerName[50];                              // Сервер обновления времени
   byte timeSigOn;                                    // Время начала сигнала
   byte timeSigOff;                                   // Время конца сигнала
 
-  String apiKey;                                     // Ключ для погоды
+  char apiKey[70];                                     // Ключ для погоды
   int cityId;                                        // локация погоды
-  String weatherServer;                              // Сервер погоды
-  String langWeather;                                // Язык погоды
+  char weatherServer[50];                              // Сервер погоды
+  char langWeather[4];                                // Язык погоды
 
-  char mqttserver[21];                                // Имя сервера MQTT
+  char mqttserver[50];                                // Имя сервера MQTT
   int  mqttport;                                      // Порт для подключения к серверу MQTT
-  char mqttUserName[25];                              // Логи от сервер
-  char mqttpass[25];                                  // Пароль от сервера MQTT
-  char mqttname[25];                                 // Имя информера
-  char mqttsubinform[25];                            // Сообщение
-  char mqttsub[25];                                  // Темп. на улице
-  char mqttpubtemp[25];                              // Темп. на улице
-  char mqttpubtempUl[25];                               // Темп на улице
-  char mqttpubhum[25];                                  // Влажность
-  char mqttpubpress[25];                                // Давление
+  char mqttUserName[50];                              // Логи от сервер
+  char mqttpass[50];                                  // Пароль от сервера MQTT
+  char mqttname[50];                                 // Имя информера
+  char mqttsubinform[50];                            // Сообщение
+  char mqttsub[50];                                  // Темп. на улице
+  char mqttpubtemp[50];                              // Темп. на улице
+  char mqttpubtempUl[50];                               // Темп на улице
+  char mqttpubhum[50];                                  // Влажность
+  char mqttpubpress[50];                                // Давление
   // String mqttpubalt;                                  // Высота
-  char  mqttpubforecast[25];                             // Погда из нета
-  char mqttbutt[25];                                    // Кнопка
+  char  mqttpubforecast[50];                             // Погда из нета
+  char mqttbutt[50];                                    // Кнопка
 
 };
 
@@ -256,6 +257,7 @@ void sendData();
 void style();
 void logo();
 void saveContent();
+void restart();
 
 
 

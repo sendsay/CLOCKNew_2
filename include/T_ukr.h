@@ -8,7 +8,7 @@ void ukrText(){
   tKurs = "Курс Privat24";
   tSale = "Куп/Прод.";
   tYour = "Ваш";
-  tPoint = "Підключіться до точки доступу WiFi-Clock і введіть в браузері адресу: 192.168.4.1       ";
+  tPoint = "Підключіться до точки доступу ClockAt і введіть в браузері адресу: 192.168.4.1       ";
   tJanuary = "січня";
   tFebruary = "лютого";
   tMarch = "березня";
@@ -28,6 +28,7 @@ void ukrText(){
   tFriday = "П'ятниця";
   tSaturday = "Субота";
   tSunday = "Неділя";
+  tFeels = "вiдчув.";
   tClearSky = "чисте небо";
   tSkyIsClear = "ясне небо";
   tFewClouds = "малохмарно";
@@ -46,11 +47,11 @@ void ukrText(){
   tMist = "густий туман";
   tShowerSleet = "сніг з дощем";
   tLightSnow = "легкий сніг";
-  tLightShowerSnow = "невеликий снігопад"; 
+  tLightShowerSnow = "невеликий снігопад";
   tSnow = "сніг";
   tWeatrNot = "   Немає оновлень погоди більше 6 годин!!!   ";
   tWeatrTN = "немає оновлень погоди - ";
-  
+
   printTime();
   Serial.println("Text UKR.");
 
