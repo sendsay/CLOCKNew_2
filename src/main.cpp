@@ -214,7 +214,10 @@ void loop() {
 .########...#######.....##.......##.....#######..##....##
 */
 
-if (((((digitalRead(buttonPin) == HIGH) || (((minute % 15) == 0) && (second == 3))) && ((hour >= config.timeSigOn) and (hour <= config.timeSigOff))) || (ShowFlagMQTT == true)) && ShowFlag == false) {
+if (((digitalRead(buttonPin) == HIGH) ||
+    ((((minute % 1) == 0) && (second == 3)) &&
+    ((hour >= config.timeSigOn) and (hour <= config.timeSigOff))) ||
+    (ShowFlagMQTT == true)) && ShowFlag == false) {
     ChangeMode.start();
     ShowFlag = true;
     showSimpleTemp();
