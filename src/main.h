@@ -99,7 +99,7 @@ int secFr, lastSecond, lastMinute;                    // Работа с вре�
 // String langWeather = "ua";                            // Язык погоды
 String weatherDescription = "";                       // Описание погоды
 String tClearSky, tSkyIsClear, tFewClouds, tScatteredClouds, tBrokenClouds, tOvercastClouds, tLightRain, tModerateRain, tLightIntensityShowerRain, tShowerRain, tHeavyIntensityRain, tVeryHeavyRain, tThunderstorm, tHaze, tFog, tMist, tShowerSleet, tLightSnow, tLightShowerSnow, tSnow, tWeatrNot, tWeatrTN, tFeels;   // Описание погоды
-byte lang = 0;                                        // Язык текста часов
+byte lang = 1;                                        // Язык текста часов
 String cityName;                                      // Имя горола для погоды
 byte humidity;                                        // влажность для прогноза
 float pressure;                                       // давление для прогноза
