@@ -14,7 +14,11 @@
 ______________________________________________*/
 
 
+
 // TODO: Use for transmit data aTalkArduino
+// TODO: Add other params / scroll speed, auto bright & itc. -->
+// TODO: Add get weather on tomorrow -->
+ 
 
 
 #include <Arduino.h>

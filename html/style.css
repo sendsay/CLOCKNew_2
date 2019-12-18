@@ -31,13 +31,15 @@ h4 {
 .card-header{
   text-transform: uppercase;
   font-size: 40px;
-  background-color: #dbdbdb;
+  /* background-color: #dbdbdb; */
+  background-color:  #FFC973;
 }
 
 .card {
   width: 350px;
   margin-top: 20px;
   transition: all .3s ease-in-out;
+  background-color: rgb(238, 238, 238);
 }
 
 .card:hover {
