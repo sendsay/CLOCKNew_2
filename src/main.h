@@ -194,6 +194,7 @@ struct Config {                                       // Структура с �
   // String mqttpubalt;                                  // Высота
   char  mqttpubforecast[50];                             // Погда из нета
   char mqttbutt[50];                                    // Кнопка
+  int mqttOn;                                         // 
 
 };
 

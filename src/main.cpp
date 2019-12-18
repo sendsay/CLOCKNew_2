@@ -34,7 +34,7 @@ ______________________________________________*/
 #include <ArduinoJson.h>
 #include <PubSubClient.h>
 #include <math.h>
-//  #include <FS.h>
+#include <FS.h>
 
 #include <T_ukr.h>
 #include <T_en.h>
@@ -242,8 +242,17 @@ if (((digitalRead(buttonPin) == HIGH) ||
         }
     }
 
+/*
+.##.....##..#######..########.########
+.###...###.##.....##....##.......##...
+.####.####.##.....##....##.......##...
+.##.###.##.##.....##....##.......##...
+.##.....##.##..##.##....##.......##...
+.##.....##.##....##.....##.......##...
+.##.....##..#####.##....##.......##...
+*/
     // ---------- 50 сек. перевірка доступності MQTT та публікація температури ---------
-    if (second == 50 && MQTTClientas.mqttOn && !alarm_stat && WIFI_connected) {
+    if (second == 50 && config.mqttOn && !alarm_stat && WIFI_connected) {
       if (WiFi.status() != WL_CONNECTED) {
             WIFI_connected = false;
       }
@@ -425,6 +434,8 @@ void sendData() {
     json += config.mqttpubforecast;
     json += "\",\"mqttbutt\":\"";
     json += config.mqttbutt;
+    json += "\",\"mqttOn\":\"";
+    json += config.mqttOn;
 
     json += "\"}";
 
@@ -466,6 +477,7 @@ void saveContent() {
     server.arg("mqttpubpress").toCharArray(config.mqttpubpress, 50) ;
     server.arg("mqttpubforecast").toCharArray(config.mqttpubforecast, 50) ;
     server.arg("mqttbutt").toCharArray(config.mqttbutt, 50) ;
+    config.mqttOn = server.arg("mqttOn").toInt();
 
     // Serial.println("**************************");
     // Serial.println(config.mqttserver);
@@ -507,8 +519,15 @@ void loadConfig(const char *filename, Config &config) {
         PRN(error.c_str());
     }
     //Wifi
-    strlcpy(config.ssid, doc["ssid"] | "PUTIN UTELE", sizeof(config.ssid));
-    strlcpy(config.password, doc["password"] | "0674788273", sizeof(config.password));
+    strlcpy(config.ssid, doc["ssid"] | "SUERTEKSA CNC", sizeof(config.ssid));
+    strlcpy(config.password, doc["password"] | "61347400", sizeof(config.password));
+
+
+    // strlcpy(config.ssid, doc["ssid"] | "PUTIN UTELE", sizeof(config.ssid));
+    // strlcpy(config.password, doc["password"] | "0674788273", sizeof(config.password));
+
+
+
     strlcpy(config.ssidAP, doc["ssidAP"] | "CLOCKat", sizeof(config.ssidAP));
     strlcpy(config.passwordAP, doc["passwordAP"] | "", sizeof(config.passwordAP));
     //Time
@@ -540,6 +559,7 @@ void loadConfig(const char *filename, Config &config) {
     strlcpy(config.mqttpubpress, doc["mqtt_pub_press"] | "Informer/press", sizeof(config.mqttpubpress));
     strlcpy(config.mqttpubforecast, doc["mqtt_pub_forecast"] | "Informer/forecast", sizeof(config.mqttpubforecast));
     strlcpy(config.mqttbutt, doc["mqtt_butt"] | "Informer/button", sizeof(config.mqttbutt));
+    config.mqttOn = doc["mqttOn"] | 0;
 
     // config.mqttpubalt = doc["mqtt_pub_alt"] | "Informer/alt";
 
@@ -589,6 +609,7 @@ void saveConfig(const char *filename, Config &config) {
     // doc["mqtt_pub_alt"] = config.mqttpubalt;
     doc["mqtt_pub_forecast"] = config.mqttpubforecast;
     doc["mqtt_butt"] = config.mqttbutt;
+    doc["mqttOn"] = config.mqttOn;
 
     if (serializeJson(doc, file) == 0) {
         Serial.println(F("Failed to write to file"));

@@ -31,13 +31,13 @@
           </div>
           <div class="card-body">
             <h4>SSID name:</h4>
-            <input id="ssid" type="text" class="form-control">
+            <input id="ssid" type="text" class="form-control" title="Max. 15 simbols" pattern="[-\w\s#@/]{1,15}" placeholder="example: myHOME">
             <h4>SSID password :</h4>
-            <input id="password" type="text" class="form-control">
+            <input id="password" type="text" class="form-control" title="Min. 8 and Max. 15 simbols" pattern=".{8,15}" placeholder="example: 12345678" >
             <h4>AP name:</h4>
-            <input id="ssidAP" type="text" class="form-control">
+            <input id="ssidAP" type="text" class="form-control"  title="Max. 15 simbols" pattern="[-\w\s#@/]{1,15}" placeholder="example: ClockAt">
             <h4>AP password :</h4>
-            <input id="passwordAP" type="text" class="form-control">
+            <input id="passwordAP" type="text" class="form-control" title="Min. 8 and Max. 15 simbols" pattern=".{8,15}" placeholder="example: 12345678">
           </div>
         </div>
       </div>
@@ -49,7 +49,7 @@
           </div>
           <div class="card-body">
             <h4>Ntp server:</h4>
-            <input id="ntpServerName" type="text" class="form-control">
+            <input id="ntpServerName" type="text" class="form-control" title="Min. 1 Max. 20 simbols" pattern="[0-9a-zA-Z. ]{1,20}" placeholder="example: ntp3.time.in.ua">
             <h4>Time zone: :</h4>
             <select id="timezone" class="custom-select">
               <option value="-12.00"> (GMT) -12:00 </option>
@@ -92,19 +92,18 @@
               <option value="14.00" > (GMT) +14:00 </option>
             </select>
 
-            <div class="row" style="margin-left: -12px; margin-top: 20px; margin-bottom: 15px; font-size: 20px;">
-                <p id="labelsummertime" style="margin-top: 0px; margin-right: 12px;"> <h4>Summer time</h4> </p>
-                <label class="switch" style="margin-left: 50px; margin-top: -15px;">
+            <div class="row" style="margin-left: -12px; margin-top: 10px; margin-bottom: 7px; font-size: 20px;">
+                <p id="labelsummertime" style="margin-right: 12px;"> <h4>Summer time :</h4> </p>
+                <label class="switch" style="margin-left: 50px; margin-top: -3px;">
                     <input type="checkbox" id="summerTime"><span class="slider"></span>
                 </label>
-
             </div>
 
             <h4>Hour signal on :</h4>
-            <input id="sigOn" type="number" class="form-control">
+            <input id="sigOn" type="text" pattern="[0-9]{1,2}" class="form-control" placeholder="example: 7">
 
             <h4>Hour signal off :</h4>
-            <input id="sigOff" type="number" class="form-control">
+            <input id="sigOff" type="numer" pattern="[0-9]{1,2}" class="form-control" placeholder="example: 21">
           </div>
         </div>
       </div>
@@ -119,13 +118,13 @@
           </div>
           <div class="card-body">
             <h4>API Key:</h4>
-            <input id="apiKey" type="text" class="form-control">
+            <input id="apiKey" type="text" class="form-control" pattern="[0-9a-zA-Z.]{1,32}" placeholder="example: df9c74ff1a47dcb48aab815fa5500429" title="Min. 1 max. 32 simbols">
 
             <h4>City ID :</h4>
-            <input id="cityId" type="number" class="form-control">
+            <input id="cityId" type="text" class="form-control" pattern="[0-9]{1,10}" placeholder="example: 598098" title="Min. 1 max. 10 simbols">
 
             <h4>Weather server:</h4>
-            <input id="weatherServer" type="text" class="form-control">
+            <input id="weatherServer" type="text" class="form-control" pattern="[0-9a-zA-Z.]{1,32}" placeholder="example: api.openweathermap.org" title="Min. 1 max 32 simbols">
 
             <h4>Weather language :</h4>
             <select id="langWeather" class="custom-select">
@@ -166,61 +165,70 @@
 
     <div class="col-sm">
       <div class="card mx-auto">
-        <div class="card-header">
-          MQTT
+        <div class="card-header ">
+
+          <div class="row" style="padding-left: 15px;">
+            MQTT
+            <label class="switch" style="margin-left: 120px;">
+              <input type="checkbox" id="mqttOn" onclick="changeContent()">
+              <span class="slider"></span>
+            </label>
+          </div> 
         </div>
         <div class="card-body">
           <h4>Server :</h4>
-          <input id="mqttserver" type="text" class="form-control">
+          <input id="mqttserver" type="text" class="form-control" pattern="[- 0-9a-zA-Z._/]{1,20}" placeholder="Example: m24.cloudmqtt.com" title="Min. 1 max 20 simbols">
 
           <h4>Port :</h4>
-          <input id="mqttport" type="number" class="form-control">
+          <input id="mqttport" type="number" class="form-control" pattern="[\d]{5}" placeholder="Example: 17049" title="Only 5 simbols">
 
           <h4>User name :</h4>
-          <input id="mqttUserName" type="text" class="form-control">
+          <input id="mqttUserName" type="text" class="form-control" pattern="[-\w\s#@/]{0,20}" placeholder="Example: zqyslfbd" title="Max. 20 simbols">
 
           <h4>User password :</h4>
-          <input id="mqttpass" type="text" class="form-control">
+          <input id="mqttpass" type="text" class="form-control" pattern="[-\w\s#@/]{0,20}" placeholder="Example: dK4mJd" title="Max. 20 simbols" >
 
-          <h4>Name :</h4>
-          <input id="mqttname" type="text" class="form-control">
+          <h4>Device name :</h4>
+          <input id="mqttname" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer" title="Min. 1 max. 24 simbols" >
 
-          <h4>Inform :</h4>
-          <input id="mqttsubinform" type="text" class="form-control">
+          <h4 style="font-size: 110%;">Topic of inform message :</h4>
+          <input id="mqttsubinform" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Inform/mess">
 
-          <h4>Sub :</h4>
-          <input id="mqttsub" type="text" class="form-control">
+          <h4 style="font-size: 110%;">Topic of external temperature :</h4>
+          <input id="mqttsub" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Ulica/temp" title="Min. 1 max. 24 simbols">
 
-          <h4>Temperature :</h4>
-          <input id="mqttpubtemp" type="text" class="form-control">
+          <h4 style="font-size: 110%;">Topic of publication of temperature :</h4>
+          <input id="mqttpubtemp" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/temp" title="Min. 1 max. 24 simbols">
 
-          <h4>Temp street :</h4>
-          <input id="mqttpubtempUl" type="text" class="form-control">
+          <h4 style="font-size: 110%;">Topic of publication temp. streets :</h4>
+          <input id="mqttpubtempUl" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/tempUl" title="Min. 1 max. 24 simbols">
 
-          <h4>Humidity :</h4>
-          <input id="mqttpubhum" type="text" class="form-control">
+          <h4 style="font-size: 110%;">Topic of humidity publication :</h4>
+          <input id="mqttpubhum" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/hum" title="Min. 1 max. 24 simbols">
 
-          <h4>Pressure :</h4>
-          <input id="mqttpubpress" type="text" class="form-control">
+          <h4 style="font-size: 110%;">Press Release Topic :</h4>
+          <input id="mqttpubpress" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/press" title="Min. 1 max. 24 simbols">
 
           <!-- <h4>Altitude :</h4>
           <input id="mqttpubalt" type="text" class="inputData"> -->
 
-          <h4>Forecast :</h4>
-          <input id="mqttpubforecast" type="text" class="form-control">
+          <h4 style="font-size: 110%;">Topic of publication of forecast :</h4>
+          <input id="mqttpubforecast" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/forecast" title="Min. 1 max. 24 simbols">
 
-          <h4>Button :</h4>
-          <input id="mqttbutt" type="text" class="form-control">
+          <h4 style="font-size: 110%;">Topic of publication of button :</h4>
+          <input id="mqttbutt" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/buton" title="Min. 1 max. 24 simbols">
         </div>
       </div>
     </div>
   </div>
 
   <div class="row">
-    <div class="modal-footer mx-auto btn-footer">
+    <div class="footer mx-auto btn-footer">
       <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" onclick="saveButton()" data-target="#saveModal">Save</button>
       <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#rebootModal">Restart</button>
       <button type="button" class="btn btn-danger btn-lg"  data-toggle="modal" data-target="#resetModal">Reset</button>
+      <button type="button" class="btn btn-outline-warning btn-lg"  data-toggle="modal" data-target="#helpModal">Help</button>
+   
     </div>
   </div>
 
@@ -346,6 +354,11 @@
           // document.getElementById("mqttpubalt").value = json.mqttpubalt;
           document.getElementById("mqttpubforecast").value = json.mqttpubforecast;
           document.getElementById("mqttbutt").value = json.mqttbutt;
+          if (json.mqttOn == 1) { 
+            document.getElementById("mqttOn").checked = true; 
+          } else {
+            changeContent(); 
+          }          
         }
       }
     }
@@ -358,7 +371,9 @@
                     "&langWeather=" + val("langWeather") + "&mqttserver=" + val("mqttserver") + "&mqttport=" + val('mqttport') +
                     "&mqttUserName=" + val('mqttUserName') + "&mqttpass=" + val('mqttpass') + "&mqttname=" + val('mqttname') +
                     "&mqttsubinform=" + val('mqttsubinform') + "&mqttsub=" + val('mqttsub') + "&mqttpubtemp=" + val('mqttpubtemp') +
-                    "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') + "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') + "&mqttbutt=" + val('mqttbutt');
+                    "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') + 
+                    "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') + 
+                    "&mqttbutt=" + val('mqttbutt') + "&mqttOn=" + val_sw('mqttOn');
 
       xmlHttp.open('GET', content,true);
       xmlHttp.send();
@@ -381,6 +396,45 @@
         return 1;
       }
       return 0;
+    }
+
+    function changeContent() { 
+      var changeMqttOn = document.getElementById("mqttOn");
+
+      if (changeMqttOn.checked == false) {
+        document.getElementById("mqttserver").disabled = true;
+        document.getElementById("mqttport").disabled = true;
+        document.getElementById("mqttUserName").disabled = true;
+        document.getElementById("mqttpass").disabled = true;
+        document.getElementById("mqttname").disabled = true;
+        document.getElementById("mqttsubinform").disabled = true;
+        document.getElementById("mqttsub").disabled = true;
+        document.getElementById("mqttpubtemp").disabled = true;
+        document.getElementById("mqttpubtempUl").disabled = true;
+        document.getElementById("mqttpubhum").disabled = true;
+        document.getElementById("mqttpubpress").disabled = true;
+        document.getElementById("mqttpubforecast").disabled = true;
+        document.getElementById("mqttbutt").disabled = true;
+      } else {
+        document.getElementById("mqttserver").disabled = false;
+        document.getElementById("mqttport").disabled = false;
+        document.getElementById("mqttUserName").disabled = false;
+        document.getElementById("mqttpass").disabled = false;
+        document.getElementById("mqttname").disabled = false;
+        document.getElementById("mqttsubinform").disabled = false;
+        document.getElementById("mqttsub").disabled = false;
+        document.getElementById("mqttpubtemp").disabled = false;
+        document.getElementById("mqttpubtempUl").disabled = false;
+        document.getElementById("mqttpubhum").disabled = false;
+        document.getElementById("mqttpubpress").disabled = false;
+        document.getElementById("mqttpubforecast").disabled = false;
+        document.getElementById("mqttbutt").disabled = false;        
+      }  
+    
+
+      
+
+      
     }
   </script>
 
