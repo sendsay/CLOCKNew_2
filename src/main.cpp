@@ -14,6 +14,9 @@
 ______________________________________________*/
 
 
+// TODO: Use for transmit data aTalkArduino
+
+
 #include <Arduino.h>
 #include <main.h>
 
