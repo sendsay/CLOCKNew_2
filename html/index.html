@@ -18,10 +18,10 @@
   <header>
     <div class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top" >
       <div class="row mx-auto">
-        <div class="col" style="width: 100%;">
+        <div class="col">
         <img class="logo rounded-circle" src="logo.png" alt="Clock at.">
         </div>
-        <div class="col" style="width: 190%;">
+        <div class="col">
         <h2 class="logo-text">Clock at.</h2>
         </div>
       </div>
@@ -121,6 +121,10 @@
         <div class="card mx-auto">
           <div class="card-header">
             Weather
+            <label class="switch" style="margin-left: 120px;">
+              <input type="checkbox" id="mqttOn" onclick="changeContent()">
+              <span class="slider"></span>
+            </label>
           </div>
           <div class="card-body">
             <h4>API Key:</h4>
@@ -176,7 +180,7 @@
           <div class="row" style="padding-left: 15px;">
             MQTT
             <label class="switch" style="margin-left: 120px;">
-              <input type="checkbox" id="mqttOn" onclick="changeContent()">
+              <input type="checkbox" id="mqttOn1" onclick="changeContent()">
               <span class="slider"></span>
             </label>
           </div>
@@ -405,16 +409,12 @@
     }
 
     function changeContent() {
-      var changeMqttOn = document.getElementById("mqttOn");
-  
-      var changeEnable;
-      if (changeMqttOn.checked == false) {changeEnable = false;} else {changeEnable = true;}
-      
+      var changeMqttOn = document.getElementById("mqttOn1").checked;      
       var mqttsection = document.getElementById("mqtt");
       var mqttinput = mqttsection.getElementsByTagName("input");
 
       for (let i= 0; i < 13; i++) {
-        mqttinput[i].disabled = changeEnable;
+        mqttinput[i].disabled = !changeMqttOn;        
       }
     }
   </script>
