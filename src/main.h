@@ -248,7 +248,8 @@ void fileindex();                                     // Главная стра
 void bootstrap();                                     // бутсрап
 void popper();                                        // поппер
 void bootstrapmin();                                  // бутсрап минимальный
-void jquery();
+void jquery();                                        // jquery
+void jscript();                                       // scripts
 
 void loadConfig(const char *filename, Config &config); // загрузка конфига
 

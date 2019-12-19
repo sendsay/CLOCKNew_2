@@ -12,6 +12,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
+
+  <script src="script.js"></script>
 </head>
 <body  onload="getData()">
 
@@ -187,46 +189,46 @@
         </div>
         <div class="card-body" id="mqtt">
           <h4">Server :</h4>
-          <input id="mqttserver" type="text" class="form-control" pattern="[- 0-9a-zA-Z._/]{1,20}" placeholder="Example: m24.cloudmqtt.com" title="Min. 1 max 20 simbols">
+          <input id="mqttserver" type="text" class="form-control" pattern="[- 0-9a-zA-Z._/]{1,20}" placeholder="Example: m24.cloudmqtt.com" title="Min. 1 max 20 simbols" disabled>
 
           <h4>Port :</h4>
-          <input id="mqttport" type="number" class="form-control" pattern="[\d]{5}" placeholder="Example: 17049" title="Only 5 simbols">
+          <input id="mqttport" type="number" class="form-control" pattern="[\d]{5}" placeholder="Example: 17049" title="Only 5 simbols" disabled>
 
           <h4>User name :</h4>
-          <input id="mqttUserName" type="text" class="form-control" pattern="[-\w\s#@/]{0,20}" placeholder="Example: zqyslfbd" title="Max. 20 simbols">
+          <input id="mqttUserName" type="text" class="form-control" pattern="[-\w\s#@/]{0,20}" placeholder="Example: zqyslfbd" title="Max. 20 simbols" disabled>
 
           <h4>User password :</h4>
-          <input id="mqttpass" type="text" class="form-control" pattern="[-\w\s#@/]{0,20}" placeholder="Example: dK4mJd" title="Max. 20 simbols" >
+          <input id="mqttpass" type="text" class="form-control" pattern="[-\w\s#@/]{0,20}" placeholder="Example: dK4mJd" title="Max. 20 simbols" disabled>
 
           <h4>Device name :</h4>
-          <input id="mqttname" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer" title="Min. 1 max. 24 simbols" >
+          <input id="mqttname" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer" title="Min. 1 max. 24 simbols" disabled>
 
           <h4 style="font-size: 110%;">Topic of inform message :</h4>
-          <input id="mqttsubinform" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Inform/mess">
+          <input id="mqttsubinform" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Inform/mess" disabled>
 
           <h4 style="font-size: 110%;">Topic of external temperature :</h4>
-          <input id="mqttsub" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Ulica/temp" title="Min. 1 max. 24 simbols">
+          <input id="mqttsub" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Ulica/temp" title="Min. 1 max. 24 simbols" disabled>
 
           <h4 style="font-size: 110%;">Topic of publication of temperature :</h4>
-          <input id="mqttpubtemp" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/temp" title="Min. 1 max. 24 simbols">
+          <input id="mqttpubtemp" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/temp" title="Min. 1 max. 24 simbols" disabled>
 
           <h4 style="font-size: 110%;">Topic of publication temp. streets :</h4>
-          <input id="mqttpubtempUl" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/tempUl" title="Min. 1 max. 24 simbols">
+          <input id="mqttpubtempUl" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/tempUl" title="Min. 1 max. 24 simbols" disabled>
 
           <h4 style="font-size: 110%;">Topic of humidity publication :</h4>
-          <input id="mqttpubhum" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/hum" title="Min. 1 max. 24 simbols">
+          <input id="mqttpubhum" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/hum" title="Min. 1 max. 24 simbols" disabled>
 
           <h4 style="font-size: 110%;">Press Release Topic :</h4>
-          <input id="mqttpubpress" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/press" title="Min. 1 max. 24 simbols">
+          <input id="mqttpubpress" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/press" title="Min. 1 max. 24 simbols" disabled>
 
           <!-- <h4>Altitude :</h4>
           <input id="mqttpubalt" type="text" class="inputData"> -->
 
           <h4 style="font-size: 110%;">Topic of publication of forecast :</h4>
-          <input id="mqttpubforecast" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/forecast" title="Min. 1 max. 24 simbols">
+          <input id="mqttpubforecast" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/forecast" title="Min. 1 max. 24 simbols" disabled>
 
           <h4 style="font-size: 110%;">Topic of publication of button :</h4>
-          <input id="mqttbutt" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/buton" title="Min. 1 max. 24 simbols">
+          <input id="mqttbutt" type="text" class="form-control" pattern="[-\w\s#@/]{1,24}" placeholder="Example: Informer/buton" title="Min. 1 max. 24 simbols" disabled>
         </div>
       </div>
     </div>
@@ -319,105 +321,6 @@
       </div>
     </div>
   </footer>
-
-
-  <script>
-    var xmlHttp = new XMLHttpRequest();
-
-    function getData() {
-      if(xmlHttp.readyState==0 || xmlHttp.readyState==4){
-      xmlHttp.open('GET','/getData',true);
-      xmlHttp.send();
-      xmlHttp.onload = function(e) {
-
-          var str = xmlHttp.responseText;
-
-          json=JSON.parse(str);
-          //wifi
-          document.getElementById("ssid").value = json.ssid;
-          document.getElementById("password").value = json.password;
-          document.getElementById("ssidAP").value = json.ssidAP;
-          document.getElementById("passwordAP").value = json.passwordAP;
-          //time
-          document.getElementById("timezone").value = json.timezone;
-          if (json.summertime == 1) { document.getElementById("summerTime").checked = true; }
-          document.getElementById("sigOn").value = json.sigOn;
-          document.getElementById("sigOff").value = json.sigOff;
-          document.getElementById("ntpServerName").value = json.ntpServerName;
-          //weather
-          document.getElementById("apiKey").value = json.apiKey;
-          document.getElementById("cityId").value = json.cityId;
-          document.getElementById("weatherServer").value = json.weatherServer;
-          document.getElementById("langWeather").value = json.langWeather;
-          //mqtt
-          document.getElementById("mqttserver").value = json.mqttserver;
-          document.getElementById("mqttport").value = json.mqttport;
-          document.getElementById("mqttUserName").value = json.mqttUserName;
-          document.getElementById("mqttpass").value = json.mqttpass;
-          document.getElementById("mqttname").value = json.mqttname;
-          document.getElementById("mqttsubinform").value = json.mqttsubinform;
-          document.getElementById("mqttsub").value = json.mqttsub;
-          document.getElementById("mqttpubtemp").value = json.mqttpubtemp;
-          document.getElementById("mqttpubtempUl").value = json.mqttpubtempUl;
-          document.getElementById("mqttpubhum").value = json.mqttpubhum;
-          document.getElementById("mqttpubpress").value = json.mqttpubpress;
-          // document.getElementById("mqttpubalt").value = json.mqttpubalt;
-          document.getElementById("mqttpubforecast").value = json.mqttpubforecast;
-          document.getElementById("mqttbutt").value = json.mqttbutt;
-          if (json.mqttOn == 1) {
-            document.getElementById("mqttOn").checked = true;
-          } else {
-            changeContent();
-          }
-        }
-      }
-    }
-
-    function saveButton() {
-      var content = "/saveContent?ssid=" + val('ssid') + "&password=" + val('password') + "&ssidAP=" + val('ssidAP') +
-                    "&passwordAP=" + val('passwordAP') + "&timezone=" + val('timezone') + "&summertime=" + val_sw('summerTime') +
-                    "&sigOn=" + val('sigOn') + "&sigOff=" + val('sigOff') + "&ntpServerName=" + val('ntpServerName') +
-                    "&apiKey=" + val('apiKey') + "&cityId=" + val('cityId') + "&weatherServer=" + val('weatherServer') +
-                    "&langWeather=" + val("langWeather") + "&mqttserver=" + val("mqttserver") + "&mqttport=" + val('mqttport') +
-                    "&mqttUserName=" + val('mqttUserName') + "&mqttpass=" + val('mqttpass') + "&mqttname=" + val('mqttname') +
-                    "&mqttsubinform=" + val('mqttsubinform') + "&mqttsub=" + val('mqttsub') + "&mqttpubtemp=" + val('mqttpubtemp') +
-                    "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') +
-                    "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') +
-                    "&mqttbutt=" + val('mqttbutt') + "&mqttOn=" + val_sw('mqttOn');
-
-      xmlHttp.open('GET', content,true);
-      xmlHttp.send();
-
-    }
-
-    function restartButton() {
-      xmlHttp.open("GET", "/restart", true);
-      xmlHttp.send();
-    }
-
-    function val(id){
-      var v = document.getElementById(id).value;
-      return v;
-    }
-
-    function val_sw(nameSwitch) {
-      switchOn = document.getElementById(nameSwitch);
-      if (switchOn.checked){
-        return 1;
-      }
-      return 0;
-    }
-
-    function changeContent() {
-      var changeMqttOn = document.getElementById("mqttOn1").checked;      
-      var mqttsection = document.getElementById("mqtt");
-      var mqttinput = mqttsection.getElementsByTagName("input");
-
-      for (let i= 0; i < 13; i++) {
-        mqttinput[i].disabled = !changeMqttOn;        
-      }
-    }
-  </script>
 
   <script src="jquery.min.js"></script>
   <script src="popper.min.js"></script>

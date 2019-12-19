@@ -138,6 +138,9 @@ void setup() {
     server.on("jquery.min.js", jquery);
     server.on("/jquery.min.js", jquery);
 
+    server.on("jscript.js", jscript);
+    server.on("/jqujscriptery.js", jscript);
+
     server.on("style.css", style);
     server.on("/style.css", style);
 
@@ -367,6 +370,10 @@ void bootstrapmin() {
 
 void jquery() {
     File file = SPIFFS.open("/jquery.min.js.gz", "r");
+    size_t sent = server.streamFile(file, "application/javascript");
+}
+void jscript() {
+    File file = SPIFFS.open("/jscript.js.gz", "r");
     size_t sent = server.streamFile(file, "application/javascript");
 }
 
