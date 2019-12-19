@@ -195,7 +195,8 @@ struct Config {                                       // Структура с �
   char  mqttpubforecast[50];                             // Погда из нета
   char mqttbutt[50];                                    // Кнопка
   int mqttOn;                                         //
-  int weatherOn;                                    // 
+  int weatherOn;                                    //
+  int autoBright;
 
 };
 

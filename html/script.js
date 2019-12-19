@@ -40,15 +40,18 @@ function getData() {
       // document.getElementById("mqttpubalt").value = json.mqttpubalt;
       document.getElementById("mqttpubforecast").value = json.mqttpubforecast;
       document.getElementById("mqttbutt").value = json.mqttbutt;
+
       if (json.mqttOn == 1) {
-        document.getElementById("mqttOn").checked = true;
-      } else {
+        document.getElementById("mqttOn1").checked = true;
         changeContent();
       }
       if (json.weatherOn == 1) {
         document.getElementById("weatherOn").checked = true;
-      } else {
         changeContentWeather();
+      }
+      if (json.autoBright == 1) {
+        document.getElementById("autoBright").checked = true;
+        changeContentautoBright();
       }
     }
   }
@@ -64,7 +67,12 @@ function saveButton() {
                 "&mqttsubinform=" + val('mqttsubinform') + "&mqttsub=" + val('mqttsub') + "&mqttpubtemp=" + val('mqttpubtemp') +
                 "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') +
                 "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') +
-                "&mqttbutt=" + val('mqttbutt') + "&mqttOn=" + val_sw('mqttOn') + "&weatherOn=" + val_sw('weatherOn');
+                "&mqttbutt=" + val('mqttbutt') + "&mqttOn=" + val_sw('mqttOn1') + "&weatherOn=" + val_sw('weatherOn') +
+                "&autoBright=" + val_sw('autoBright');
+
+  console.log("************* send to server ");
+  console.log(content);
+
   xmlHttp.open('GET', content,true);
   xmlHttp.send();
 }
@@ -80,7 +88,7 @@ function val(id){
 }
 
 function val_sw(nameSwitch) {
-  switchOn = document.getElementById(nameSwitch);
+  var switchOn = document.getElementById(nameSwitch);
   if (switchOn.checked){
     return 1;
   }
@@ -88,24 +96,31 @@ function val_sw(nameSwitch) {
 }
 
 function changeContent() {
-  var changeMqttOn = document.getElementById("mqttOn1").checked; 
+  var changeMqttOn = document.getElementById("mqttOn1").checked;
 
   var mqttsection = document.getElementById("mqtt");
   var mqttinput = mqttsection.getElementsByTagName("input");
 
   for (let i= 0; i < 13; i++) {
-    mqttinput[i].disabled = !changeMqttOn;        
+    mqttinput[i].disabled = !changeMqttOn;
   }
 }
 
 function changeContentWeather() {
-    var changeWeatherOn = document.getElementById("weatherOn").checked; 
+  var changeWeatherOn = document.getElementById("weatherOn").checked;
 
-    var weathersection = document.getElementById("weather");
-    var weatherinput = weathersection.getElementsByTagName("input");
+  var weathersection = document.getElementById("weather");
+  var weatherinput = weathersection.getElementsByTagName("input");
 
-    for (let i= 0; i < 3; i++) {
-        weatherinput[i].disabled = !changeWeatherOn; 
-    }
-    document.getElementById("langWeather").disabled = !changeWeatherOn;
+  for (let i= 0; i < 3; i++) {
+      weatherinput[i].disabled = !changeWeatherOn;
   }
+  document.getElementById("langWeather").disabled = !changeWeatherOn;
+}
+
+function changeContentautoBright() {
+  var changeAutoBright = document.getElementById("autoBright").checked;
+
+  document.getElementById("manualBright").disabled = changeAutoBright;
+
+}

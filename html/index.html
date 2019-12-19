@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
 
-  <script src="script.js"></script>
 </head>
 <body  onload="getData()">
 
@@ -127,8 +126,9 @@
 
             <div class="row" style="margin-left: -12px; margin-top: 10px; margin-bottom: 7px; font-size: 20px;">
                 <p id="labelsummertime" style="margin-right: 12px;"> <h4>Summer time :</h4> </p>
-                <label class="switch" style="margin-left: 50px; margin-top: -3px;">
-                    <input type="checkbox" id="summerTime"><span class="slider"></span>
+                <label class="switch" style="margin-left: 70px; margin-top: -3px;">
+                    <input type="checkbox" id="summerTime">
+                    <span class="slider"></span>
                 </label>
             </div>
 
@@ -158,12 +158,12 @@
           <div class="card-header">
             <div class="row" style="padding-left: 15px;">
             Weather
-            <label class="switch" style=" margin-left: 50px;">
+            <label class="switch" style=" margin-left: 53px;">
               <input type="checkbox" id="weatherOn" onclick="changeContentWeather()">
               <span class="slider"></span>
             </label>
           </div>
-          
+
           </div>
           <div class="card-body" id="weather">
             <h4>API Key:</h4>
@@ -205,18 +205,17 @@
             <input id="scrollSpeed" type="text" class="form-control" pattern="[\d]{3}" placeholder="Example: 300" title="Only 3 simbols">
 
             <div class="row">
-              <h4 style="margin-top: 15px; margin-left: 18px;">Auto brightness</h4>
-              <label class="switch" style="margin-left: 52px;">
-                <input type="checkbox">
+              <h4 style="margin-top: 25px; margin-left: 18px;">Auto brightness:</h4>
+              <label class="switch" style="margin-top: 17px; margin-left: 50px;">
+                <input  id="autoBright" type="checkbox" onclick="changeContentautoBright()">
                 <span class="slider"></span>
               </label>
             </div>
 
-            <form>
-                <input type="range" class="custom-range" id="customRange" name="points1">
-            </form>
-
-
+            <div class="row">
+              <h4 style="margin-left: 17px; margin-top: 20px;">Manual brightness:</h4>
+              <input id="manualBright" type="range" class="custom-range" name="points1" style="padding: 0 20px;">
+            </div>
 
           </div>
         </div>
@@ -409,6 +408,7 @@
     </div>
   </footer>
 
+  <script src="script.js"></script>
   <script src="jquery.min.js"></script>
   <script src="popper.min.js"></script>
   <script src="bootstrap.min.js"></script>

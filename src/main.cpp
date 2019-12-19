@@ -142,8 +142,8 @@ void setup() {
     server.on("jquery.min.js", jquery);
     server.on("/jquery.min.js", jquery);
 
-    server.on("jscript.js", jscript);
-    server.on("/jqujscriptery.js", jscript);
+    server.on("script.js", jscript);
+    server.on("/script.js", jscript);
 
     server.on("style.css", style);
     server.on("/style.css", style);
@@ -377,7 +377,7 @@ void jquery() {
     size_t sent = server.streamFile(file, "application/javascript");
 }
 void jscript() {
-    File file = SPIFFS.open("/jscript.js.gz", "r");
+    File file = SPIFFS.open("/script.js.gz", "r");
     size_t sent = server.streamFile(file, "application/javascript");
 }
 
@@ -456,9 +456,8 @@ void sendData() {
     json += config.mqttOn;
     json += "\",\"weatherOn\":\"";
     json += config.weatherOn;
-
-    
-    
+    json += "\",\"autoBright\":\"";
+    json += config.autoBright;
 
     json += "\"}";
 
@@ -502,6 +501,7 @@ void saveContent() {
     server.arg("mqttbutt").toCharArray(config.mqttbutt, 50) ;
     config.mqttOn = server.arg("mqttOn").toInt();
     config.weatherOn = server.arg("weatherOn").toInt();
+    config.autoBright = server.arg("autoBright").toInt();
 
     // Serial.println("**************************");
     // Serial.println(config.mqttserver);
@@ -543,12 +543,12 @@ void loadConfig(const char *filename, Config &config) {
         PRN(error.c_str());
     }
     //Wifi
-    strlcpy(config.ssid, doc["ssid"] | "SUERTEKSA CNC", sizeof(config.ssid));
-    strlcpy(config.password, doc["password"] | "61347400", sizeof(config.password));
+    // strlcpy(config.ssid, doc["ssid"] | "SUERTEKSA CNC", sizeof(config.ssid));
+    // strlcpy(config.password, doc["password"] | "61347400", sizeof(config.password));
 
 
-    // strlcpy(config.ssid, doc["ssid"] | "PUTIN UTELE", sizeof(config.ssid));
-    // strlcpy(config.password, doc["password"] | "0674788273", sizeof(config.password));
+    strlcpy(config.ssid, doc["ssid"] | "PUTIN UTELE", sizeof(config.ssid));
+    strlcpy(config.password, doc["password"] | "0674788273", sizeof(config.password));
 
 
 
@@ -585,6 +585,7 @@ void loadConfig(const char *filename, Config &config) {
     strlcpy(config.mqttbutt, doc["mqtt_butt"] | "Informer/button", sizeof(config.mqttbutt));
     config.mqttOn = doc["mqttOn"] | 0;
     config.weatherOn = doc["weatherOn"] | 0;
+    config.autoBright = doc["autoBright"] | 0;
 
     // config.mqttpubalt = doc["mqtt_pub_alt"] | "Informer/alt";
 
@@ -636,6 +637,7 @@ void saveConfig(const char *filename, Config &config) {
     doc["mqtt_butt"] = config.mqttbutt;
     doc["mqttOn"] = config.mqttOn;
     doc["weatherOn"] = config.weatherOn;
+    doc["autoBright"] = config.autoBright;
 
     if (serializeJson(doc, file) == 0) {
         Serial.println(F("Failed to write to file"));
