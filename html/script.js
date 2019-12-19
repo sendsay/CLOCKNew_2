@@ -45,6 +45,11 @@ function getData() {
       } else {
         changeContent();
       }
+      if (json.weatherOn == 1) {
+        document.getElementById("weatherOn").checked = true;
+      } else {
+        changeContentWeather();
+      }
     }
   }
 }
@@ -59,7 +64,7 @@ function saveButton() {
                 "&mqttsubinform=" + val('mqttsubinform') + "&mqttsub=" + val('mqttsub') + "&mqttpubtemp=" + val('mqttpubtemp') +
                 "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') +
                 "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') +
-                "&mqttbutt=" + val('mqttbutt') + "&mqttOn=" + val_sw('mqttOn');
+                "&mqttbutt=" + val('mqttbutt') + "&mqttOn=" + val_sw('mqttOn') + "&weatherOn=" + val_sw('weatherOn');
   xmlHttp.open('GET', content,true);
   xmlHttp.send();
 }
@@ -83,7 +88,8 @@ function val_sw(nameSwitch) {
 }
 
 function changeContent() {
-  var changeMqttOn = document.getElementById("mqttOn1").checked;      
+  var changeMqttOn = document.getElementById("mqttOn1").checked; 
+
   var mqttsection = document.getElementById("mqtt");
   var mqttinput = mqttsection.getElementsByTagName("input");
 
@@ -91,3 +97,15 @@ function changeContent() {
     mqttinput[i].disabled = !changeMqttOn;        
   }
 }
+
+function changeContentWeather() {
+    var changeWeatherOn = document.getElementById("weatherOn").checked; 
+
+    var weathersection = document.getElementById("weather");
+    var weatherinput = weathersection.getElementsByTagName("input");
+
+    for (let i= 0; i < 3; i++) {
+        weatherinput[i].disabled = !changeWeatherOn; 
+    }
+    document.getElementById("langWeather").disabled = !changeWeatherOn;
+  }

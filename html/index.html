@@ -1,8 +1,6 @@
 <!-- TODO: Add weather on off from web -->
 <!-- TODO: Move all styles from html to css -->
-
-
-
+<!-- TODO: Add options -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -17,6 +15,16 @@
 </head>
 <body  onload="getData()">
 
+<!--
+.##....##....###....##.....##.########.....###....########.
+.###...##...##.##...##.....##.##.....##...##.##...##.....##
+.####..##..##...##..##.....##.##.....##..##...##..##.....##
+.##.##.##.##.....##.##.....##.########..##.....##.########.
+.##..####.#########..##...##..##.....##.#########.##...##..
+.##...###.##.....##...##.##...##.....##.##.....##.##....##.
+.##....##.##.....##....###....########..##.....##.##.....##
+-->
+
   <header>
     <div class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top" >
       <div class="row mx-auto">
@@ -29,6 +37,16 @@
       </div>
     </div>
   </header>
+
+  <!--
+  .##......##.####.########.####
+  .##..##..##..##..##........##.
+  .##..##..##..##..##........##.
+  .##..##..##..##..######....##.
+  .##..##..##..##..##........##.
+  .##..##..##..##..##........##.
+  ..###..###..####.##.......####
+  -->
 
   <div class="container">
     <div class="row">
@@ -49,7 +67,15 @@
           </div>
         </div>
       </div>
-
+<!--
+.########.####.##.....##.########
+....##.....##..###...###.##......
+....##.....##..####.####.##......
+....##.....##..##.###.##.######..
+....##.....##..##.....##.##......
+....##.....##..##.....##.##......
+....##....####.##.....##.########
+-->
       <div class="col-sm">
         <div class="card mx-auto">
           <div class="card-header">
@@ -117,29 +143,41 @@
       </div>
     </div>
 
+<!--
+.##......##.########....###....########.##.....##.########.########.
+.##..##..##.##.........##.##......##....##.....##.##.......##.....##
+.##..##..##.##........##...##.....##....##.....##.##.......##.....##
+.##..##..##.######...##.....##....##....#########.######...########.
+.##..##..##.##.......#########....##....##.....##.##.......##...##..
+.##..##..##.##.......##.....##....##....##.....##.##.......##....##.
+..###..###..########.##.....##....##....##.....##.########.##.....##
+-->
   <div class="row">
     <div class="col-sm">
       <div class="col-sm">
         <div class="card mx-auto">
           <div class="card-header">
+            <div class="row" style="padding-left: 15px;">
             Weather
-            <label class="switch" style="margin-left: 120px;">
-              <input type="checkbox" id="mqttOn" onclick="changeContent()">
+            <label class="switch" style=" margin-left: 50px;">
+              <input type="checkbox" id="weatherOn" onclick="changeContentWeather()">
               <span class="slider"></span>
             </label>
           </div>
-          <div class="card-body">
+          
+          </div>
+          <div class="card-body" id="weather">
             <h4>API Key:</h4>
-            <input id="apiKey" type="text" class="form-control" pattern="[0-9a-zA-Z.]{1,32}" placeholder="example: df9c74ff1a47dcb48aab815fa5500429" title="Min. 1 max. 32 simbols">
+            <input id="apiKey" type="text" class="form-control" pattern="[0-9a-zA-Z.]{1,32}" placeholder="example: df9c74ff1a47dcb48aab815fa5500429" title="Min. 1 max. 32 simbols" disabled>
 
             <h4>City ID :</h4>
-            <input id="cityId" type="text" class="form-control" pattern="[0-9]{1,10}" placeholder="example: 598098" title="Min. 1 max. 10 simbols">
+            <input id="cityId" type="text" class="form-control" pattern="[0-9]{1,10}" placeholder="example: 598098" title="Min. 1 max. 10 simbols" disabled>
 
             <h4>Weather server:</h4>
-            <input id="weatherServer" type="text" class="form-control" pattern="[0-9a-zA-Z.]{1,32}" placeholder="example: api.openweathermap.org" title="Min. 1 max 32 simbols">
+            <input id="weatherServer" type="text" class="form-control" pattern="[0-9a-zA-Z.]{1,32}" placeholder="example: api.openweathermap.org" title="Min. 1 max 32 simbols" disabled>
 
             <h4>Weather language :</h4>
-            <select id="langWeather" class="custom-select">
+            <select disabled id="langWeather" class="custom-select" >
               <option value="ua">Ukrainian</option>
               <option value="en">English</option>
               <option value="ru">Russian</option>
@@ -147,6 +185,16 @@
           </div>
         </div>
       </div>
+
+<!--
+..#######..########..########.####..#######..##....##..######.
+.##.....##.##.....##....##.....##..##.....##.###...##.##....##
+.##.....##.##.....##....##.....##..##.....##.####..##.##......
+.##.....##.########.....##.....##..##.....##.##.##.##..######.
+.##.....##.##...........##.....##..##.....##.##..####.......##
+.##.....##.##...........##.....##..##.....##.##...###.##....##
+..#######..##...........##....####..#######..##....##..######.
+-->
 
       <div class="col-sm">
         <div class="card mx-auto">
@@ -175,10 +223,19 @@
       </div>
     </div>
 
+<!--
+.##.....##..#######..########.########
+.###...###.##.....##....##.......##...
+.####.####.##.....##....##.......##...
+.##.###.##.##.....##....##.......##...
+.##.....##.##..##.##....##.......##...
+.##.....##.##....##.....##.......##...
+.##.....##..#####.##....##.......##...
+-->
+
     <div class="col-sm">
       <div class="card mx-auto">
         <div class="card-header ">
-
           <div class="row" style="padding-left: 15px;">
             MQTT
             <label class="switch" style="margin-left: 120px;">
@@ -234,6 +291,16 @@
     </div>
   </div>
 
+<!--
+.########..##.....##.########.########..#######..##....##..######.
+.##.....##.##.....##....##.......##....##.....##.###...##.##....##
+.##.....##.##.....##....##.......##....##.....##.####..##.##......
+.########..##.....##....##.......##....##.....##.##.##.##..######.
+.##.....##.##.....##....##.......##....##.....##.##..####.......##
+.##.....##.##.....##....##.......##....##.....##.##...###.##....##
+.########...#######.....##.......##.....#######..##....##..######.
+-->
+
   <div class="row">
     <div class="footer mx-auto btn-footer">
       <button type="button" class="btn btn-primary btn-lg" data-toggle="modal" onclick="saveButton()" data-target="#saveModal">Save</button>
@@ -243,6 +310,16 @@
 
     </div>
   </div>
+
+  <!--
+  .##.....##..#######..########.....###....##......
+  .###...###.##.....##.##.....##...##.##...##......
+  .####.####.##.....##.##.....##..##...##..##......
+  .##.###.##.##.....##.##.....##.##.....##.##......
+  .##.....##.##.....##.##.....##.#########.##......
+  .##.....##.##.....##.##.....##.##.....##.##......
+  .##.....##..#######..########..##.....##.########
+  -->
 
   <!-- Modal save-->
   <div class="modal fade" id="saveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -308,6 +385,16 @@
     </div>
   </div>
 </div>
+
+<!--
+.########..#######...#######..########.########.########.
+.##.......##.....##.##.....##....##....##.......##.....##
+.##.......##.....##.##.....##....##....##.......##.....##
+.######...##.....##.##.....##....##....######...########.
+.##.......##.....##.##.....##....##....##.......##...##..
+.##.......##.....##.##.....##....##....##.......##....##.
+.##........#######...#######.....##....########.##.....##
+-->
 
   <footer>
     <div class="row">

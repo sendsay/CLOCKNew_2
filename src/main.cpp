@@ -113,14 +113,18 @@ void setup() {
     if(WiFi.status() == WL_CONNECTED) {
         ntpUDP.begin(localPort);            // Запуск UDP для получения времени
         timeUpdateNTP();                    // Обновление времени
-        getWeather();                       // Получение данныз прогноза погоды
+        if (config.weatherOn == 1) {
+            getWeather();                   // Получение данныз прогноза погоды
+        }
     }
 
-    MQTTclient.setServer(config.mqttserver, config.mqttport);
-    MQTTclient.setCallback(callback);
-    MQTTclient.connect(config.mqttname);
-    MQTTclient.subscribe(config.mqttsubinform);
-    MQTTclient.subscribe(config.mqttsub);
+    if (config.mqttOn == 1) {
+        MQTTclient.setServer(config.mqttserver, config.mqttport);
+        MQTTclient.setCallback(callback);
+        MQTTclient.connect(config.mqttname);
+        MQTTclient.subscribe(config.mqttsubinform);
+        MQTTclient.subscribe(config.mqttsub);
+    }
 
     server.begin();
 
@@ -187,7 +191,7 @@ void loop() {
     }
 
 //=== Обновление погоды с сайта каждые 29 минут ==============================================================
-    if ((minute == 29 ) and (second == 0) and (not secFr)) {
+    if (((minute == 29 ) and (second == 0) and (not secFr)) && config.weatherOn == 1) {
         if (WIFI_connected) {
             getWeather();
         } else {
@@ -450,6 +454,11 @@ void sendData() {
     json += config.mqttbutt;
     json += "\",\"mqttOn\":\"";
     json += config.mqttOn;
+    json += "\",\"weatherOn\":\"";
+    json += config.weatherOn;
+
+    
+    
 
     json += "\"}";
 
@@ -492,6 +501,7 @@ void saveContent() {
     server.arg("mqttpubforecast").toCharArray(config.mqttpubforecast, 50) ;
     server.arg("mqttbutt").toCharArray(config.mqttbutt, 50) ;
     config.mqttOn = server.arg("mqttOn").toInt();
+    config.weatherOn = server.arg("weatherOn").toInt();
 
     // Serial.println("**************************");
     // Serial.println(config.mqttserver);
@@ -574,6 +584,7 @@ void loadConfig(const char *filename, Config &config) {
     strlcpy(config.mqttpubforecast, doc["mqtt_pub_forecast"] | "Informer/forecast", sizeof(config.mqttpubforecast));
     strlcpy(config.mqttbutt, doc["mqtt_butt"] | "Informer/button", sizeof(config.mqttbutt));
     config.mqttOn = doc["mqttOn"] | 0;
+    config.langWeather = doc["weatherOn"] | 0;
 
     // config.mqttpubalt = doc["mqtt_pub_alt"] | "Informer/alt";
 
@@ -624,6 +635,7 @@ void saveConfig(const char *filename, Config &config) {
     doc["mqtt_pub_forecast"] = config.mqttpubforecast;
     doc["mqtt_butt"] = config.mqttbutt;
     doc["mqttOn"] = config.mqttOn;
+    doc["weatherOn"] = config.weatherOn;
 
     if (serializeJson(doc, file) == 0) {
         Serial.println(F("Failed to write to file"));
