@@ -18,7 +18,7 @@ ______________________________________________*/
 // TODO: Use for transmit data aTalkArduino
 // TODO: Add other params / scroll speed, auto bright & itc. -->
 // TODO: Add get weather on tomorrow -->
- 
+// TODO: Add pomodoro technics
 
 
 #include <Arduino.h>
@@ -584,7 +584,7 @@ void loadConfig(const char *filename, Config &config) {
     strlcpy(config.mqttpubforecast, doc["mqtt_pub_forecast"] | "Informer/forecast", sizeof(config.mqttpubforecast));
     strlcpy(config.mqttbutt, doc["mqtt_butt"] | "Informer/button", sizeof(config.mqttbutt));
     config.mqttOn = doc["mqttOn"] | 0;
-    config.langWeather = doc["weatherOn"] | 0;
+    config.weatherOn = doc["weatherOn"] | 0;
 
     // config.mqttpubalt = doc["mqtt_pub_alt"] | "Informer/alt";
 
