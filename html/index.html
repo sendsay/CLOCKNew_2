@@ -181,7 +181,7 @@
             </label>
           </div>
         </div>
-        <div class="card-body">
+        <div class="card-body" id="mqtt">
           <h4">Server :</h4>
           <input id="mqttserver" type="text" class="form-control" pattern="[- 0-9a-zA-Z._/]{1,20}" placeholder="Example: m24.cloudmqtt.com" title="Min. 1 max 20 simbols">
 
@@ -406,43 +406,16 @@
 
     function changeContent() {
       var changeMqttOn = document.getElementById("mqttOn");
+  
+      var changeEnable;
+      if (changeMqttOn.checked == false) {changeEnable = false;} else {changeEnable = true;}
+      
+      var mqttsection = document.getElementById("mqtt");
+      var mqttinput = mqttsection.getElementsByTagName("input");
 
-     // TODO: Change on cicle!!!!
-
-      if (changeMqttOn.checked == false) {
-        document.getElementById("mqttserver").disabled = true;
-        document.getElementById("mqttport").disabled = true;
-        document.getElementById("mqttUserName").disabled = true;
-        document.getElementById("mqttpass").disabled = true;
-        document.getElementById("mqttname").disabled = true;
-        document.getElementById("mqttsubinform").disabled = true;
-        document.getElementById("mqttsub").disabled = true;
-        document.getElementById("mqttpubtemp").disabled = true;
-        document.getElementById("mqttpubtempUl").disabled = true;
-        document.getElementById("mqttpubhum").disabled = true;
-        document.getElementById("mqttpubpress").disabled = true;
-        document.getElementById("mqttpubforecast").disabled = true;
-        document.getElementById("mqttbutt").disabled = true;
-      } else {
-        document.getElementById("mqttserver").disabled = false;
-        document.getElementById("mqttport").disabled = false;
-        document.getElementById("mqttUserName").disabled = false;
-        document.getElementById("mqttpass").disabled = false;
-        document.getElementById("mqttname").disabled = false;
-        document.getElementById("mqttsubinform").disabled = false;
-        document.getElementById("mqttsub").disabled = false;
-        document.getElementById("mqttpubtemp").disabled = false;
-        document.getElementById("mqttpubtempUl").disabled = false;
-        document.getElementById("mqttpubhum").disabled = false;
-        document.getElementById("mqttpubpress").disabled = false;
-        document.getElementById("mqttpubforecast").disabled = false;
-        document.getElementById("mqttbutt").disabled = false;
+      for (let i= 0; i < 13; i++) {
+        mqttinput[i].disabled = changeEnable;
       }
-
-
-
-
-
     }
   </script>
 
