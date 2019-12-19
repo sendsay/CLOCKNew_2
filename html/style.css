@@ -36,14 +36,14 @@ h4 {
   text-transform: uppercase;
   font-size: 40px;
   /* background-color: #dbdbdb; */
-  background-color:  rgb(255, 226, 236);
+  background-color:  rgb(230, 230, 230);
 }
 
 .card {
   width: 350px;
   margin-top: 20px;
   transition: all .3s ease-in-out;
-  background-color: rgb(255, 238, 208);
+  background-color: rgb(240, 240, 240);
 }
 
 .card:hover {
