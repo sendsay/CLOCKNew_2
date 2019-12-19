@@ -13,7 +13,7 @@
   <link rel="stylesheet" href="bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
 </head>
-<body onload="getData()">
+<body  onload="getData()">
 
   <header>
     <div class="navbar navbar-expand-sm bg-dark navbar-dark fixed-top" >
@@ -179,7 +179,7 @@
               <input type="checkbox" id="mqttOn" onclick="changeContent()">
               <span class="slider"></span>
             </label>
-          </div> 
+          </div>
         </div>
         <div class="card-body">
           <h4">Server :</h4>
@@ -234,7 +234,7 @@
       <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#rebootModal">Restart</button>
       <button type="button" class="btn btn-danger btn-lg"  data-toggle="modal" data-target="#resetModal">Reset</button>
       <button type="button" class="btn btn-outline-warning btn-lg"  data-toggle="modal" data-target="#helpModal">Help</button>
-   
+
     </div>
   </div>
 
@@ -360,11 +360,11 @@
           // document.getElementById("mqttpubalt").value = json.mqttpubalt;
           document.getElementById("mqttpubforecast").value = json.mqttpubforecast;
           document.getElementById("mqttbutt").value = json.mqttbutt;
-          if (json.mqttOn == 1) { 
-            document.getElementById("mqttOn").checked = true; 
+          if (json.mqttOn == 1) {
+            document.getElementById("mqttOn").checked = true;
           } else {
-            changeContent(); 
-          }          
+            changeContent();
+          }
         }
       }
     }
@@ -377,8 +377,8 @@
                     "&langWeather=" + val("langWeather") + "&mqttserver=" + val("mqttserver") + "&mqttport=" + val('mqttport') +
                     "&mqttUserName=" + val('mqttUserName') + "&mqttpass=" + val('mqttpass') + "&mqttname=" + val('mqttname') +
                     "&mqttsubinform=" + val('mqttsubinform') + "&mqttsub=" + val('mqttsub') + "&mqttpubtemp=" + val('mqttpubtemp') +
-                    "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') + 
-                    "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') + 
+                    "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') +
+                    "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') +
                     "&mqttbutt=" + val('mqttbutt') + "&mqttOn=" + val_sw('mqttOn');
 
       xmlHttp.open('GET', content,true);
@@ -404,7 +404,7 @@
       return 0;
     }
 
-    function changeContent() { 
+    function changeContent() {
       var changeMqttOn = document.getElementById("mqttOn");
 
      // TODO: Change on cicle!!!!
@@ -436,13 +436,13 @@
         document.getElementById("mqttpubhum").disabled = false;
         document.getElementById("mqttpubpress").disabled = false;
         document.getElementById("mqttpubforecast").disabled = false;
-        document.getElementById("mqttbutt").disabled = false;        
-      }  
-    
+        document.getElementById("mqttbutt").disabled = false;
+      }
 
-      
 
-      
+
+
+
     }
   </script>
 
