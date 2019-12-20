@@ -135,7 +135,7 @@ void setup() {
     server.on("/index.html", fileindex);
     server.on("/bootstrap.min.css", bootstrap);
     server.on("bootstrap.min.css", bootstrap);
-    server.on("popper.min.js", popper);  
+    server.on("popper.min.js", popper);
     server.on("/popper.min.js", popper);
     server.on("/bootstrap.min.js", bootstrapmin);
     server.on("bootstrap.min.js", bootstrapmin);
@@ -599,8 +599,8 @@ void loadConfig(const char *filename, Config &config) {
     config.mqttOn = doc["mqttOn"] | 0;
     config.weatherOn = doc["weatherOn"] | 0;
     config.autoBright = doc["autoBright"] | 0;
-    config.scrollDelay = doc["scrollDelay"] | 0;
-    config.manualBright = doc["manualBright"] | 0;
+    config.scrollDelay = doc["scrollDelay"] | 20;
+    config.manualBright = doc["manualBright"] | 15;
 
     // config.mqttpubalt = doc["mqtt_pub_alt"] | "Informer/alt";
 

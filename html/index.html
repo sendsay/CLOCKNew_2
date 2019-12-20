@@ -18,13 +18,13 @@
 <body  onload="getData()">
 
   <script>
-    
+
     $(function() {
   const cssClasses = [
     'rangeslider--is-lowest-value',
     'rangeslider--is-highest-value'
   ];
-  
+
   $('input[type=range]')
     .rangeslider({
       polyfill: false
@@ -41,9 +41,9 @@
     });
 });
 
-    
-    
-    
+
+
+
     </script>
 
 <!--
@@ -234,12 +234,12 @@
             Options
           </div>
           <div class="card-body">
-          
+
             <!-- <input id="scrollSpeed" type="text" class="form-control" pattern="[\d]{3}" placeholder="Example: 300" title="Only 3 simbols"> -->
 
-            <div class="row">          
+            <div class="row">
               <h4 style="margin-left: 17px;">Scroll delay:</h4>
-              <input id="scrollDelay" type="range" min="10" max="30" value="20" class="custom-range" name="points1" style="padding: 0 20px;">
+              <input id="scrollDelay" type="range" min="5" max="40" value="20" class="custom-range" name="points1" style="padding: 0 20px;">
             </div>
 
             <div class="row">
@@ -253,10 +253,6 @@
             <div class="row">
               <h4 style="margin-left: 17px; margin-top: 20px;">Manual brightness:</h4>
               <input id="manualBright" type="range" min="0" max="15"  value="12" class="custom-range" name="points1" style="padding: 0 20px;">
-            </div>
-
-            <div  class="row">
-              <input type="range"  min="0" max="150" value="60"/>
             </div>
 
           </div>
@@ -404,7 +400,6 @@
     </div>
   </div>
 
-
   <!-- Modal reset-->
   <div class="modal fade" id="resetModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered" role="document">
@@ -422,6 +417,50 @@
           <button type="button" class="btn btn-secondary" data-dismiss="modal">No</button>
           <button type="button" class="btn btn-danger" data-dismiss="modal" onclick="getData()">Reset</button>
         </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+  <!-- Modal help-->
+<div class="modal fade" id="helpModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLongTitle" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+      </div>
+      <div class="modal-footer">
+        <div class="row">
+        <label class="switch" style="margin-left: 120px;">
+          <input type="checkbox" id="mqttOn1" onclick="changeContent(this.checked)">
+          <span class="slider"></span>
+        </label>
+
+
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+
       </div>
     </div>
   </div>
