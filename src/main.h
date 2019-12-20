@@ -198,6 +198,7 @@ struct Config {                                       // Структура с �
   int weatherOn;                                    //
   int autoBright;
   int scrollDelay;
+  int manualBright                                  //
 
 };
 

@@ -75,6 +75,8 @@ void setup() {
 
     SPIFFS.begin();
 
+    loadConfig("/config.json", config);     // загрузка конфига
+
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
   //  pinMode(buttonPin, INPUT);              // Вход кнопки
     pinMode(lightPin, OUTPUT);              // Выход мигалки
@@ -85,9 +87,8 @@ void setup() {
 
     initMAX7219();                          // Инициализация ЛЕД панели
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели
-    sendCmdAll(CMD_INTENSITY, 15);          // Установка яркости
+    sendCmdAll(CMD_INTENSITY, config.manualBright);          // Установка яркости
 
-    loadConfig("/config.json", config);     // загрузка конфига
 
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
         PRN("============> YES!!! find BMP280 sensor!");
@@ -125,6 +126,8 @@ void setup() {
         MQTTclient.subscribe(config.mqttsubinform);
         MQTTclient.subscribe(config.mqttsub);
     }
+
+
 
     server.begin();
 
@@ -304,8 +307,10 @@ if (((digitalRead(buttonPin) == HIGH) ||
         if(MQTTClientas.mqttOn) MQTTclient.loop();           // перевіряємо чи намає вхідних повідомлень, як є, то кoлбек функція
     }
 
-
-
+    // ---------- керування яскравосттю экрану ----------------------------
+    if (config.autoBright == 1) {
+        sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 1023, 0, 15));
+    }
 
 //=== Управление яркостью экрана=========================================
     // int lightSensor = analogRead(PIN_A0);
@@ -335,6 +340,16 @@ if (((digitalRead(buttonPin) == HIGH) ||
     //   sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 15, 0, 15));
 
 }
+
+/*
+.########.##....##.########.....##........#######...#######..########.
+.##.......###...##.##.....##....##.......##.....##.##.....##.##.....##
+.##.......####..##.##.....##....##.......##.....##.##.....##.##.....##
+.######...##.##.##.##.....##....##.......##.....##.##.....##.########.
+.##.......##..####.##.....##....##.......##.....##.##.....##.##.......
+.##.......##...###.##.....##....##.......##.....##.##.....##.##.......
+.########.##....##.########.....########..#######...#######..##.......
+*/
 
 
 /*
@@ -451,6 +466,8 @@ void sendData() {
     json += config.autoBright;
     json += "\",\"scrollDelay\":\"";
     json += config.scrollDelay;
+    json += "\",\"manualBright\":\"";
+    json += config.manualBright;
 
     json += "\"}";
 
@@ -496,6 +513,8 @@ void saveContent() {
     config.weatherOn = server.arg("weatherOn").toInt();
     config.autoBright = server.arg("autoBright").toInt();
     config.scrollDelay = server.arg("scrollDelay").toInt();
+    config.manualBright = server.arg("manualBright").toInt();
+
 
     // Serial.println("**************************");
     // Serial.println(config.mqttserver);
@@ -581,6 +600,7 @@ void loadConfig(const char *filename, Config &config) {
     config.weatherOn = doc["weatherOn"] | 0;
     config.autoBright = doc["autoBright"] | 0;
     config.scrollDelay = doc["scrollDelay"] | 0;
+    config.manualBright = doc["manualBright"] | 0;
 
     // config.mqttpubalt = doc["mqtt_pub_alt"] | "Informer/alt";
 
@@ -634,6 +654,7 @@ void saveConfig(const char *filename, Config &config) {
     doc["weatherOn"] = config.weatherOn;
     doc["autoBright"] = config.autoBright;
     doc["scrollDelay"] = config.scrollDelay;
+    doc["manualBright"] = config.manualBright;
 
     if (serializeJson(doc, file) == 0) {
         Serial.println(F("Failed to write to file"));
