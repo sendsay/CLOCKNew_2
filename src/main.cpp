@@ -130,32 +130,23 @@ void setup() {
 
     server.on("/", fileindex);
     server.on("/index.html", fileindex);
-
     server.on("/bootstrap.min.css", bootstrap);
     server.on("bootstrap.min.css", bootstrap);
-
+    server.on("popper.min.js", popper);  
     server.on("/popper.min.js", popper);
-
     server.on("/bootstrap.min.js", bootstrapmin);
     server.on("bootstrap.min.js", bootstrapmin);
-
     server.on("jquery.min.js", jquery);
     server.on("/jquery.min.js", jquery);
-
     server.on("script.js", jscript);
     server.on("/script.js", jscript);
-
     server.on("style.css", style);
     server.on("/style.css", style);
-
     server.on("/getData", sendData);
-
     server.on("/logo.png", logo);
-
+    server.on("logo.png", logo);
     server.on("/saveContent", saveContent);
-
     server.on("/restart", restart);
-
     printFile("/config.json");
 
 }
