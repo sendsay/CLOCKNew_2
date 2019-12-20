@@ -43,15 +43,15 @@ function getData() {
 
       if (json.mqttOn == 1) {
         document.getElementById("mqttOn1").checked = true;
-        changeContent();
+        changeContent(true);
       }
       if (json.weatherOn == 1) {
         document.getElementById("weatherOn").checked = true;
-        changeContentWeather();
+        changeContentWeather(true);
       }
       if (json.autoBright == 1) {
         document.getElementById("autoBright").checked = true;
-        changeContentautoBright();
+        changeContentautoBright(true);
       }
     }
   }
@@ -95,8 +95,8 @@ function val_sw(nameSwitch) {
   return 0;
 }
 
-function changeContent() {
-  var changeMqttOn = document.getElementById("mqttOn1").checked;
+function changeContent(changeMqttOn) {
+  // var changeMqttOn = document.getElementById("mqttOn1").checked;
 
   var mqttsection = document.getElementById("mqtt");
   var mqttinput = mqttsection.getElementsByTagName("input");
@@ -106,8 +106,8 @@ function changeContent() {
   }
 }
 
-function changeContentWeather() {
-  var changeWeatherOn = document.getElementById("weatherOn").checked;
+function changeContentWeather(changeWeatherOn) {
+  // var changeWeatherOn = document.getElementById("weatherOn").checked;
 
   var weathersection = document.getElementById("weather");
   var weatherinput = weathersection.getElementsByTagName("input");
@@ -118,8 +118,8 @@ function changeContentWeather() {
   document.getElementById("langWeather").disabled = !changeWeatherOn;
 }
 
-function changeContentautoBright() {
-  var changeAutoBright = document.getElementById("autoBright").checked;
+function changeContentautoBright(changeAutoBright) {
+  // var changeAutoBright = document.getElementById("autoBright").checked;
 
   document.getElementById("manualBright").disabled = changeAutoBright;
 
