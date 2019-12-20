@@ -153,16 +153,16 @@ input:checked + .slider {
 .custom-range::-webkit-slider-thumb {
   -webkit-appearance: none;
   appearance: none;
-  width: 15px;
-  height: 15px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%; 
   background: #1ABB9C;
   cursor: pointer;
 }
 
 .custom-range::-moz-range-thumb {
-  width: 15px;
-  height: 15px;
+  width: 17px;
+  height: 17px;
   border-radius: 50%;
   background: #1ABB9C;
   cursor: pointer;

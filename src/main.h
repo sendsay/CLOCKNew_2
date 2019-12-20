@@ -197,6 +197,7 @@ struct Config {                                       // Структура с �
   int mqttOn;                                         //
   int weatherOn;                                    //
   int autoBright;
+  int scrollDelay;
 
 };
 

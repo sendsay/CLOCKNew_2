@@ -40,6 +40,7 @@ function getData() {
       // document.getElementById("mqttpubalt").value = json.mqttpubalt;
       document.getElementById("mqttpubforecast").value = json.mqttpubforecast;
       document.getElementById("mqttbutt").value = json.mqttbutt;
+      document.getElementById("scrollDelay").value = json.scrollDelay;
 
       if (json.mqttOn == 1) {
         document.getElementById("mqttOn1").checked = true;
@@ -68,7 +69,7 @@ function saveButton() {
                 "&mqttpubtempUl=" + val('mqttpubtempUl') + "&mqttpubhum=" + val('mqttpubhum') +
                 "&mqttpubpress=" + val('mqttpubpress') + "&mqttpubforecast=" + val('mqttpubforecast') +
                 "&mqttbutt=" + val('mqttbutt') + "&mqttOn=" + val_sw('mqttOn1') + "&weatherOn=" + val_sw('weatherOn') +
-                "&autoBright=" + val_sw('autoBright');
+                "&autoBright=" + val_sw('autoBright') + "&scrollDelay=" + val('scrollDelay');
 
   console.log("************* send to server ");
   console.log(content);
