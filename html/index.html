@@ -12,8 +12,39 @@
   <link rel="stylesheet" href="style.css">
 
 
+
+
 </head>
 <body  onload="getData()">
+
+  <script>
+    
+    $(function() {
+  const cssClasses = [
+    'rangeslider--is-lowest-value',
+    'rangeslider--is-highest-value'
+  ];
+  
+  $('input[type=range]')
+    .rangeslider({
+      polyfill: false
+    })
+    .on('input', function() {
+      const fraction = (this.value - this.min) / (this.max - this.min);
+      if (fraction === 0) {
+        this.nextSibling.classList.add(cssClasses[0]);
+      } else if (fraction === 1) {
+        this.nextSibling.classList.add(cssClasses[1]);
+      } else {
+        this.nextSibling.classList.remove(...cssClasses)
+      }
+    });
+});
+
+    
+    
+    
+    </script>
 
 <!--
 .##....##....###....##.....##.########.....###....########.
@@ -222,6 +253,10 @@
             <div class="row">
               <h4 style="margin-left: 17px; margin-top: 20px;">Manual brightness:</h4>
               <input id="manualBright" type="range" min="0" max="15"  value="12" class="custom-range" name="points1" style="padding: 0 20px;">
+            </div>
+
+            <div  class="row">
+              <input type="range"  min="0" max="150" value="60"/>
             </div>
 
           </div>
