@@ -1,5 +1,6 @@
 <!-- TODO: Move all styles from html to css -->
 <!-- TODO: Add options -->
+<!-- TODO: Add online change scroll delay and brightness -->
 
 <!DOCTYPE html>
 <html lang="en">
@@ -11,8 +12,39 @@
   <link rel="stylesheet" href="style.css">
 
 
+
+
 </head>
 <body  onload="getData()">
+
+  <script>
+    
+    $(function() {
+  const cssClasses = [
+    'rangeslider--is-lowest-value',
+    'rangeslider--is-highest-value'
+  ];
+  
+  $('input[type=range]')
+    .rangeslider({
+      polyfill: false
+    })
+    .on('input', function() {
+      const fraction = (this.value - this.min) / (this.max - this.min);
+      if (fraction === 0) {
+        this.nextSibling.classList.add(cssClasses[0]);
+      } else if (fraction === 1) {
+        this.nextSibling.classList.add(cssClasses[1]);
+      } else {
+        this.nextSibling.classList.remove(...cssClasses)
+      }
+    });
+});
+
+    
+    
+    
+    </script>
 
 <!--
 .##....##....###....##.....##.########.....###....########.
@@ -202,8 +234,13 @@
             Options
           </div>
           <div class="card-body">
-            <h4>Scroll speed:</h4>
-            <input id="scrollSpeed" type="text" class="form-control" pattern="[\d]{3}" placeholder="Example: 300" title="Only 3 simbols">
+          
+            <!-- <input id="scrollSpeed" type="text" class="form-control" pattern="[\d]{3}" placeholder="Example: 300" title="Only 3 simbols"> -->
+
+            <div class="row">          
+              <h4 style="margin-left: 17px;">Scroll delay:</h4>
+              <input id="scrollDelay" type="range" min="10" max="30" value="20" class="custom-range" name="points1" style="padding: 0 20px;">
+            </div>
 
             <div class="row">
               <h4 style="margin-top: 25px; margin-left: 18px;">Auto brightness:</h4>
@@ -215,7 +252,11 @@
 
             <div class="row">
               <h4 style="margin-left: 17px; margin-top: 20px;">Manual brightness:</h4>
-              <input id="manualBright" type="range" class="custom-range" name="points1" style="padding: 0 20px;" on>
+              <input id="manualBright" type="range" min="0" max="15"  value="12" class="custom-range" name="points1" style="padding: 0 20px;">
+            </div>
+
+            <div  class="row">
+              <input type="range"  min="0" max="150" value="60"/>
             </div>
 
           </div>
