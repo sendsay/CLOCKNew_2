@@ -250,7 +250,7 @@ void loop() {
 .##.....##.##....##.....##.......##...
 .##.....##..#####.##....##.......##...
 */
-    // ---------- 50 сек. перевірка доступності MQTT та публікація температури ---------
+// ---------- 50 сек. перевірка доступності MQTT та публікація температури ---------
     if (second == 50 && config.mqttOn && !alarm_stat && WIFI_connected && secFr == 0) {
         if (WiFi.status() != WL_CONNECTED) {
                 WIFI_connected = false;
@@ -277,12 +277,12 @@ void loop() {
         }
     }
 
-    // ---------- якщо мережа WiFi доступна то виконуємо наступні функції ----------------------------
+// ---------- якщо мережа WiFi доступна то виконуємо наступні функції ----------------------------
     if(WIFI_connected){
         if(config.mqttOn) MQTTclient.loop();           // перевіряємо чи намає вхідних повідомлень, як є, то кoлбек функція
     }
 
-    // ---------- керування яскравосттю экрану ----------------------------
+// ---------- керування яскравосттю экрану ----------------------------
     if (config.autoBright == 1 && secFr == 0) {
         sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 1023, 0, 15));
     }
@@ -307,7 +307,6 @@ void loop() {
 .##..##..##.##.......##.....##..##..##..####....##....##.......##...##...##.......#########.##.......##......
 .##..##..##.##.......##.....##..##..##...###....##....##.......##....##..##.......##.....##.##....##.##......
 ..###..###..########.########..####.##....##....##....########.##.....##.##.......##.....##..######..########
-
 */
     void fileindex() {
         File file = SPIFFS.open("/index.html.gz", "r");
@@ -609,7 +608,6 @@ void loop() {
 .##....##.##..##..##..##.....##....##....##.##.....##....##.....##.##.....##.##.....##.##......
 ..######...###..###..####....##.....######..##.....##....##.....##..#######..########..########
 */
-
 //=== Переключение режимов ==================================================================================
     void SwitchShowMode() {
         Mode++;
@@ -953,7 +951,6 @@ void loop() {
 .##....##.##.....##.##.....##.##..##..##....##.....##..##.....##.##......
 ..######..##.....##..#######...###..###.....##....####.##.....##.########
 */
-
     void showAnimClock() {
         if ((millis() % 20) == 0) {
             byte digPos[6] = {1, 8, 18, 25, 15, 16};
@@ -1071,90 +1068,90 @@ void loop() {
 .##...###....##....##..............##.....##..##.....##.##......
 .##....##....##....##..............##....####.##.....##.########
 */
-
     void getNTPtime() {
-    WiFi.hostByName(config.ntpServerName, timeServerIP);
-    int cb;
-    for(int i = 0; i < 3; i++){
-        memset(packetBuffer, 0, NTP_PACKET_SIZE);
-        packetBuffer[0] = 0b11100011;
-        packetBuffer[1] = 0;
-        packetBuffer[2] = 6;
-        packetBuffer[3] = 0xEC;
-        packetBuffer[12] = 49;
-        packetBuffer[13] = 0x4E;
-        packetBuffer[14] = 49;
-        packetBuffer[15] = 52;
-        ntpUDP.beginPacket(timeServerIP, 123);                       //NTP порт 123
-        ntpUDP.write(packetBuffer, NTP_PACKET_SIZE);
-        ntpUDP.endPacket();
-        delay(800);                                                  // чекаємо пів секуни
-        cb = ntpUDP.parsePacket();
-        if(!cb) Serial.println("          no packet yet..." + String (i + 1));
-        if(!cb && i == 2) {                                          // якщо час не отримано
-        statusUpdateNtpTime = 0;
-        return;                                                    // вихіз з getNTPtime()
+        WiFi.hostByName(config.ntpServerName, timeServerIP);
+        int cb;
+        for(int i = 0; i < 3; i++){
+            memset(packetBuffer, 0, NTP_PACKET_SIZE);
+            packetBuffer[0] = 0b11100011;
+            packetBuffer[1] = 0;
+            packetBuffer[2] = 6;
+            packetBuffer[3] = 0xEC;
+            packetBuffer[12] = 49;
+            packetBuffer[13] = 0x4E;
+            packetBuffer[14] = 49;
+            packetBuffer[15] = 52;
+            ntpUDP.beginPacket(timeServerIP, 123);                       //NTP порт 123
+            ntpUDP.write(packetBuffer, NTP_PACKET_SIZE);
+            ntpUDP.endPacket();
+            delay(800);                                                  // чекаємо пів секуни
+            cb = ntpUDP.parsePacket();
+            if(!cb) Serial.println("          no packet yet..." + String (i + 1));
+            if(!cb && i == 2) {                                          // якщо час не отримано
+            statusUpdateNtpTime = 0;
+            return;                                                    // вихіз з getNTPtime()
+            }
+            if(cb) i = 3;
         }
-        if(cb) i = 3;
-    }
-    if(cb) {                                                      // якщо отримали пакет з серверу
-        ntpUDP.read(packetBuffer, NTP_PACKET_SIZE);
-        unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
-        unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
-        unsigned long secsSince1900 = highWord << 16 | lowWord;
-        const unsigned long seventyYears = 2208988800UL;        // Unix час станом на 1 січня 1970. в секундах, то 2208988800:
-        unsigned long epoch = secsSince1900 - seventyYears;
-        boolean summerTime;
 
-        if(month < 3 || month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
-        if(month > 3 && month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
-        if(((month == 3) && (hour + 24 * day)) >= (3 + 24 * (31 - (5 * year / 4 + 4) % 7)) || ((month == 10) && (hour + 24 * day)) < (3 + 24 * (31 - (5 * year / 4 + 1) % 7))) summerTime = true;
-        epoch += (int)(config.timeZone*3600 + (3600*(config.summertime   /*isDayLightSaving*/ && summerTime)));
+        if(cb) {                                                      // якщо отримали пакет з серверу
+            ntpUDP.read(packetBuffer, NTP_PACKET_SIZE);
+            unsigned long highWord = word(packetBuffer[40], packetBuffer[41]);
+            unsigned long lowWord = word(packetBuffer[42], packetBuffer[43]);
+            unsigned long secsSince1900 = highWord << 16 | lowWord;
+            const unsigned long seventyYears = 2208988800UL;        // Unix час станом на 1 січня 1970. в секундах, то 2208988800:
+            unsigned long epoch = secsSince1900 - seventyYears;
+            boolean summerTime;
 
-        g_year = 0;
-        int days = 0;
-        uint32_t time;
-        time = epoch/86400;
-        g_hour = (epoch % 86400L) / 3600;
-        g_minute = (epoch % 3600) / 60;
-        g_second = epoch % 60;
-        g_dayOfWeek = (((time) + 4) % 7) + 1;
-        while((unsigned)(days += (LEAP_YEAR(g_year) ? 366 : 365)) <= time) {    // Счет года
-        g_year++;
+            if(month < 3 || month > 10) summerTime = false;             // не переходимо на літній час в січні, лютому, листопаді і грудню
+            if(month > 3 && month < 10) summerTime = true;              // Sommerzeit лічимо в квіні, травні, червені, липні, серпені, вересені
+            if(((month == 3) && (hour + 24 * day)) >= (3 + 24 * (31 - (5 * year / 4 + 4) % 7)) || ((month == 10) && (hour + 24 * day)) < (3 + 24 * (31 - (5 * year / 4 + 1) % 7))) summerTime = true;
+            epoch += (int)(config.timeZone*3600 + (3600*(config.summertime   /*isDayLightSaving*/ && summerTime)));
+
+            g_year = 0;
+            int days = 0;
+            uint32_t time;
+            time = epoch/86400;
+            g_hour = (epoch % 86400L) / 3600;
+            g_minute = (epoch % 3600) / 60;
+            g_second = epoch % 60;
+            g_dayOfWeek = (((time) + 4) % 7) + 1;
+            while((unsigned)(days += (LEAP_YEAR(g_year) ? 366 : 365)) <= time) {    // Счет года
+            g_year++;
+            }
+            days -= LEAP_YEAR(g_year) ? 366 : 365;
+            time -= days;
+            days = 0;
+            g_month = 0;
+            uint8_t monthLength = 0;
+            for(g_month = 0; g_month < 12; g_month++){                      // Счет месяца
+            if(g_month == 1){
+                if(LEAP_YEAR(g_year)) monthLength = 29;
+                else monthLength = 28;
+            }
+            else monthLength = monthDays[g_month];
+            if(time >= monthLength) time -= monthLength;
+            else break;
+            }
+            g_month++;
+            g_day = time + 1;
+            g_year += 1970;
+            return;
         }
-        days -= LEAP_YEAR(g_year) ? 366 : 365;
-        time -= days;
-        days = 0;
-        g_month = 0;
-        uint8_t monthLength = 0;
-        for(g_month = 0; g_month < 12; g_month++){                      // Счет месяца
-        if(g_month == 1){
-            if(LEAP_YEAR(g_year)) monthLength = 29;
-            else monthLength = 28;
-        }
-        else monthLength = monthDays[g_month];
-        if(time >= monthLength) time -= monthLength;
-        else break;
-        }
-        g_month++;
-        g_day = time + 1;
-        g_year += 1970;
-        return;
-    }
-    Serial.println("Nie ma czasu(((");
+        Serial.println("Nie ma czasu(((");
     }
 
 // ===========================КОНВЕРТАЦІЯ НАЗВ ДНІВ ТИЖНЯ НА УКРАЇНСЬКУ МОВУ============================================
     void convertDw() {
-    switch(dayOfWeek){
-        case 1 : dw = tSunday;     break;
-        case 2 : dw = tMonday;    break;
-        case 3 : dw = tTuesday;   break;
-        case 4 : dw = tWednesday; break;
-        case 5 : dw = tThursday;  break;
-        case 6 : dw = tFriday;    break;
-        case 7 : dw = tSaturday;  break;
-    }
+        switch(dayOfWeek){
+            case 1 : dw = tSunday;     break;
+            case 2 : dw = tMonday;    break;
+            case 3 : dw = tTuesday;   break;
+            case 4 : dw = tWednesday; break;
+            case 5 : dw = tThursday;  break;
+            case 6 : dw = tFriday;    break;
+            case 7 : dw = tSaturday;  break;
+        }
     }
 // ===========================КОНВЕРТАЦІЯ НАЗВ МІСЯЦІВ НА УКРАЇНСЬКУ МОВУ============================================
     void convertMonth(){
@@ -1281,15 +1278,15 @@ void loop() {
 
 //=== Вывод на экран давления атмосферы ========================================
     void showSimplePre() {
-    dx = dy = 0;
-    clr();
-    showDigit(19, 0, dig5x8rn);     // друкуємо знак тиску
-    showDigit(int(pressBmp) / 100, 6, dig5x8rn);
-    showDigit((int(pressBmp) % 100) / 10, 12, dig5x8rn);
-    showDigit(int(pressBmp) % 10, 18, dig5x8rn);
-    showDigit(20, 24, dig5x8rn);
-    showDigit(21, 29, dig5x8rn);
-    refreshAll();
+        dx = dy = 0;
+        clr();
+        showDigit(19, 0, dig5x8rn);     // друкуємо знак тиску
+        showDigit(int(pressBmp) / 100, 6, dig5x8rn);
+        showDigit((int(pressBmp) % 100) / 10, 12, dig5x8rn);
+        showDigit(int(pressBmp) % 10, 18, dig5x8rn);
+        showDigit(20, 24, dig5x8rn);
+        showDigit(21, 29, dig5x8rn);
+        refreshAll();
     }
 
 /*
@@ -1318,13 +1315,10 @@ void loop() {
 ..###..###..########.##.....##....##....##.....##.########.##.....##
 */
     void getWeather() {
-
         if(!WIFI_connected) return;
 
-        String payload = "";            // ОТвет от сервера
-
+        String payload = "";            // Ответ от сервера
         Serial.println("\nStarting connection to server...");
-
         String url = "http://";
         url += String(config.weatherServer);
         url += "/data/2.5/weather";
@@ -1404,18 +1398,12 @@ void loop() {
 
         // weatherString = "         " + tNow + ":    \212 " + String(temp, 0) + ("\202") + "C";
         weatherString = "         " + tNow + ":    \212 " + String(tempBmp, 0) + ("\202") + "C";
-
-        weatherString += "     " + tFeels + ":  " +String(weather.feels) + ("\202") + "C";;
-
+        weatherString += "     " + tFeels + ":  " +String(weather.feels) + ("\202") + "C";
         weatherString += "     \213 " + String(humidity) + "%";
-
         // weatherString += "     \215 " + String(pressure, 0) + tPress;
         weatherString += "     \215 " + String(pressBmp) + tPress;
-
         weatherString += "     \214 " + windDegString + String(windSpeed, 1) + tSpeed;
-
         weatherString += "     \216 " + String(clouds) + "%     " + weatherDescription + "                ";
-
 
     //заполняем строку для mqtt
         config.mqttforecast = "T.:" + String(temp, 0) + " H:" + String(humidity) + "%" +
@@ -1427,26 +1415,26 @@ void loop() {
 
 //=== Конвертация описания погоды ========================================
     void convertWeatherDes() {
-    if(weatherDescription == "clear sky") weatherDescription = tClearSky;
-    else if(weatherDescription == "sky is clear") weatherDescription = tSkyIsClear;
-    else if(weatherDescription == "few clouds") weatherDescription = tFewClouds;
-    else if(weatherDescription == "scattered clouds") weatherDescription = tScatteredClouds;
-    else if(weatherDescription == "broken clouds") weatherDescription = tBrokenClouds;
-    else if(weatherDescription == "overcast clouds") weatherDescription = tOvercastClouds;
-    else if(weatherDescription == "light rain") weatherDescription = tLightRain;
-    else if(weatherDescription == "moderate rain") weatherDescription = tModerateRain;
-    else if(weatherDescription == "light intensity shower rain") weatherDescription = tLightIntensityShowerRain;
-    else if(weatherDescription == "shower rain") weatherDescription = tShowerRain;
-    else if(weatherDescription == "heavy intensity rain") weatherDescription = tHeavyIntensityRain;
-    else if(weatherDescription == "very heavy rain") weatherDescription = tVeryHeavyRain;
-    else if(weatherDescription == "thunderstorm") weatherDescription = tThunderstorm;
-    else if(weatherDescription == "haze") weatherDescription = tHaze;
-    else if(weatherDescription == "fog") weatherDescription = tFog;
-    else if(weatherDescription == "mist") weatherDescription = tMist;
-    else if(weatherDescription == "shower sleet") weatherDescription = tShowerSleet;
-    else if(weatherDescription == "light snow") weatherDescription = tLightSnow;
-    else if(weatherDescription == "light shower snow") weatherDescription = tLightShowerSnow;
-    else if(weatherDescription == "snow") weatherDescription = tSnow;
+        if(weatherDescription == "clear sky") weatherDescription = tClearSky;
+        else if(weatherDescription == "sky is clear") weatherDescription = tSkyIsClear;
+        else if(weatherDescription == "few clouds") weatherDescription = tFewClouds;
+        else if(weatherDescription == "scattered clouds") weatherDescription = tScatteredClouds;
+        else if(weatherDescription == "broken clouds") weatherDescription = tBrokenClouds;
+        else if(weatherDescription == "overcast clouds") weatherDescription = tOvercastClouds;
+        else if(weatherDescription == "light rain") weatherDescription = tLightRain;
+        else if(weatherDescription == "moderate rain") weatherDescription = tModerateRain;
+        else if(weatherDescription == "light intensity shower rain") weatherDescription = tLightIntensityShowerRain;
+        else if(weatherDescription == "shower rain") weatherDescription = tShowerRain;
+        else if(weatherDescription == "heavy intensity rain") weatherDescription = tHeavyIntensityRain;
+        else if(weatherDescription == "very heavy rain") weatherDescription = tVeryHeavyRain;
+        else if(weatherDescription == "thunderstorm") weatherDescription = tThunderstorm;
+        else if(weatherDescription == "haze") weatherDescription = tHaze;
+        else if(weatherDescription == "fog") weatherDescription = tFog;
+        else if(weatherDescription == "mist") weatherDescription = tMist;
+        else if(weatherDescription == "shower sleet") weatherDescription = tShowerSleet;
+        else if(weatherDescription == "light snow") weatherDescription = tLightSnow;
+        else if(weatherDescription == "light shower snow") weatherDescription = tLightShowerSnow;
+        else if(weatherDescription == "snow") weatherDescription = tSnow;
     }
 
 //=== Коллбек функция MQTT ========================================
@@ -1527,21 +1515,28 @@ void loop() {
 
 //=== Ренеконнект для MQTT =============================================================================
     void reconnect() {
-    if(!ESPclient.connected() && WiFi.status() == WL_CONNECTED) {
-        // if(printCom) {
-        printTime();
-        Serial.print("MQTT reconnection...");
-        // }
-        if(MQTTclient.connect(config.mqttname, config.mqttUserName, config.mqttpass)) {
-        Serial.println("connected");
-        MQTTclient.subscribe(config.mqttsubinform);
-        MQTTclient.subscribe(config.mqttbutt);
-        MQTTclient.subscribe(config.mqttsub);
-        } else {
-            Serial.print("failed, rc = ");
-            Serial.println(MQTTclient.state());
+        if(!ESPclient.connected() && WiFi.status() == WL_CONNECTED) {
+            // if(printCom) {
+            printTime();
+            Serial.print("MQTT reconnection...");
+            // }
+            if(MQTTclient.connect(config.mqttname, config.mqttUserName, config.mqttpass)) {
+            Serial.println("connected");
+            MQTTclient.subscribe(config.mqttsubinform);
+            MQTTclient.subscribe(config.mqttbutt);
+            MQTTclient.subscribe(config.mqttsub);
+            } else {
+                Serial.print("failed, rc = ");
+                Serial.println(MQTTclient.state());
+            }
         }
     }
-    }
-
-// END.
+/*
+.########.##....##.########.....
+.##.......###...##.##.....##....
+.##.......####..##.##.....##....
+.######...##.##.##.##.....##....
+.##.......##..####.##.....##....
+.##.......##...###.##.....##.###
+.########.##....##.########..###
+*/
