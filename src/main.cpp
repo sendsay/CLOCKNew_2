@@ -16,9 +16,8 @@ ______________________________________________*/
 
 
 // TODO: Use for transmit data aTalkArduino
-// TODO: Add other params / scroll speed, auto bright & itc. -->
-// TODO: Add get weather on tomorrow -->
-// TODO: Add pomodoro technics
+// TODO: Add get weather on tomorrow == НЕ ВЫПОНИМО ПОКА
+// TODO: Add pomodoro technics == Пока нет нужды
 
 
 #include <Arduino.h>
@@ -239,7 +238,7 @@ if (((digitalRead(buttonPin) == HIGH) ||
 .##....##.##.....##.##.......##....##.##...##.....##..##..##..##..##........##.
 ..######..##.....##.########..######..##....##.....###..###..####.##.......####
 */
-    if ((second > 30 && second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm) {
+    if ((second > 30 && second < 38) && (WiFi.status() != WL_CONNECTED || !WIFI_connected) && not alarm && secFr == 0) {
         WIFI_connected = false;
         Serial.println("============> Check WIFI connect!!!");
 
@@ -260,7 +259,7 @@ if (((digitalRead(buttonPin) == HIGH) ||
 .##.....##..#####.##....##.......##...
 */
     // ---------- 50 сек. перевірка доступності MQTT та публікація температури ---------
-    if (second == 50 && config.mqttOn && !alarm_stat && WIFI_connected) {
+    if (second == 50 && config.mqttOn && !alarm_stat && WIFI_connected && secFr == 0) {
       if (WiFi.status() != WL_CONNECTED) {
             WIFI_connected = false;
       }
@@ -275,7 +274,7 @@ if (((digitalRead(buttonPin) == HIGH) ||
         // if(sensorHumi == 4 && humBme != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humBme)).c_str());
         // if(sensorHumi == 5 && humiDht22 != 0) MQTTclient.publish(MQTTClientas.mqtt_pub_hum, (String(humiDht22)).c_str());
       }
-        MQTTclient.publish(config.mqttpubforecast, String(MQTTClientas.mqtt_forecast).c_str());
+        MQTTclient.publish(config.mqttpubforecast, String(config.mqttforecast).c_str());
 
         // if(sensorPrAl == 3 && pressBmp != 0) {
         //   MQTTclient.publish(MQTTClientas.mqtt_pub_press, String(pressBmp).c_str());
@@ -304,41 +303,13 @@ if (((digitalRead(buttonPin) == HIGH) ||
 
     // ---------- якщо мережа WiFi доступна то виконуємо наступні функції ----------------------------
     if(WIFI_connected){
-        if(MQTTClientas.mqttOn) MQTTclient.loop();           // перевіряємо чи намає вхідних повідомлень, як є, то кoлбек функція
+        if(config.mqttOn) MQTTclient.loop();           // перевіряємо чи намає вхідних повідомлень, як є, то кoлбек функція
     }
 
     // ---------- керування яскравосттю экрану ----------------------------
-    if (config.autoBright == 1) {
+    if (config.autoBright == 1 && secFr == 0) {
         sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 1023, 0, 15));
     }
-
-//=== Управление яркостью экрана=========================================
-    // int lightSensor = analogRead(PIN_A0);
-    // int screenDarkness = 0;
-
-    // if ((lightSensor > 0) and (lightSensor < 240))
-    // {
-    //     screenDarkness = 0;
-    // } else if (lightSensor > 270 and lightSensor < 470)
-    // {
-    //     screenDarkness = 3;
-    // } else if (lightSensor > 500 and lightSensor < 670)
-    // {
-    //     screenDarkness = 6;
-    // } else if (lightSensor > 700 and lightSensor < 770)
-    // {
-    //     screenDarkness = 9;
-    // } else if (lightSensor > 800 and lightSensor < 870)
-    // {
-    //     screenDarkness = 12;
-    // } else if (lightSensor > 900 and lightSensor < 1024)
-    // {
-    //     screenDarkness = 15;
-    // }
-
-    // sendCmdAll(CMD_INTENSITY, screenDarkness);
-    //   sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 15, 0, 15));
-
 }
 
 /*
@@ -840,7 +811,7 @@ void printStringWithShift(const char *s, int shiftDelay)
         printCharWithShift(*s, shiftDelay);
         s++;
         server.handleClient();                     // зберігаемо можливість відповіді на HTML запити під час бігучої стоки
-        if(MQTTClientas.mqttOn) MQTTclient.loop();   // зберігаемо можливість слухати MQTT топік під час бігучої стоки
+        if(config.mqttOn) MQTTclient.loop();   // зберігаемо можливість слухати MQTT топік під час бігучої стоки
 
     }
 }
@@ -1525,7 +1496,7 @@ void getWeather() {
 
 
   //заполняем строку для mqtt
-    MQTTClientas.mqtt_forecast = "T.:" + String(temp, 0) + " H:" + String(humidity) + "%" +
+    config.mqttforecast = "T.:" + String(temp, 0) + " H:" + String(humidity) + "%" +
                   " W. deg:"+ windDeg + " W. spd:" + String(windSpeed, 1) + tSpeed +
                   " Desc:" + weatherDescription;
 
@@ -1559,7 +1530,7 @@ void convertWeatherDes(){
 //=== Коллбек функция MQTT ========================================
 void callback(char* topic, byte* payload, unsigned int length) {
 
-    if(!MQTTClientas.mqttOn) return;
+    if(!config.mqttOn) return;
 
       if(String(topic) == config.mqttsubinform) {
       String Text = "";

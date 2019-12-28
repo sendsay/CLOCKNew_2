@@ -36,28 +36,28 @@ int dy = 0;             //координаты
 //String password = "0674788273";         // Пароль локального WiFi
 //String ssidAP      = "WiFi-Clock";      // Назва точки доступу
 //String passwordAP  = "" ;               // Пароль точки доступу
-bool firstStart = false;                // Первый старт
-boolean WIFI_connected = false;         // Флаг подкючекния к ВАЙФАЙ
+bool firstStart = false;                  // Первый старт
+boolean WIFI_connected = false;           // Флаг подкючекния к ВАЙФАЙ
 String tMes, tNow, tPress, tSpeed, tMin, tTom, tKurs, tSale, tYour, tPoint; // Строки для сообщений
-byte amountNotStarts = 0;               // Счет НЕ подключения
-byte del = 0;                           // ???
-byte dig[MAX_DIGITS] = {0};             // ???
-byte digold[MAX_DIGITS] = {0};          // ???
-byte digtrans[MAX_DIGITS] = {0};        // ???
-bool alarm_stat = false;                // Статус будильника
-bool alarm_hold = false;                // Отложить будильник???
+byte amountNotStarts = 0;                 // Счет НЕ подключения
+byte del = 0;                             // ???
+byte dig[MAX_DIGITS] = {0};               // ???
+byte digold[MAX_DIGITS] = {0};            // ???
+byte digtrans[MAX_DIGITS] = {0};          // ???
+bool alarm_stat = false;                  // Статус будильника
+bool alarm_hold = false;                  // Отложить будильник???
 
 
-bool statusUpdateNtpTime = 0;           // Если не 0, то обновление было удачным
+bool statusUpdateNtpTime = 0;             // Если не 0, то обновление было удачным
 //int timeZone = 2.0;                     // Временная зона для часов
-long timeUpdate = 60000;                // Период обновления времени
-uint8_t hourTest[3], minuteTest[3];     // ??
+long timeUpdate = 60000;                  // Период обновления времени
+uint8_t hourTest[3], minuteTest[3];       // ??
 int g_hour, g_minute, g_second, g_month=1, g_day, g_dayOfWeek, g_year;  // ??
 //bool summerTime = false;                // летнее время
 
 //String ntpServerName = "ntp3.time.in.ua";   // Сервер обновления времени
-const int NTP_PACKET_SIZE = 48;         // Размер пакета от сервера времени
-byte packetBuffer[NTP_PACKET_SIZE];     // Буфер пакета времени
+const int NTP_PACKET_SIZE = 48;           // Размер пакета от сервера времени
+byte packetBuffer[NTP_PACKET_SIZE];       // Буфер пакета времени
 static const uint8_t monthDays[] = {31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31};        // Кількість днів у місяцях
 #define LEAP_YEAR(Y) (((1970+Y)>0) && !((1970+Y)%4) && (((1970+Y)%100)||!((1970+Y)%400)))   // Високосні літа
 bool isDayLightSaving = true;
@@ -93,10 +93,6 @@ int showAllInterval = 1;                              // Интервал пок
 
 int secFr, lastSecond, lastMinute;                    // Работа с временем
 
-// String apiKey= "df9c74ff1a47dcb48aab814fa5500429";    // Ключ для погоды
-// int cityId = 598098;                                  // локация погоды
-// char weatherServer[] = "api.openweathermap.org";      // Сервер погоды
-// String langWeather = "ua";                            // Язык погоды
 String weatherDescription = "";                       // Описание погоды
 String tClearSky, tSkyIsClear, tFewClouds, tScatteredClouds, tBrokenClouds, tOvercastClouds, tLightRain, tModerateRain, tLightIntensityShowerRain, tShowerRain, tHeavyIntensityRain, tVeryHeavyRain, tThunderstorm, tHaze, tFog, tMist, tShowerSleet, tLightSnow, tLightShowerSnow, tSnow, tWeatrNot, tWeatrTN, tFeels;   // Описание погоды
 byte lang = 1;                                        // Язык текста часов
@@ -134,72 +130,52 @@ struct weather_structure {
 weather_structure weather;
 String url;
 
-// byte timeSigOn = 5;                           // Время начала сигнала
-// byte timeSigOff = 22;                         // Время конца сигнала
-
-bool alarm = false;                           // Флаг сработки будильника
+bool alarm = false;                                   // Флаг сработки будильника
 
 struct MQTTstruct {
-  // char mqtt_server[21] = "m24.cloudmqtt.com";                                             // Имя сервера MQTT
-  // int  mqtt_port = 17049;                                                                 // Порт для подключения к серверу MQTT
-  // char mqtt_user[25] = "zqyslqbd";                                                        // Логи от сервер
-  // char mqtt_pass[25] = "ghCaEZLP2i0V";                                                    // Пароль от сервера MQTT
-  // char mqtt_name[25] = "Informer";
-  // char mqtt_sub_inform[25] = "Inform/mess";
-  // char mqtt_sub[25] = "Ulica/temp";
-  // char mqtt_pub_temp[25] = "Informer/temp";
-  // char mqtt_pub_tempUl[25] = "Informer/tempUl";
-  // char mqtt_pub_hum[25] = "Informer/hum";
-  // char mqtt_pub_press[25] = "Informer/press";
-  // char mqtt_pub_alt[25] = "Informer/alt";
-  // char mqtt_pub_forecast[25] = "Informer/forecast";
-  String mqtt_forecast = "No data!";
-  // char mqtt_butt[25] = "Informer/button";
-  bool mqttOn = true;
   int tMqtt3 = 85;
   int tMqtt4 = 0;
   int tMqtt5 = 0;
 };
 MQTTstruct MQTTClientas;
 
-
 struct Config {                                       // Структура с настройками
   char ssid[50];
-  char password[50];                                 // Пароль локального WiFi
-  char ssidAP[50];                                   // Назва точки доступу
-  char passwordAP[50];                               // Пароль точки доступу
+  char password[50];                                  // Пароль локального WiFi
+  char ssidAP[50];                                    // Назва точки доступу
+  char passwordAP[50];                                // Пароль точки доступу
 
-  float timeZone;                                    // Временная зона для часов
-  int summertime;                                   // летнее время
-  char ntpServerName[50];                              // Сервер обновления времени
-  byte timeSigOn;                                    // Время начала сигнала
-  byte timeSigOff;                                   // Время конца сигнала
+  float timeZone;                                     // Временная зона для часов
+  int summertime;                                     // летнее время
+  char ntpServerName[50];                             // Сервер обновления времени
+  byte timeSigOn;                                     // Время начала сигнала
+  byte timeSigOff;                                    // Время конца сигнала
 
-  char apiKey[70];                                     // Ключ для погоды
-  int cityId;                                        // локация погоды
-  char weatherServer[50];                              // Сервер погоды
+  char apiKey[70];                                    // Ключ для погоды
+  int cityId;                                         // локация погоды
+  char weatherServer[50];                             // Сервер погоды
   char langWeather[4];                                // Язык погоды
 
   char mqttserver[50];                                // Имя сервера MQTT
   int  mqttport;                                      // Порт для подключения к серверу MQTT
   char mqttUserName[50];                              // Логи от сервер
   char mqttpass[50];                                  // Пароль от сервера MQTT
-  char mqttname[50];                                 // Имя информера
-  char mqttsubinform[50];                            // Сообщение
-  char mqttsub[50];                                  // Темп. на улице
-  char mqttpubtemp[50];                              // Темп. на улице
-  char mqttpubtempUl[50];                               // Темп на улице
-  char mqttpubhum[50];                                  // Влажность
-  char mqttpubpress[50];                                // Давление
-  // String mqttpubalt;                                  // Высота
-  char  mqttpubforecast[50];                             // Погда из нета
-  char mqttbutt[50];                                    // Кнопка
-  int mqttOn;                                         //
-  int weatherOn;                                    //
-  int autoBright;
-  int scrollDelay;
-  int manualBright;                                  //
-
+  char mqttname[50];                                  // Имя информера
+  char mqttsubinform[50];                             // Сообщение
+  char mqttsub[50];                                   // Темп. на улице
+  char mqttpubtemp[50];                               // Темп. на улице
+  char mqttpubtempUl[50];                             // Темп на улице
+  char mqttpubhum[50];                                // Влажность
+  char mqttpubpress[50];                              // Давление
+  // String mqttpubalt;                               // Высота
+  char  mqttpubforecast[50];                          // Погда из нета
+  char mqttbutt[50];                                  // Кнопка
+  int mqttOn;                                         // Использование MQTT
+  int weatherOn;                                      // Использоваие погоды
+  int autoBright;                                     // авто яркость
+  int scrollDelay;                                    // задержка прокрутки
+  int manualBright;                                   // ручная яркость
+  String mqttforecast = "No data!";                   // строка для публикации
 };
 
 Config config;
@@ -257,12 +233,12 @@ void jscript();                                       // scripts
 
 void loadConfig(const char *filename, Config &config); // загрузка конфига
 
-void saveConfig(const char *filename, Config &config);
-void printFile(const char *filename);
-void sendData();
-void style();
-void logo();
-void saveContent();
+void saveConfig(const char *filename, Config &config);  // сохранить настройки
+void printFile(const char *filename);                   // показать файл настроек
+void sendData();                                        // отправка данных для страницы
+void style();                                           // загрузка стиля для страницы
+void logo();                                            // загрузка логотипа для страницы
+void saveContent();                                     //
 void restart();
 
 

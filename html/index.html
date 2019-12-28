@@ -1,6 +1,5 @@
 <!-- TODO: Move all styles from html to css -->
-<!-- TODO: Add options -->
-<!-- TODO: Add online change scroll delay and brightness -->
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -81,7 +80,7 @@
 
   <div class="container">
     <div class="row">
-      <div class="col-sm">
+      <div class="col">
         <div class="card mx-auto ">
           <div class="card-header">
             WIFI
@@ -107,7 +106,7 @@
 ....##.....##..##.....##.##......
 ....##....####.##.....##.########
 -->
-      <div class="col-sm">
+      <div class="col">
         <div class="card mx-auto">
           <div class="card-header">
             Time
@@ -427,40 +426,26 @@
   <div class="modal-dialog" role="document">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title" id="exampleModalLongTitle">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
+        <h5 class="modal-title" id="exampleModalLongTitle">Help</h5>
       </div>
       <div class="modal-body">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Sunt fugit asperiores unde. Necessitatibus, cupiditate impedit aliquam, animi quidem consectetur fugit reiciendis maiores eaque ut laboriosam minus id nesciunt mollitia labore!
+        <h5>WIFI</h5>
+          Enter your home network settings.
+        <h5>TIME</h5>
+          Enter server name, example : <a href="http://time.in.ua/">ntp3.time.in.ua</a>
+          Choose time zone and switch summer time if needed.
+          Hour signal on/off, turning on and off the signal at the beginning of every hour.
+          Weather display also works at this time.
+        <h5>WEATHER</h5>
+          This application uses <a href="http://openweathermap.org/" target="_blank">Open Weather Map service. </a>.
+          ID cities take <a href="https://openweathermap.org/find?q=">here.</a> API key <a href="https://openweathermap.org/api">here</a>.
+        <h5>OPTIONS</h5>
+          Everything is clear here
+        <h5>MQTT</h5>
+          Register <a href="https://www.cloudmqtt.com/" target="_blank">here</a> or find any MQTT <a href="https://www.google.com/search?q=mqtt+broker&oq=mqtt+&aqs=chrome.1.69i57j0j69i60j69i61j69i65l3j69i60.2231j0j7&sourceid=chrome&ie=UTF-8" target="_blank" >broker service</a>.
       </div>
       <div class="modal-footer">
-        <div class="row">
-        <label class="switch" style="margin-left: 120px;">
-          <input type="checkbox" id="mqttOn1" onclick="changeContent(this.checked)">
-          <span class="slider"></span>
-        </label>
-
-
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-
       </div>
     </div>
   </div>
