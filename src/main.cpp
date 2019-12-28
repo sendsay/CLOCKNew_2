@@ -922,6 +922,7 @@ void loop() {
         }
         dy = 0;
         refreshAll();
+        return;
     }
 
 /*
