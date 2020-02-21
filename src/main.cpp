@@ -1300,10 +1300,15 @@ void loop() {
 .########..####.##...........########..####.##.......
 */
     void bip(){
-        digitalWrite(buzzerPin, HIGH);
+        // digitalWrite(buzzerPin, HIGH);
+        // delay(80);
+        // digitalWrite(buzzerPin, LOW);
+        // delay(120);
+        tone(buzzerPin, 2000, 80);
         delay(80);
-        digitalWrite(buzzerPin, LOW);
+        noTone(buzzerPin);
         delay(120);
+
     }
 
 /*
