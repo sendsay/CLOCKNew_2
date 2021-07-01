@@ -13,6 +13,8 @@
  DHT22_________________________D4/GPIO 2       |
 ______________________________________________*/
 
+// #define BLUETOOTH
+
 #define DIN_PIN   13                                                                    //GPIO 13 / D7
 #define CS_PIN    15                                                                    //GPIO 15 / D8
 #define CLK_PIN   14
@@ -22,9 +24,14 @@ ______________________________________________*/
 #define PRN(s){Serial.println(s);}  // Печать в ПОРТ
 #define DEBUG                       // Отладка
 
-#define buzzerPin D4                // Пин сигнала
+#define buzzerPin D6                // Пин сигнала
 #define buttonPin D0                // Пин кнопки
-#define lightPin D3                 // Пин для мигалки
+// #define lightPin D3                 // Пин для мигалки
+
+#ifdef BLUETOOTH
+  #define BToothRx D4                 // Пин Rx блютуза
+  #define BToothTx D3                 // Пиг Тх блютуза
+#endif
 
 //=====================================================================================================================================
 int rotate = 90;        //поворот матрицы
@@ -68,7 +75,12 @@ String dw, _month;
 
 
 bool bmp280 = false;                    // Наличие датчика темп. и влажности
-float tempBmp = 0;                      // Переменная , хранит темпер. Bmp
+#ifdef BLUETOOTH
+  int tempBmp = 0;                      // Переменная , хранит темпер. Bmp
+#else
+  float tempBmp = 0;                    // Переменная , хранит темпер. Bmp
+#endif
+
 int pressBmp = 0;                       // Давление bmp280
 float altBmp = 0;                       // Высота bmp280
 float t5 = 0;                           // ??
@@ -105,6 +117,7 @@ int windDeg;                                          // Направление 
 float windSpeed;                                      // Сила ветра для прогноза
 String weatherString;                                 // Строка для сборки прогноза для показа
 String httpData;
+String dataBT = "120.00";                                    // Данные из Блютуза
 
 
 long localEpoc = 0;
@@ -207,6 +220,7 @@ void showSimplePre();                                 // Вывести давл
 void changeMode();                                    // Переключение режимов
 
 void updateSensors();                                 // Обновление данных с датчиков
+
 void sensorsSi7021();                                 // Опросить датчик si7021
 void sensorsBmp();                                    // Опросить датчик bmp280 (дом)
 
@@ -241,8 +255,10 @@ void logo();                                            // загрузка ло
 void saveContent();                                     //
 void restart();
 
+#ifdef BLUETOOTH
+  void sensorsBlueTooth();                              // запрос данных от блютуз
 
-
+#endif
 
 //=================================================
 // END.

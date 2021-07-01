@@ -42,6 +42,10 @@ ______________________________________________*/
 #include <math.h>
 #include <FS.h>
 
+#ifdef BLUETOOTH
+    #include <SoftwareSerial.h>
+#endif
+
 #include <T_ukr.h>
 #include <T_en.h>
 #include <T_rus.h>
@@ -56,8 +60,12 @@ HTTPClient client;              // Клиент для погоды
 WiFiClient ESPclient;           // Клиент подключения к ВАЙФАЙ
 PubSubClient MQTTclient(ESPclient); // Клиент MQTT
 Ticker ChangeMode(SwitchShowMode, 2*1000);          // Таймер переключения режимов отображение данных с датчиков
-
 ESP8266WebServer server(80);    // Веб сервер
+Ticker getWeatherNow(getWeather, 10000, 1, MILLIS);
+
+#ifdef BLUETOOTH
+    SoftwareSerial BTserial(BToothRx, BToothTx); // RX | TX
+#endif
 
 /*
 ..######..########.########.##.....##.########.
@@ -77,7 +85,7 @@ void setup() {
     loadConfig("/config.json", config);     // загрузка конфига
 
     pinMode(buzzerPin, OUTPUT);             // Выход сигнала буззера
-    pinMode(lightPin, OUTPUT);              // Выход мигалки
+    // pinMode(lightPin, OUTPUT);              // Выход мигалки
 
     PRN("");
     PRN("");
@@ -87,6 +95,10 @@ void setup() {
     sendCmdAll(CMD_SHUTDOWN, 1);            // Сброс панели
     sendCmdAll(CMD_INTENSITY, config.manualBright);          // Установка яркости
 
+#ifdef BLUETOOTH
+    BTserial.begin(38400); 
+#else
+
     if(bmp.begin(0x76)) {                   // Инициализация датчика bmp
         PRN("============> YES!!! find BMP280 sensor!");
         bmp280 = true;
@@ -94,6 +106,7 @@ void setup() {
     } else {
         PRN("============> Did not find BMP280 sensor!");
     }
+#endif
 
     if (sensor.begin()) {                   // Инициализация датчика Si7021
         PRN("============> YES!!! find Si7021 sensor!");
@@ -101,7 +114,8 @@ void setup() {
         sensorsSi7021();
     } else {
         PRN("============> Did not find Si7021 sensor!");
-    }
+    } 
+
 
     wifiConnect();                          // подключение к Вайфай
 
@@ -145,6 +159,8 @@ void setup() {
     server.on("/saveContent", saveContent);
     server.on("/restart", restart);
     printFile("/config.json");
+
+    getWeatherNow.start();
 }
 
 /*
@@ -160,8 +176,10 @@ void loop() {
     ChangeMode.update();                    // Обновление таймера отображения данных из датчиков
     server.handleClient();                  // Работа Веб страницы
 
+    getWeatherNow.update();
+
 //=== Мигалка =====================================================
-    digitalWrite(lightPin, (((second % 2) == 0) ? HIGH : LOW));
+    // digitalWrite(lightPin, (((second % 2) == 0) ? HIGH : LOW));
 
 //=== Работа с временем, поднимем флаг каждую секунду ===================================
     if(second != lastSecond) {     // счетчик секунд и флаг для процессов                                            // на початку нової секунди скидаємо secFr в "0"
@@ -176,8 +194,8 @@ void loop() {
         updateSensors();
     }
 
-//=== Обновление погоды с сайта каждые 29 минут ==============================================================
-    if (((minute == 29 ) and (second == 0) and (not secFr)) && config.weatherOn == 1) {
+//=== Обновление погоды с сайта каждые 15 минут ==============================================================
+    if (((minute % 29 == 0 ) and (second == 0) and (not secFr)) && config.weatherOn == 1) {
         if (WIFI_connected) {
             getWeather();
         } else {
@@ -279,10 +297,34 @@ void loop() {
     }
 
 // ---------- керування яскравосттю экрану ----------------------------
-    if (config.autoBright == 1 && secFr == 0) {
-        sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 0, 1023, 0, 15));
+    if (config.autoBright == 1 && secFr == 0) { 
+        sendCmdAll(CMD_INTENSITY, map(analogRead(PIN_A0), 1023, 0, 0, 15));
+        PRN(PIN_A0);
     }
+
+
+#ifdef BLUETOOTH
+/*
+..######..##.....##.########..######..##....##.........########..########.........########.....###....########....###...
+.##....##.##.....##.##.......##....##.##...##..........##.....##....##............##.....##...##.##......##......##.##..
+.##.......##.....##.##.......##.......##..##...........##.....##....##............##.....##..##...##.....##.....##...##.
+.##.......#########.######...##.......#####............########.....##............##.....##.##.....##....##....##.....##
+.##.......##.....##.##.......##.......##..##...........##.....##....##............##.....##.#########....##....#########
+.##....##.##.....##.##.......##....##.##...##..........##.....##....##............##.....##.##.....##....##....##.....##
+..######..##.....##.########..######..##....##.#######.########.....##....#######.########..##.....##....##....##.....##
+*/
+    if (BTserial.available())
+    {  
+        dataBT = BTserial.readString();  
+        PRN("Data from BT : ");
+
+        tempBmp = dataBT.toInt();
+
+        PRN(tempBmp);
+    }
+#endif
 }
+
 
 /*
 .########.##....##.########.....##........#######...#######..########.
@@ -1193,9 +1235,17 @@ void loop() {
 ..######..########.##....##..######...#######..##.....##..######.....########..##.....##....##....##.....##
 */
     void updateSensors() {                                  // Обновление данных с датчиков
-        sensorsBmp();                                       // Обновление датчика улицы Bmp
-        sensorsSi7021();                                    // Обновление датчика дома Si7021
+    PRN("Update sensors!");
+#ifdef BLUETOOTH 
+  //  sensorsBlueTooth();
+#else 
+    sensorsBmp();                                       // Обновление датчика улицы Bmp
+#endif   
+    
+    sensorsSi7021();                                    // Обновление датчика дома Si7021
+     
     }
+
 
 //=== Вывод на экран температуры на улице =======================================
     void showSimpleTempU() {
@@ -1241,6 +1291,14 @@ void loop() {
         refreshAll();
     }
 
+
+#ifdef BLUETOOTH
+//=== Чтение данных с датчика по блютуз ==============================================
+    void sensorsBlueTooth() {
+    //    tempBmp = dataBT.toFloat();
+        
+    }
+#else
 //=== Чтение данных с датчика  ==============================================
     void sensorsBmp() {
         if(bmp280 == false) return;
@@ -1254,6 +1312,8 @@ void loop() {
         printTime();
         PRN("Temperature BMP280: " + String(tempBmp) + " *C,  Pressure: " + String(pressBmp) + " mmHg,  Approx altitude: " + String(altBmp) + " m");
     }
+#endif
+
 
 //=== Чтение данных с датчика si7021 ==============================================
     void sensorsSi7021() {
@@ -1271,6 +1331,7 @@ void loop() {
 
         Serial.println("Temperature Si7021: " + String(celsiusSi7021) + " *C,  Humidity: " + String(humSi7021) + " %");
     }
+
 
 //=== Вывод на экран давления атмосферы ========================================
     void showSimplePre() {
@@ -1295,14 +1356,14 @@ void loop() {
 .########..####.##...........########..####.##.......
 */
     void bip(){
-        // digitalWrite(buzzerPin, HIGH);
-        // delay(80);
-        // digitalWrite(buzzerPin, LOW);
-        // delay(120);
-        tone(buzzerPin, 2000, 80);
+        digitalWrite(buzzerPin, HIGH);
         delay(80);
-        noTone(buzzerPin);
+        digitalWrite(buzzerPin, LOW);
         delay(120);
+        // tone(buzzerPin, 2000, 80);
+        // delay(80);
+        // noTone(buzzerPin);
+        // delay(120);
 
     }
 
@@ -1398,11 +1459,18 @@ void loop() {
         if(windDeg >= 299 && windDeg <= 344) windDegString = "\233";    //"Північно-західний";
 
         // weatherString = "         " + tNow + ":    \212 " + String(temp, 0) + ("\202") + "C";
-        weatherString = "         " + tNow + ":    \212 " + String(tempBmp, 0) + ("\202") + "C";
+        // weatherString = "         " + tNow + ":    \212 " + String(tempBmp, 0) + ("\202") + "C";
+        
+        weatherString = "         " + tNow + ":    " + temp+ ("\202") + "C";
+
         weatherString += "     " + tFeels + ":  " +String(weather.feels) + ("\202") + "C";
         weatherString += "     \213 " + String(humidity) + "%";
-        // weatherString += "     \215 " + String(pressure, 0) + tPress;
-        weatherString += "     \215 " + String(pressBmp) + tPress;
+#ifdef BLUETOOTH
+        weatherString += "     \215 " + String(pressure, 0) + tPress;
+#else
+         weatherString += "     \215 " + String(pressure) + tPress;
+        // weatherString += "     \215 " + String(pressBmp) + tPress;
+#endif
         weatherString += "     \214 " + windDegString + String(windSpeed, 1) + tSpeed;
         weatherString += "     \216 " + String(clouds) + "%     " + weatherDescription + "                ";
 
