@@ -26,7 +26,7 @@ ______________________________________________*/
 
 #define buzzerPin D6                // Пин сигнала
 #define buttonPin D0                // Пин кнопки
-// #define lightPin D3                 // Пин для мигалки
+#define lightPin D3                 // Пин для мигалки
 
 #ifdef BLUETOOTH
   #define BToothRx D4                 // Пин Rx блютуза
